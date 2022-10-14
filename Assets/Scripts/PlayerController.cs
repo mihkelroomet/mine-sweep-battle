@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -7,8 +5,6 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
 
 
-    private Vector3 mousePos;
-    private Camera camera;
     private LineRenderer lineRend;
     private float timer;
     private bool defusing;
@@ -33,42 +29,27 @@ public class PlayerController : MonoBehaviour
     {
         rb = gameObject.GetComponent<Rigidbody2D>();
         animator = gameObject.GetComponent<Animator>();
-        
         lineRend = gameObject.GetComponent<LineRenderer>();
-        camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
     }
 
 
     void Update()
     {
-        mousePos = camera.ScreenToWorldPoint(Input.mousePosition);
-
         inputHorizontal = Input.GetAxisRaw("Horizontal");
         inputVertical = Input.GetAxisRaw("Vertical");
-
 
         // Shooting the laserbeam
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             defusing = false; // Breaks defusing process
-            lineRend.startWidth = 0.1f;
-            lineRend.startColor = Color.red;
-            lineRend.positionCount = 2;
-            lineRend.SetPosition(0, gameObject.transform.position);
-            lineRend.SetPosition(1, mousePos);
-            timer = 0;
+            fireBeam(0.05f, Color.red);
         }
 
 
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             defusing = true;
-            lineRend.startWidth = 0.2f;
-            lineRend.startColor = Color.green;
-            lineRend.positionCount = 2;
-            lineRend.SetPosition(0, gameObject.transform.position);
-            lineRend.SetPosition(1, mousePos);
-            timer = 0;
+            fireBeam(0.1f, Color.green);
         }
 
         // Make the beam disappear
@@ -77,7 +58,7 @@ public class PlayerController : MonoBehaviour
             timer += Time.deltaTime;
             if (defusing)
             {
-                if (timer > 3)
+                if (timer > 0.5)
                 {
                     lineRend.positionCount = 0;
                 }
@@ -90,6 +71,23 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+    }
+
+    // fires beam from self to what the mouse is pointing at
+    private void fireBeam(float width, Color color) {
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+
+        lineRend.startWidth = width;
+        lineRend.startColor = color;
+        lineRend.positionCount = 2;
+        lineRend.SetPosition(0, gameObject.transform.position);
+        if (hit.collider) {
+            lineRend.SetPosition(1, hit.point);
+        }
+        else {
+            lineRend.SetPosition(1, gameObject.transform.position);
+        }
+        timer = 0;
     }
 
     private void FixedUpdate()
