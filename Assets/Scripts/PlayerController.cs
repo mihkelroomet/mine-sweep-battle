@@ -6,8 +6,9 @@ public class PlayerController : MonoBehaviour
 
 
     private LineRenderer lineRend;
-    private float timer;
+    private float _beamTimer;
     private bool defusing;
+    private float _stunTimer;
 
 
     // Player
@@ -24,77 +25,62 @@ public class PlayerController : MonoBehaviour
     private const string PLAYER_MOVE_R = "Player_Move_R";
     private const string PLAYER_MOVE_U = "Player_Move_U";
     private const string PLAYER_MOVE_D = "Player_Move_D";
+    private const string PLAYER_STUNNED = "Player_Stunned";
 
-    void Start()
-    {
+    public static PlayerController Instance;
+
+    private void Awake() {
+        Instance = this;
         rb = gameObject.GetComponent<Rigidbody2D>();
         animator = gameObject.GetComponent<Animator>();
         lineRend = gameObject.GetComponent<LineRenderer>();
+        _stunTimer = -1;
+        _beamTimer = -1;
+    }
+
+    void Start()
+    {
+        
     }
 
 
     void Update()
     {
-        inputHorizontal = Input.GetAxisRaw("Horizontal");
-        inputVertical = Input.GetAxisRaw("Vertical");
+        // If not stunned
+        if (_stunTimer < 0) {
+            inputHorizontal = Input.GetAxisRaw("Horizontal");
+            inputVertical = Input.GetAxisRaw("Vertical");
 
-        // Shooting the laserbeam
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            defusing = false; // Breaks defusing process
-            fireBeam(0.05f, Color.red);
-        }
-
-
-        if (Input.GetKeyDown(KeyCode.Mouse1))
-        {
-            defusing = true;
-            fireBeam(0.1f, Color.green);
-        }
-
-        // Make the beam disappear
-        if (lineRend.positionCount > 0)
-        {
-            timer += Time.deltaTime;
-            if (defusing)
+            // Shooting the laserbeam
+            if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                if (timer > 0.5)
-                {
-                    lineRend.positionCount = 0;
-                }
+                defusing = false; // Breaks defusing process
+                _beamTimer = 0.1f;
+                fireBeam(0.05f, Color.red);
             }
-            else
+
+
+            if (Input.GetKeyDown(KeyCode.Mouse1))
             {
-                if (timer > 0.1)
-                {
-                    lineRend.positionCount = 0;
-                }
+                defusing = true;
+                _beamTimer = 0.5f;
+                fireBeam(0.1f, Color.green);
             }
         }
-    }
 
-    // fires beam from self to what the mouse is pointing at
-    private void fireBeam(float width, Color color) {
-        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-
-        lineRend.startWidth = width;
-        lineRend.startColor = color;
-        lineRend.positionCount = 2;
-        lineRend.SetPosition(0, gameObject.transform.position);
-        if (hit.collider) {
-            lineRend.SetPosition(1, hit.point);
-        }
+        // If stunned
         else {
-            lineRend.SetPosition(1, gameObject.transform.position);
+            _stunTimer -= Time.deltaTime;
         }
-        timer = 0;
+
+        CountBeamDown();
     }
 
     private void FixedUpdate()
     {
         if (inputHorizontal != 0 || inputVertical != 0)
         {
-            // if player tries to move during defusing, break the process
+            // If player tries to move during defusing, break the process
             if (defusing)
             {
                 defusing = false;
@@ -131,7 +117,22 @@ public class PlayerController : MonoBehaviour
         else
         {
             rb.velocity = new Vector2(0f, 0f);
-            ChangeAnimationState(PLAYER_IDLE);
+            if (_stunTimer > 0) {
+                ChangeAnimationState(PLAYER_STUNNED);
+            }
+            else {
+                ChangeAnimationState(PLAYER_IDLE);
+            }
+        }
+    }
+
+    // Makes sure the beam will eventually disappear
+    private void CountBeamDown() {
+        if (lineRend.positionCount > 0) { // If the beam is active
+            _beamTimer -= Time.deltaTime;
+            if (_beamTimer < 0) {
+                lineRend.positionCount = 0;
+            }
         }
     }
 
@@ -141,10 +142,45 @@ public class PlayerController : MonoBehaviour
         // Stop animation from interrupting self
         if (currentState == newState) return;
 
-        //Play new animation
+        // Play new animation
         animator.Play(newState);
 
         // Update current state
         currentState = newState;
+    }
+
+    // Fires beam from self to what the mouse is pointing at
+    private void fireBeam(float width, Color color) {
+        // This is necessary because raycast also hits background and background has priority, no idea why
+        RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 20f);
+
+        lineRend.startWidth = width;
+        lineRend.startColor = color;
+        lineRend.positionCount = 2;
+        lineRend.SetPosition(0, gameObject.transform.position);
+        if (hits[0].collider) {
+            lineRend.SetPosition(1, hits[0].point);
+            foreach (RaycastHit2D hit in hits) {
+                if (hit.collider.CompareTag("Cell")) {
+                    Cell cell = hit.transform.GetComponent<Cell>();
+                    if (!cell.IsOpen()) {
+                        cell.showNumber(0);
+
+                        // Stun player if they made the wrong call
+                        if (cell.IsBomb() && color == Color.red || !cell.IsBomb() && color == Color.green) {
+                            Stun();
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            lineRend.SetPosition(1, gameObject.transform.position);
+        }
+    }
+
+    // Stuns player for 1.5s
+    public void Stun() {
+        _stunTimer = 1.5f;
     }
 }

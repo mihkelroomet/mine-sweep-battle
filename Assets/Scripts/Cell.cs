@@ -18,7 +18,7 @@ public class Cell : MonoBehaviour
     public Sprite OpenCellSprite7;
     public Sprite OpenCellSprite8;
 
-    void Start()
+    private void Awake()
     {
         _boxCollider2D = GetComponent<BoxCollider2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -34,18 +34,23 @@ public class Cell : MonoBehaviour
 
     // puts a bomb down under the cell if it's not yet been opened
     // used in initializing cell
-    public void plantBomb() {
+    public void PlantBomb() {
         if (_spriteRenderer.sprite == UnopenedCellSprite) {
             _isBomb = true;
         }
     }
 
-    // changes the sprite to show the given number
-    public void showNumber(int number) {
-        _spriteRenderer.sprite = _openCellSprites[number];
+    public bool IsOpen() {
+        return _spriteRenderer.sprite != UnopenedCellSprite;
     }
 
-    private void OnTriggerEnter2D(Collider2D other) {
-        
+    public bool IsBomb() {
+        return _isBomb;
+    }
+
+    // changes the sprite to show the given number
+    public void showNumber(int number) {
+        _boxCollider2D.isTrigger = true;
+        _spriteRenderer.sprite = _openCellSprites[number];
     }
 }
