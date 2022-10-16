@@ -163,14 +163,14 @@ public class PlayerController : MonoBehaviour
             foreach (RaycastHit2D hit in hits) {
                 if (hit.collider.CompareTag("Cell")) {
                     Cell cell = hit.transform.GetComponent<Cell>();
-                    if (!cell.IsOpen()) {
-                        cell.showNumber(0);
 
-                        // Stun player if they made the wrong call
-                        if (cell.IsBomb() && color == Color.red || !cell.IsBomb() && color == Color.green) {
-                            Stun();
-                        }
+                    // Stun player if they made the wrong call
+                    if (cell.IsBomb() && color == Color.red || !cell.IsBomb() && color == Color.green) {
+                        Stun();
                     }
+                    
+                    cell.DefuseBomb();
+                    cell.Open();
                 }
             }
         }

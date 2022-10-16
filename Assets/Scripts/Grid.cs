@@ -2,49 +2,67 @@ using UnityEngine;
 
 public class Grid : MonoBehaviour
 {
-    public Cell CellPrefab;
-    public Grid Instance;
-    public Cell[][] CellGrid {get; set;}
     
+    public static Grid Instance;
+
+    public Cell CellPrefab;
+    public Cell[][] CellGrid {get; set;}
     public int Columns;
     public int Rows;
     public float BombProbability;
 
     private void Awake() {
         Instance = this;
-        CellGrid = new Cell[Rows][];
-        for (int row = 0; row < Rows; row++) {
-            CellGrid[row] = new Cell[Columns];
+        CellGrid = new Cell[Columns][];
+        for (int col = 0; col < Columns; col++) {
+            CellGrid[col] = new Cell[Rows];
         }
     }
 
     void Start()
     {
         float cellSize = CellPrefab.GetComponent<Renderer>().bounds.size.x;
-        float offsetX = cellSize * (Columns / 2f - 0.5f);
-        float offsetY = cellSize * (Rows / 2f - 0.5f);
+        float colMidpoint = Columns / 2f - 0.5f;
+        float rowMidpoint = Rows / 2f - 0.5f;
+        float offsetX = cellSize * colMidpoint;
+        float offsetY = cellSize * rowMidpoint;
 
-        for (int row = 0; row < Rows; row++)
+        for (int col = 0; col < Columns; col++)
         {
-            for (int col = 0; col < Columns; col++)
+            for (int row = 0; row < Rows; row++)
             {
+                // Create cells
                 Cell cell = GameObject.Instantiate(
                     CellPrefab,
                     new Vector3(cellSize * col - offsetX, cellSize * row - offsetY),
                     Quaternion.identity
                     );
 
-                CellGrid[row][col] = cell;
+                // Save cells to grid for easy access
+                CellGrid[col][row] = cell;
 
-                // Make an opening in the middle for the player
-                float rowMidpoint = Rows / 2f - 0.5f;
-                float colMidpoint = Columns / 2f - 0.5f;
-                if (Mathf.Abs(row - rowMidpoint) < 1.6 && Mathf.Abs(col - colMidpoint) < 1.6) {
-                    cell.showNumber(0);
+                // Also give the cell its location info
+                cell.X = col;
+                cell.Y = row;
+
+                // Plant bombs randomly, but not in the middle
+                if (Mathf.Abs(col - colMidpoint) >= 2.1 || Mathf.Abs(row - rowMidpoint) >= 2.1) {
+                    if (Random.value < BombProbability) {
+                        cell.PlantBomb();
+                    }
                 }
+            }
+        }
 
-                if (Random.value < BombProbability) {
-                    cell.PlantBomb();
+        for (int col = 0; col < Columns; col++)
+        {
+            for (int row = 0; row < Rows; row++)
+            {
+                Cell cell = CellGrid[col][row];
+
+                // Open the cells in the middle
+                if (Mathf.Abs(col - colMidpoint) < 2.1 && Mathf.Abs(row - rowMidpoint) < 2.1) {
+                    cell.Open();
                 }
             }
         }
