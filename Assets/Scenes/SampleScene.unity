@@ -153,8 +153,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CellPrefab: {fileID: 3031209560486508653, guid: d9e1d306b2ebcd047ad347f936a25c67, type: 3}
-  Columns: 50
-  Rows: 50
+  Columns: 10
+  Rows: 10
   BombProbability: 0.1
 --- !u!4 &124625756
 Transform:
