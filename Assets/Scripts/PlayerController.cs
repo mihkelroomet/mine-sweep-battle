@@ -191,6 +191,7 @@ public class PlayerController : MonoBehaviour
 
         Debug.Log("Restart");
         Cell.openNo = 0;
+        Cell.openNoforScore = 0;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
     }
