@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Cell : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class Cell : MonoBehaviour
     private Sprite[] _openCellSprites;
     private bool _isBomb;
     private int _currentNumber;
-
+    public static int openNo=0; // Number of cells opened?
     public Sprite UnopenedCellSprite;
     public Sprite OpenCellSprite0;
     public Sprite OpenCellSprite1;
@@ -19,7 +20,7 @@ public class Cell : MonoBehaviour
     public Sprite OpenCellSprite6;
     public Sprite OpenCellSprite7;
     public Sprite OpenCellSprite8;
-
+    
     // Position in grid
     public int X {get; set;}
     public int Y {get; set;}
@@ -92,9 +93,12 @@ public class Cell : MonoBehaviour
         {
             int bombCount = CountBombsAround();
             ShowNumber(bombCount);
+            openNo += 1; // Counting the opened cell
             if (bombCount == 0) {
                 OpenSurroundingCells();
             }
+            
+
         }
     }
 
@@ -137,7 +141,8 @@ public class Cell : MonoBehaviour
                 }
             }
         }
-
+        
         return surroundingCells;
     }
+
 }

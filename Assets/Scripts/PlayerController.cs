@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        
+
     }
 
 
@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour
                 defusing = false;
                 lineRend.positionCount = 0;
             }
-            
+
             // To avoid player getting faster when moving diagonally
             if (inputHorizontal != 0 && inputVertical != 0)
             {
@@ -168,7 +168,7 @@ public class PlayerController : MonoBehaviour
                     if (cell.IsBomb() && color == Color.red || !cell.IsBomb() && color == Color.green) {
                         Stun();
                     }
-                    
+
                     cell.DefuseBomb();
                     cell.Open();
                 }
@@ -184,11 +184,15 @@ public class PlayerController : MonoBehaviour
         _stunTimer = 1.5f;
     }
 
-    public void Restart() 
+
+    public void Restart()
     {
 
         Debug.Log("Restart");
+        Cell.openNo = 0;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    
+
     }
+
+
 }

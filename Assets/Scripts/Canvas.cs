@@ -7,8 +7,9 @@ using JetBrains.Annotations;
 
 public class Canvas : MonoBehaviour
 {
+    public static Canvas Instance;
     public TextMeshProUGUI ScoreText;
-
+    public int initialOpen;
     public TextMeshProUGUI ScoreTextonPanel;
     // Panel
     public GameObject EndsGamePanel;
@@ -26,6 +27,7 @@ public class Canvas : MonoBehaviour
 
     void Start()
     {
+        initialOpen = Cell.openNo;
         ScoreText.text = "Score: ";
         EndsGamePanel.SetActive(false);
         //resets the currentTime to the start Time 
@@ -39,28 +41,26 @@ public class Canvas : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // you are starting the timer at "Start", you can still use the A-button to restart it.
-/*        if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
-        {
-            currentTime = startTime;
-            timerStarted = true;
-        }*/
-
+        ScoreText.text = "Score:" + (Cell.openNo - initialOpen).ToString();
         if (timerStarted)
         {
             // subtracting the previous frame's duration
             currentTime -= Time.deltaTime;
-            // logic current reached 0?
+            // logic current reached 0? if yes show message
             if (currentTime <= 0)
             {
-                ScoreTextonPanel.text = "Time up! Your Score is.....";
-                EndsGamePanel.SetActive(true);
+                ShowMessage();
                 timerStarted = false;
                 currentTime = 0;
             }
 
             timerText.text = "Time " + currentTime.ToString("f1");
 
+            //Show message when All cells are opened
+            if (Cell.openNo == Grid.Instance.Columns * Grid.Instance.Rows)
+            {
+                ShowMessage();
+            }
 
         }
 
@@ -69,4 +69,10 @@ public class Canvas : MonoBehaviour
     {
         PlayerController.Instance.Restart();
     }
+    public void ShowMessage()
+    {
+        ScoreTextonPanel.text = "Your Score :"+(Cell.openNo-initialOpen).ToString();
+        EndsGamePanel.SetActive(true);
+    }
+
 }
