@@ -10,6 +10,7 @@ public class Cell : MonoBehaviour
     private bool _isBomb;
     private int _currentNumber;
     public static int openNo=0; // Number of cells opened?
+    public static int openNoforScore = 0;
     public Sprite UnopenedCellSprite;
     public Sprite OpenCellSprite0;
     public Sprite OpenCellSprite1;
@@ -94,6 +95,7 @@ public class Cell : MonoBehaviour
             int bombCount = CountBombsAround();
             ShowNumber(bombCount);
             openNo += 1; // Counting the opened cell
+            openNoforScore += 1; // for score
             if (bombCount == 0) {
                 OpenSurroundingCells();
             }

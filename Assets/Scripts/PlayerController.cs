@@ -167,7 +167,7 @@ public class PlayerController : MonoBehaviour
                     // Stun player if they made the wrong call
                     if (cell.IsBomb() && color == Color.red || !cell.IsBomb() && color == Color.green) {
                         Stun();
-                        Cell.openNo -= 1;
+                        Cell.openNoforScore -= 1;
                     }
 
                     cell.DefuseBomb();

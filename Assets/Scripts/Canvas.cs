@@ -41,7 +41,7 @@ public class Canvas : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ScoreText.text = "Score:" + (Cell.openNo - initialOpen).ToString();
+        ScoreText.text = "Score:" + (Cell.openNoforScore - initialOpen).ToString();
         if (timerStarted)
         {
             // subtracting the previous frame's duration
@@ -71,7 +71,7 @@ public class Canvas : MonoBehaviour
     }
     public void ShowMessage()
     {
-        ScoreTextonPanel.text = "Your Score :"+(Cell.openNo-initialOpen).ToString();
+        ScoreTextonPanel.text = "Your Score :"+(Cell.openNoforScore-initialOpen).ToString();
         EndsGamePanel.SetActive(true);
     }
 
