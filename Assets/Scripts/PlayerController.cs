@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
@@ -182,5 +182,13 @@ public class PlayerController : MonoBehaviour
     // Stuns player for 1.5s
     public void Stun() {
         _stunTimer = 1.5f;
+    }
+
+    public void Restart() 
+    {
+
+        Debug.Log("Restart");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    
     }
 }
