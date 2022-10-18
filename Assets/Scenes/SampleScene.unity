@@ -153,8 +153,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CellPrefab: {fileID: 3031209560486508653, guid: d9e1d306b2ebcd047ad347f936a25c67, type: 3}
-  Columns: 10
-  Rows: 10
+  Columns: 50
+  Rows: 50
   BombProbability: 0.1
 --- !u!4 &124625756
 Transform:
@@ -841,6 +841,7 @@ GameObject:
   - component: {fileID: 1751565532}
   - component: {fileID: 1751565533}
   - component: {fileID: 1751565534}
+  - component: {fileID: 1751565535}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -1078,7 +1079,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -1094,6 +1095,22 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.35, y: 0.65}
   m_EdgeRadius: 0
+--- !u!58 &1751565535
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1751565527}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.25}
+  serializedVersion: 2
+  m_Radius: 0.12
 --- !u!1 &1954082766
 GameObject:
   m_ObjectHideFlags: 0
