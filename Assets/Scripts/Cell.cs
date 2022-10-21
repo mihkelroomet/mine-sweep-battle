@@ -21,6 +21,9 @@ public class Cell : MonoBehaviour
     public Sprite OpenCellSprite6;
     public Sprite OpenCellSprite7;
     public Sprite OpenCellSprite8;
+
+    public Sprite BombCellSprite;
+
     
     // Position in grid
     public int X {get; set;}
@@ -48,6 +51,28 @@ public class Cell : MonoBehaviour
     // Used in initializing cell
     public void PlantBomb() {
         _isBomb = true;
+    }
+
+    // Changes the color of a cell when a wrong call was made on defuse
+    public void WrongCall(bool wrongCall)
+    {
+        if (wrongCall)
+            _spriteRenderer.color = Color.red;
+        else
+            _spriteRenderer.color = Color.white;
+    }
+    // And the same with right call
+    public void RightCall(bool rightCall)
+    {
+        if (rightCall)
+            _spriteRenderer.color = Color.green;
+        else
+            _spriteRenderer.color = Color.white;
+    }
+
+    public void Explode()
+    {
+        _spriteRenderer.sprite = BombCellSprite;
     }
 
     // If the cell had a bomb, remove it and update indicators around it

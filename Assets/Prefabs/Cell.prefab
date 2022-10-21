@@ -134,3 +134,4 @@ MonoBehaviour:
   OpenCellSprite6: {fileID: -818377725, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
   OpenCellSprite7: {fileID: -573634070, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
   OpenCellSprite8: {fileID: 363937110, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  BombCellSprite: {fileID: 0}

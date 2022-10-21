@@ -2,6 +2,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour
 {
+    public ParticleSystem explosion;
+    public ParticleSystem cellOpened;
+    public ParticleSystem bombDefused;
+    public SpriteRenderer bombsprite;
+
     private Rigidbody2D rb;
 
 
@@ -9,6 +14,10 @@ public class PlayerController : MonoBehaviour
     private float _beamTimer;
     private bool defusing;
     private float _stunTimer;
+
+    private Cell _wrongCallCell;
+    private float _bombSpriteTimer;
+    private SpriteRenderer _bombSprite;
 
 
     // Player
@@ -71,9 +80,15 @@ public class PlayerController : MonoBehaviour
         // If stunned
         else {
             _stunTimer -= Time.deltaTime;
+            // Makes the cell color regular again
+            if (_stunTimer < 0) {
+                Destroy(_bombSprite);
+                _wrongCallCell.WrongCall(false);
+            }
         }
 
         CountBeamDown();
+        CountBombDown();
     }
 
     private void FixedUpdate()
@@ -136,6 +151,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // Makes sure the bomb sprite disappears
+    private void CountBombDown(){
+        if (_bombSpriteTimer > 0) {
+            _bombSpriteTimer -= Time.deltaTime;
+            if (_bombSpriteTimer <= 0) {
+                _wrongCallCell.RightCall(false);
+                Destroy(_bombSprite);
+            }
+        }
+    }
+
     // Animation state changer
     void ChangeAnimationState(string newState)
     {
@@ -166,8 +192,32 @@ public class PlayerController : MonoBehaviour
 
                     // Stun player if they made the wrong call
                     if (cell.IsBomb() && color == Color.red || !cell.IsBomb() && color == Color.green) {
+                        // Play the explosion particle system and when bomb explodes
+                        if (cell.IsBomb()) {
+                            Instantiate(explosion, cell.transform.position, cell.transform.rotation);
+                            _bombSprite = Instantiate(bombsprite, cell.transform);
+                            _bombSpriteTimer = 0.2f;
+                            cell.WrongCall(true);
+                        } // otherwise turns the cell red
+                        else {
+                            cell.WrongCall(true);
+                        }
+                        _wrongCallCell = cell;
                         Stun();
                         Cell.openNoforScore -= 1;
+                    } 
+                    // Show the bomb and turn the cell green
+                    else if (cell.IsBomb() && color == Color.green)
+                    {
+                        Instantiate(bombDefused, cell.transform.position, cell.transform.rotation);
+                        cell.RightCall(true);
+                        _bombSprite = Instantiate(bombsprite, cell.transform);
+                        _bombSpriteTimer = 0.2f;
+                        _wrongCallCell = cell;
+                    }
+                    else if (!cell.IsBomb() && color == Color.red)
+                    {
+                        Instantiate(cellOpened, cell.transform.position, cell.transform.rotation);
                     }
 
                     cell.DefuseBomb();
@@ -182,6 +232,8 @@ public class PlayerController : MonoBehaviour
 
     // Stuns player for 1.5s
     public void Stun() {
+        inputHorizontal = 0;
+        inputVertical = 0;
         _stunTimer = 1.5f;
     }
 

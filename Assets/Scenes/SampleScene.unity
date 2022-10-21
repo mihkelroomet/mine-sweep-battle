@@ -960,6 +960,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f6df3668a401c84ea6e6a386a602240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explosion: {fileID: 3599392410574270388, guid: 509943d31a4e6a1428d09cafbc6ebdcb, type: 3}
+  cellOpened: {fileID: 6361724047665199194, guid: f2c0e61442141d148a756e09d4c2e4cb, type: 3}
+  bombDefused: {fileID: 7747433875304670565, guid: 0dc470246f8dcba49acbef5949ce7d83, type: 3}
+  bombsprite: {fileID: 1387060823428541819, guid: e9f4f250d48799f4bacd1da97afadffa, type: 3}
 --- !u!212 &1751565530
 SpriteRenderer:
   m_ObjectHideFlags: 0
