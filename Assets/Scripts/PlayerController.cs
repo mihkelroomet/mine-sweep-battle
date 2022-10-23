@@ -1,12 +1,6 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour
 {
-    public ParticleSystem explosion;
-    public ParticleSystem cellOpened;
-    public ParticleSystem bombDefused;
-    public SpriteRenderer bombsprite;
-
     private Rigidbody2D rb;
 
 
@@ -14,10 +8,7 @@ public class PlayerController : MonoBehaviour
     private float _beamTimer;
     private bool defusing;
     private float _stunTimer;
-
-    private Cell _wrongCallCell;
-    private float _bombSpriteTimer;
-    private SpriteRenderer _bombSprite;
+    private float _stunDuration;
 
 
     // Player
@@ -37,6 +28,9 @@ public class PlayerController : MonoBehaviour
     private const string PLAYER_STUNNED = "Player_Stunned";
 
     public static PlayerController Instance;
+    public AudioSource Fire1Audio;
+    public AudioSource Fire2Audio;
+    public AudioSource MovingAudio;
 
     private void Awake() {
         Instance = this;
@@ -45,6 +39,7 @@ public class PlayerController : MonoBehaviour
         lineRend = gameObject.GetComponent<LineRenderer>();
         _stunTimer = -1;
         _beamTimer = -1;
+        _stunDuration = 1.5f;
     }
 
     void Start()
@@ -57,43 +52,42 @@ public class PlayerController : MonoBehaviour
     {
         // If not stunned
         if (_stunTimer < 0) {
-            inputHorizontal = Input.GetAxisRaw("Horizontal");
-            inputVertical = Input.GetAxisRaw("Vertical");
+            // If the game is active
+            if (GameController.Instance.GameActive) {
+                inputHorizontal = Input.GetAxisRaw("Horizontal");
+                inputVertical = Input.GetAxisRaw("Vertical");
 
-            // Shooting the laserbeam
-            if (Input.GetKeyDown(KeyCode.Mouse0))
-            {
-                defusing = false; // Breaks defusing process
-                _beamTimer = 0.1f;
-                fireBeam(0.05f, Color.red);
+                // Shooting the laserbeam
+                if (Input.GetKeyDown(KeyCode.Mouse0))
+                {
+                    defusing = false; // Breaks defusing process
+                    _beamTimer = 0.1f;
+                    FireBeam(0.05f, Color.red);
+                }
+
+
+                if (Input.GetKeyDown(KeyCode.Mouse1))
+                {
+                    defusing = true;
+                    _beamTimer = 0.15f;
+                    FireBeam(0.1f, Color.green);
+                }
             }
-
-
-            if (Input.GetKeyDown(KeyCode.Mouse1))
-            {
-                defusing = true;
-                _beamTimer = 0.5f;
-                fireBeam(0.1f, Color.green);
-            }
+            
         }
 
         // If stunned
         else {
             _stunTimer -= Time.deltaTime;
-            // Makes the cell color regular again
-            if (_stunTimer < 0) {
-                Destroy(_bombSprite);
-                _wrongCallCell.WrongCall(false);
-            }
         }
 
         CountBeamDown();
-        CountBombDown();
     }
 
     private void FixedUpdate()
     {
-        if (inputHorizontal != 0 || inputVertical != 0)
+        // If the player is moving and the game is active
+        if ((inputHorizontal != 0 || inputVertical != 0) && GameController.Instance.GameActive)
         {
             // If player tries to move during defusing, break the process
             if (defusing)
@@ -128,6 +122,9 @@ public class PlayerController : MonoBehaviour
                 ChangeAnimationState(PLAYER_MOVE_L);
             }
 
+            if (!MovingAudio.isPlaying) {
+                MovingAudio.Play();
+            }
         }
         else
         {
@@ -151,17 +148,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Makes sure the bomb sprite disappears
-    private void CountBombDown(){
-        if (_bombSpriteTimer > 0) {
-            _bombSpriteTimer -= Time.deltaTime;
-            if (_bombSpriteTimer <= 0) {
-                _wrongCallCell.RightCall(false);
-                Destroy(_bombSprite);
-            }
-        }
-    }
-
     // Animation state changer
     void ChangeAnimationState(string newState)
     {
@@ -176,7 +162,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // Fires beam from self to what the mouse is pointing at
-    private void fireBeam(float width, Color color) {
+    private void FireBeam(float width, Color color) {
         // This is necessary because raycast also hits background and background has priority, no idea why
         RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 20f);
 
@@ -189,63 +175,27 @@ public class PlayerController : MonoBehaviour
             foreach (RaycastHit2D hit in hits) {
                 if (hit.collider.CompareTag("Cell")) {
                     Cell cell = hit.transform.GetComponent<Cell>();
-
-                    // Stun player if they made the wrong call
-                    if (cell.IsBomb() && color == Color.red || !cell.IsBomb() && color == Color.green) {
-                        // Play the explosion particle system and when bomb explodes
-                        if (cell.IsBomb()) {
-                            Instantiate(explosion, cell.transform.position, cell.transform.rotation);
-                            _bombSprite = Instantiate(bombsprite, cell.transform);
-                            _bombSpriteTimer = 0.2f;
-                            cell.WrongCall(true);
-                        } // otherwise turns the cell red
-                        else {
-                            cell.WrongCall(true);
-                        }
-                        _wrongCallCell = cell;
-                        Stun();
-                        Cell.openNoforScore -= 1;
-                    } 
-                    // Show the bomb and turn the cell green
-                    else if (cell.IsBomb() && color == Color.green)
-                    {
-                        Instantiate(bombDefused, cell.transform.position, cell.transform.rotation);
-                        cell.RightCall(true);
-                        _bombSprite = Instantiate(bombsprite, cell.transform);
-                        _bombSpriteTimer = 0.2f;
-                        _wrongCallCell = cell;
-                    }
-                    else if (!cell.IsBomb() && color == Color.red)
-                    {
-                        Instantiate(cellOpened, cell.transform.position, cell.transform.rotation);
-                    }
-
-                    cell.DefuseBomb();
-                    cell.Open();
+                    cell.ShootWith(color);
                 }
             }
         }
         else {
             lineRend.SetPosition(1, gameObject.transform.position);
         }
+
+        if (color == Color.red) {
+            Fire1Audio.Play();
+        }
+        else {
+            Fire2Audio.Play();
+        }
     }
 
-    // Stuns player for 1.5s
+    // Stuns player
     public void Stun() {
         inputHorizontal = 0;
         inputVertical = 0;
-        _stunTimer = 1.5f;
-    }
-
-
-    public void Restart()
-    {
-
-        Debug.Log("Restart");
-        Cell.openNo = 0;
-        Cell.openNoforScore = 0;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-
+        _stunTimer = _stunDuration;
     }
 
 

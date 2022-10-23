@@ -4,6 +4,8 @@ public class Grid : MonoBehaviour
 {
     
     public static Grid Instance;
+    [HideInInspector]
+    public int CellsOpened; // Number of cells that have been opened in total
 
     public Cell CellPrefab;
     public Cell[][] CellGrid {get; set;}
@@ -17,6 +19,7 @@ public class Grid : MonoBehaviour
         for (int col = 0; col < Columns; col++) {
             CellGrid[col] = new Cell[Rows];
         }
+        CellsOpened = 0;
     }
 
     void Start()
@@ -37,6 +40,7 @@ public class Grid : MonoBehaviour
                     new Vector3(cellSize * col - offsetX, cellSize * row - offsetY),
                     Quaternion.identity
                     );
+                cell.transform.parent = transform; // make cells children of Grid
 
                 // Save cells to grid for easy access
                 CellGrid[col][row] = cell;
