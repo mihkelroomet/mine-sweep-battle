@@ -48,11 +48,16 @@ public class Grid : MonoBehaviour
                 cell.X = col;
                 cell.Y = row;
 
-                // Plant bombs randomly, but not in the middle
-                if (Mathf.Abs(col - colMidpoint) >= 2.1 || Mathf.Abs(row - rowMidpoint) >= 2.1) {
-                    if (Random.value < BombProbability) {
-                        if (cell.isLastCell())
+                // Make the outer edges into borders
+                if (col == 0 || col == Columns - 1 || row == 0 || row == Rows - 1) {
+                    cell.MakeIntoBorderCell();
+                }
+                else {
+                    // Plant bombs randomly, but not in the middle
+                    if (Mathf.Abs(col - colMidpoint) >= 2.1 || Mathf.Abs(row - rowMidpoint) >= 2.1) {
+                        if (Random.value < BombProbability) {
                             cell.PlantBomb();
+                        }
                     }
                 }
             }
@@ -66,8 +71,7 @@ public class Grid : MonoBehaviour
 
                 // Open the cells in the middle
                 if (Mathf.Abs(col - colMidpoint) < 2.1 && Mathf.Abs(row - rowMidpoint) < 2.1) {
-                    if (cell.isLastCell())
-                        cell.Open();
+                    cell.Open();
                 }
             }
         }

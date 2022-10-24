@@ -314,6 +314,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: tilesheet_10
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d960b67a1733a4c47837f50dc46a6461
+      internalID: 377484783
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -328,6 +349,7 @@ TextureImporter:
       tilesheet_5: -772587642
       tilesheet_3: 2075853758
       tilesheet_2: -1334439808
+      tilesheet_10: 377484783
       tilesheet_8: 363937110
       tilesheet_1: 50317425
       tilesheet_6: -818377725

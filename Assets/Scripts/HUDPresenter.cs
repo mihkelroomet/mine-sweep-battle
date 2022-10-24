@@ -46,11 +46,14 @@ public class HUDPresenter : MonoBehaviour
     public void ShowScoreboard()
     {
         // This is just a mock way of showing scores for now
-        if (Events.GetScore() >= -10) {
-            FinalScores.text = "1. You\t\t\t" + Events.GetScore() + "\n2. Noob\t\t\t-10";
+        if (Events.GetScore() > 10_000) {
+            FinalScores.text = "1.You\t" + Events.GetScore() + "\n2.Noob\t\t\t-10";
+        }
+        else if (Events.GetScore() >= -10) {
+            FinalScores.text = "1.You\t\t\t" + Events.GetScore() + "\n2.Noob\t\t\t-10";
         }
         else {
-            FinalScores.text = "1. Noob\t\t\t-10\n2. You\t\t\t" + Events.GetScore();
+            FinalScores.text = "1.Noob\t\t\t-10\n2.You\t\t\t" + Events.GetScore();
         }
         ScoreBoard.SetActive(true);
         EndAudio.Play();

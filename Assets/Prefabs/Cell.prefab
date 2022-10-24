@@ -128,6 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 238e6fc9d602c344db3f8ba95d9b9bb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BorderCellSprite: {fileID: 377484783, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
   UnopenedCellSprite: {fileID: 1772478013, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
   OpenCellSprite0: {fileID: 899826896, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
   OpenCellSprite1: {fileID: 50317425, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}

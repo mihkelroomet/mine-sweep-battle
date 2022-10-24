@@ -9,6 +9,7 @@ public class Cell : MonoBehaviour
     private Sprite[] _openCellSprites;
     private bool _isBomb;
     private int _currentNumber;
+    public Sprite BorderCellSprite;
     public Sprite UnopenedCellSprite;
     public Sprite OpenCellSprite0;
     public Sprite OpenCellSprite1;
@@ -62,7 +63,17 @@ public class Cell : MonoBehaviour
     }
 
     public bool IsOpen() {
-        return _spriteRenderer.sprite != UnopenedCellSprite;
+        return _spriteRenderer.sprite != UnopenedCellSprite && _spriteRenderer.sprite != BorderCellSprite;
+    }
+
+    // Returns true if part of border
+    public bool IsBorderCell()
+    {
+        return _spriteRenderer.sprite == BorderCellSprite;
+    }
+
+    public void MakeIntoBorderCell() {
+        _spriteRenderer.sprite = BorderCellSprite;
     }
 
     public bool IsBomb() {
@@ -83,7 +94,7 @@ public class Cell : MonoBehaviour
 
     // If the cell had a bomb, remove it and update indicators around it
     public void DefuseBomb() {
-        if (IsBomb()) {
+        if (IsBomb() && !IsBorderCell()) {
             _isBomb = false;
             List<Cell> surroundingCells = GetSurroundingCells();
 
@@ -121,7 +132,7 @@ public class Cell : MonoBehaviour
 
     // Opens cell
     public void Open() {
-        if (!IsOpen())
+        if (!IsOpen() && !IsBorderCell())
         {
             int bombCount = CountBombsAround();
             ShowNumber(bombCount);
@@ -129,8 +140,8 @@ public class Cell : MonoBehaviour
             if (bombCount == 0) {
                 OpenSurroundingCells();
             }
-            
-
+        }
+        else {
         }
     }
 
@@ -138,8 +149,7 @@ public class Cell : MonoBehaviour
     private void OpenSurroundingCells() {
         foreach (Cell cell in GetSurroundingCells())
         {
-            if (cell.isLastCell())
-                cell.Open();
+            cell.Open();
         }
     }
 
@@ -190,58 +200,46 @@ public class Cell : MonoBehaviour
     }
 
     public void ShootWith(Color beamColor) {
-        // Stun player if they made the wrong call
-        if (IsBomb() && beamColor == Color.red || !IsBomb() && beamColor == Color.green) {
-            // Play the explosion particle system and when bomb explodes
-            if (IsBomb()) {
-                Instantiate(explosion, transform.position, transform.rotation);
+        if (!IsOpen() && !IsBorderCell()) {
+            // Stun player if they made the wrong call
+            if (IsBomb() && beamColor == Color.red || !IsBomb() && beamColor == Color.green) {
+                // Play the explosion particle system and when bomb explodes
+                if (IsBomb()) {
+                    Instantiate(explosion, transform.position, transform.rotation);
+                    _bombSprite = Instantiate(bombsprite, transform);
+                    Events.SetScore(Events.GetScore() - FailBombPenalty);
+                    IncorrectBombSound.Play();
+                }
+                else {
+                    Events.SetScore(Events.GetScore() - FailEmptyPenalty);
+                    IncorrectEmptySound.Play();
+                }
+
+                _bombSpriteTimer = 0.2f;
+                ChangeColor(Color.red);
+                PlayerController.Instance.Stun();
+            }
+
+            // Show the bomb and turn the cell green
+            else if (IsBomb() && beamColor == Color.green)
+            {
+                Instantiate(bombDefused, transform.position, transform.rotation);
+                ChangeColor(Color.green);
                 _bombSprite = Instantiate(bombsprite, transform);
-                Events.SetScore(Events.GetScore() - FailBombPenalty);
-                IncorrectBombSound.Play();
+                _bombSpriteTimer = 0.2f;
+                Events.SetScore(Events.GetScore() + OpenBombScore);
+                CorrectBombSound.Play();
             }
-            else {
-                Events.SetScore(Events.GetScore() - FailEmptyPenalty);
-                IncorrectEmptySound.Play();
+            else if (!IsBomb() && beamColor == Color.red) // Could just be 'else' but this is more elaborate
+            {
+                Instantiate(cellOpened, transform.position, transform.rotation);
+                Events.SetScore(Events.GetScore() + OpenEmptyScore);
+                CorrectEmptySound.Play();
             }
-
-            _bombSpriteTimer = 0.2f;
-            ChangeColor(Color.red);
-            PlayerController.Instance.Stun();
         }
-
-        // Show the bomb and turn the cell green
-        else if (IsBomb() && beamColor == Color.green)
-        {
-            Instantiate(bombDefused, transform.position, transform.rotation);
-            ChangeColor(Color.green);
-            _bombSprite = Instantiate(bombsprite, transform);
-            _bombSpriteTimer = 0.2f;
-            Events.SetScore(Events.GetScore() + OpenBombScore);
-            CorrectBombSound.Play();
-        }
-        else if (!IsBomb() && beamColor == Color.red) // Could just be 'else' but this is more elaborate
-        {
-            Instantiate(cellOpened, transform.position, transform.rotation);
-            Events.SetScore(Events.GetScore() + OpenEmptyScore);
-            CorrectEmptySound.Play();
-        }
+        
 
         DefuseBomb();
         Open();
-    }
-    //Is the cell Last cell?
-    public bool isLastCell()
-    {
-        int row;
-        int col;
-
-        col = this.X;
-        row = this.Y;
-        if (col > 0 && col < (Grid.Instance.Columns - 1))
-        {
-            if (row > 0 && row < (Grid.Instance.Rows - 1))
-                return true;
-        }
-        return false;
     }
 }

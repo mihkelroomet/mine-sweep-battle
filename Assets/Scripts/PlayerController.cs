@@ -175,8 +175,7 @@ public class PlayerController : MonoBehaviour
             foreach (RaycastHit2D hit in hits) {
                 if (hit.collider.CompareTag("Cell")) {
                     Cell cell = hit.transform.GetComponent<Cell>();
-                    if (!cell.IsOpen() && cell.isLastCell())
-                        cell.ShootWith(color);
+                    cell.ShootWith(color);
                 }
             }
         }
