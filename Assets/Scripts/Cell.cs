@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class Cell : MonoBehaviour
 {
@@ -38,7 +39,6 @@ public class Cell : MonoBehaviour
     public AudioSource IncorrectEmptySound;
     public AudioSource IncorrectBombSound;
 
-    
     // Position in grid
     public int X {get; set;}
     public int Y {get; set;}
@@ -138,7 +138,8 @@ public class Cell : MonoBehaviour
     private void OpenSurroundingCells() {
         foreach (Cell cell in GetSurroundingCells())
         {
-            cell.Open();
+            if (cell.isLastCell())
+                cell.Open();
         }
     }
 
@@ -227,5 +228,20 @@ public class Cell : MonoBehaviour
 
         DefuseBomb();
         Open();
+    }
+    //Is the cell Last cell?
+    public bool isLastCell()
+    {
+        int row;
+        int col;
+
+        col = this.X;
+        row = this.Y;
+        if (col > 0 && col < (Grid.Instance.Columns - 1))
+        {
+            if (row > 0 && row < (Grid.Instance.Rows - 1))
+                return true;
+        }
+        return false;
     }
 }

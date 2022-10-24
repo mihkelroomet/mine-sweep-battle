@@ -6,7 +6,6 @@ public class Grid : MonoBehaviour
     public static Grid Instance;
     [HideInInspector]
     public int CellsOpened; // Number of cells that have been opened in total
-
     public Cell CellPrefab;
     public Cell[][] CellGrid {get; set;}
     public int Columns;
@@ -52,21 +51,23 @@ public class Grid : MonoBehaviour
                 // Plant bombs randomly, but not in the middle
                 if (Mathf.Abs(col - colMidpoint) >= 2.1 || Mathf.Abs(row - rowMidpoint) >= 2.1) {
                     if (Random.value < BombProbability) {
-                        cell.PlantBomb();
+                        if (cell.isLastCell())
+                            cell.PlantBomb();
                     }
                 }
             }
         }
 
-        for (int col = 0; col < Columns; col++)
+        for (int col = 0; col < Columns-1; col++)
         {
-            for (int row = 0; row < Rows; row++)
+            for (int row = 0; row < Rows-1; row++)
             {
                 Cell cell = CellGrid[col][row];
 
                 // Open the cells in the middle
                 if (Mathf.Abs(col - colMidpoint) < 2.1 && Mathf.Abs(row - rowMidpoint) < 2.1) {
-                    cell.Open();
+                    if (cell.isLastCell())
+                        cell.Open();
                 }
             }
         }
