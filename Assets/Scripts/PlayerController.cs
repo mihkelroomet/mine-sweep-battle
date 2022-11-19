@@ -1,25 +1,26 @@
 using UnityEngine;
+using Photon.Pun;
 public class PlayerController : MonoBehaviour
 {
-    private Rigidbody2D rb;
+    private Rigidbody2D _rb;
+    private LineRenderer _lineRenderer;
+    private PhotonView _view;
 
-
-    private LineRenderer lineRend;
     private float _beamTimer;
-    private bool defusing;
+    private bool _defusing;
     private float _stunTimer;
     private float _stunDuration;
 
 
     // Player
-    float walkSpeed = 4f;
-    private float speedLimiter = 0.7f;
-    private float inputHorizontal;
-    private float inputVertical;
+    private float _walkSpeed = 4f;
+    private float _speedLimiter = 0.7f;
+    private float _inputHorizontal;
+    private float _inputVertical;
 
     // Animations and states
-    private Animator animator;
-    private string currentState;
+    private Animator _animator;
+    private string _currentState;
     private const string PLAYER_IDLE = "Player_Idle";
     private const string PLAYER_MOVE_L = "Player_Move_L";
     private const string PLAYER_MOVE_R = "Player_Move_R";
@@ -34,9 +35,10 @@ public class PlayerController : MonoBehaviour
 
     private void Awake() {
         Instance = this;
-        rb = gameObject.GetComponent<Rigidbody2D>();
-        animator = gameObject.GetComponent<Animator>();
-        lineRend = gameObject.GetComponent<LineRenderer>();
+        _rb = gameObject.GetComponent<Rigidbody2D>();
+        _lineRenderer = gameObject.GetComponent<LineRenderer>();
+        _view = gameObject.GetComponent<PhotonView>();
+        _animator = gameObject.GetComponent<Animator>();
         _stunTimer = -1;
         _beamTimer = -1;
         _stunDuration = 1.5f;
@@ -50,74 +52,77 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // If not stunned
-        if (_stunTimer < 0) {
-            // If the game is active
-            if (GameController.Instance.GameActive) {
-                inputHorizontal = Input.GetAxisRaw("Horizontal");
-                inputVertical = Input.GetAxisRaw("Vertical");
+        if (_view.IsMine) // If this is the player character the player spawned
+        {
+            // If not stunned
+            if (_stunTimer < 0) {
+                // If the game is active
+                if (GameController.Instance.GameActive) {
+                    _inputHorizontal = Input.GetAxisRaw("Horizontal");
+                    _inputVertical = Input.GetAxisRaw("Vertical");
 
-                // Shooting the laserbeam
-                if (Input.GetKeyDown(KeyCode.Mouse0))
-                {
-                    defusing = false; // Breaks defusing process
-                    _beamTimer = 0.1f;
-                    FireBeam(0.05f, Color.red);
+                    // Shooting the laserbeam
+                    if (Input.GetKeyDown(KeyCode.Mouse0))
+                    {
+                        _defusing = false; // Breaks defusing process
+                        _beamTimer = 0.1f;
+                        FireBeam(0.05f, Color.red);
+                    }
+
+
+                    if (Input.GetKeyDown(KeyCode.Mouse1))
+                    {
+                        _defusing = true;
+                        _beamTimer = 0.15f;
+                        FireBeam(0.1f, Color.green);
+                    }
                 }
-
-
-                if (Input.GetKeyDown(KeyCode.Mouse1))
-                {
-                    defusing = true;
-                    _beamTimer = 0.15f;
-                    FireBeam(0.1f, Color.green);
-                }
+                
             }
-            
-        }
 
-        // If stunned
-        else {
-            _stunTimer -= Time.deltaTime;
-        }
+            // If stunned
+            else {
+                _stunTimer -= Time.deltaTime;
+            }
 
-        CountBeamDown();
+            CountBeamDown();
+        }
     }
 
     private void FixedUpdate()
     {
         // If the player is moving and the game is active
-        if ((inputHorizontal != 0 || inputVertical != 0) && GameController.Instance.GameActive)
+        if ((_inputHorizontal != 0 || _inputVertical != 0) && GameController.Instance.GameActive)
         {
             // If player tries to move during defusing, break the process
-            if (defusing)
+            if (_defusing)
             {
-                defusing = false;
-                lineRend.positionCount = 0;
+                _defusing = false;
+                _lineRenderer.positionCount = 0;
             }
 
             // To avoid player getting faster when moving diagonally
-            if (inputHorizontal != 0 && inputVertical != 0)
+            if (_inputHorizontal != 0 && _inputVertical != 0)
             {
-                inputHorizontal *= speedLimiter;
-                inputVertical *= speedLimiter;
+                _inputHorizontal *= _speedLimiter;
+                _inputVertical *= _speedLimiter;
             }
-            rb.velocity = new Vector2(inputHorizontal * walkSpeed, inputVertical * walkSpeed);
+            _rb.velocity = new Vector2(_inputHorizontal * _walkSpeed, _inputVertical * _walkSpeed);
 
             // Update player animations
-            if (inputVertical < 0)
+            if (_inputVertical < 0)
             {
                 ChangeAnimationState(PLAYER_MOVE_D);
             }
-            else if (inputVertical > 0)
+            else if (_inputVertical > 0)
             {
                 ChangeAnimationState(PLAYER_MOVE_U);
             }
-            else if (inputHorizontal > 0)
+            else if (_inputHorizontal > 0)
             {
                 ChangeAnimationState(PLAYER_MOVE_R);
             }
-            else if (inputHorizontal < 0)
+            else if (_inputHorizontal < 0)
             {
                 ChangeAnimationState(PLAYER_MOVE_L);
             }
@@ -128,7 +133,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            rb.velocity = new Vector2(0f, 0f);
+            _rb.velocity = new Vector2(0f, 0f);
             if (_stunTimer > 0) {
                 ChangeAnimationState(PLAYER_STUNNED);
             }
@@ -140,10 +145,10 @@ public class PlayerController : MonoBehaviour
 
     // Makes sure the beam will eventually disappear
     private void CountBeamDown() {
-        if (lineRend.positionCount > 0) { // If the beam is active
+        if (_lineRenderer.positionCount > 0) { // If the beam is active
             _beamTimer -= Time.deltaTime;
             if (_beamTimer < 0) {
-                lineRend.positionCount = 0;
+                _lineRenderer.positionCount = 0;
             }
         }
     }
@@ -152,13 +157,13 @@ public class PlayerController : MonoBehaviour
     void ChangeAnimationState(string newState)
     {
         // Stop animation from interrupting self
-        if (currentState == newState) return;
+        if (_currentState == newState) return;
 
         // Play new animation
-        animator.Play(newState);
+        _animator.Play(newState);
 
         // Update current state
-        currentState = newState;
+        _currentState = newState;
     }
 
     // Fires beam from self to what the mouse is pointing at
@@ -166,12 +171,12 @@ public class PlayerController : MonoBehaviour
         // This is necessary because raycast also hits background and background has priority, no idea why
         RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 20f);
 
-        lineRend.startWidth = width;
-        lineRend.startColor = color;
-        lineRend.positionCount = 2;
-        lineRend.SetPosition(0, gameObject.transform.position);
+        _lineRenderer.startWidth = width;
+        _lineRenderer.startColor = color;
+        _lineRenderer.positionCount = 2;
+        _lineRenderer.SetPosition(0, gameObject.transform.position);
         if (hits[0].collider) {
-            lineRend.SetPosition(1, hits[0].point);
+            _lineRenderer.SetPosition(1, hits[0].point);
             foreach (RaycastHit2D hit in hits) {
                 if (hit.collider.CompareTag("Cell")) {
                     Cell cell = hit.transform.GetComponent<Cell>();
@@ -180,7 +185,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         else {
-            lineRend.SetPosition(1, gameObject.transform.position);
+            _lineRenderer.SetPosition(1, gameObject.transform.position);
         }
 
         if (color == Color.red) {
@@ -193,8 +198,8 @@ public class PlayerController : MonoBehaviour
 
     // Stuns player
     public void Stun() {
-        inputHorizontal = 0;
-        inputVertical = 0;
+        _inputHorizontal = 0;
+        _inputVertical = 0;
         _stunTimer = _stunDuration;
     }
 
