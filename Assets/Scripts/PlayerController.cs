@@ -20,13 +20,6 @@ public class PlayerController : MonoBehaviour, IPunObservable
 
     // Animations and states
     [SerializeField] private Animator _animator;
-    private string _currentState;
-    private const string PLAYER_IDLE = "Player_Idle";
-    private const string PLAYER_MOVE_L = "Player_Move_L";
-    private const string PLAYER_MOVE_R = "Player_Move_R";
-    private const string PLAYER_MOVE_U = "Player_Move_U";
-    private const string PLAYER_MOVE_D = "Player_Move_D";
-    private const string PLAYER_STUNNED = "Player_Stunned";
 
     public static PlayerController Instance;
     public AudioSource Fire1Audio;
@@ -48,79 +41,77 @@ public class PlayerController : MonoBehaviour, IPunObservable
 
     void Update()
     {
-        if (_view.IsMine) // If this is the player character the player spawned
-        {
-            // If not stunned
-            if (_stunTimer < 0) {
-                _animator.SetBool("Stunned", false);
+        if (!_view.IsMine) return; // Only update if this is the player character the player spawned
 
-                // If the game is active
-                if (GameController.Instance.GameActive) {
-                    _inputHorizontal = Input.GetAxisRaw("Horizontal");
-                    _inputVertical = Input.GetAxisRaw("Vertical");
+        // If not stunned
+        if (_stunTimer < 0) {
+            _animator.SetBool("Stunned", false);
 
-                    // Shooting the laserbeam
-                    if (Input.GetKeyDown(KeyCode.Mouse0))
-                    {
-                        _defusing = false; // Breaks defusing process
-                        _beamTimer = 0.1f;
-                        FireBeam(0.05f, Color.red);
-                    }
+            // If the game is active
+            if (GameController.Instance.GameActive) {
+                _inputHorizontal = Input.GetAxisRaw("Horizontal");
+                _inputVertical = Input.GetAxisRaw("Vertical");
+
+                // Shooting the laserbeam
+                if (Input.GetKeyDown(KeyCode.Mouse0))
+                {
+                    _defusing = false; // Breaks defusing process
+                    _beamTimer = 0.1f;
+                    FireBeam(0.05f, Color.red);
+                }
 
 
-                    if (Input.GetKeyDown(KeyCode.Mouse1))
-                    {
-                        _defusing = true;
-                        _beamTimer = 0.15f;
-                        FireBeam(0.1f, Color.green);
-                    }
+                if (Input.GetKeyDown(KeyCode.Mouse1))
+                {
+                    _defusing = true;
+                    _beamTimer = 0.15f;
+                    FireBeam(0.1f, Color.green);
                 }
             }
-
-            // If stunned
-            else {
-                _animator.SetBool("Stunned", true);
-                _stunTimer -= Time.deltaTime;
-            }
-
-            CountBeamDown();
         }
+
+        // If stunned
+        else {
+            _animator.SetBool("Stunned", true);
+            _stunTimer -= Time.deltaTime;
+        }
+
+        CountBeamDown();
     }
 
     private void FixedUpdate()
     {
-        if (_view.IsMine) // If this is the player character the player spawned
+        if (!_view.IsMine) return; // Only update if this is the player character the player spawned
+
+        // Update player animations
+        _animator.SetFloat("HorizontalInput", _inputHorizontal);
+        _animator.SetFloat("VerticalInput", _inputVertical);
+
+        // If the player is moving and the game is active
+        if ((_inputHorizontal != 0 || _inputVertical != 0) && GameController.Instance.GameActive)
         {
-            // Update player animations
-            _animator.SetFloat("HorizontalInput", _inputHorizontal);
-            _animator.SetFloat("VerticalInput", _inputVertical);
-
-            // If the player is moving and the game is active
-            if ((_inputHorizontal != 0 || _inputVertical != 0) && GameController.Instance.GameActive)
+            // If player tries to move during defusing, break the process
+            if (_defusing)
             {
-                // If player tries to move during defusing, break the process
-                if (_defusing)
-                {
-                    _defusing = false;
-                    _lineRenderer.positionCount = 0;
-                }
-
-                // To avoid player getting faster when moving diagonally
-                if (_inputHorizontal != 0 && _inputVertical != 0)
-                {
-                    _inputHorizontal *= _speedLimiter;
-                    _inputVertical *= _speedLimiter;
-                }
-                _rb.velocity = new Vector2(_inputHorizontal * _walkSpeed, _inputVertical * _walkSpeed);
-
-                if (!MovingAudio.isPlaying) {
-                    MovingAudio.Play();
-                }
+                _defusing = false;
+                _lineRenderer.positionCount = 0;
             }
-            else
+
+            // To avoid player getting faster when moving diagonally
+            if (_inputHorizontal != 0 && _inputVertical != 0)
             {
-                _rb.velocity = new Vector2(0f, 0f);
+                _inputHorizontal *= _speedLimiter;
+                _inputVertical *= _speedLimiter;
             }
+            _rb.velocity = new Vector2(_inputHorizontal * _walkSpeed, _inputVertical * _walkSpeed);
+
+            if (!MovingAudio.isPlaying) {
+                MovingAudio.Play();
+            }
+        }
+        else
+        {
+            _rb.velocity = new Vector2(0f, 0f);
         }
     }
 
@@ -132,19 +123,6 @@ public class PlayerController : MonoBehaviour, IPunObservable
                 _lineRenderer.positionCount = 0;
             }
         }
-    }
-
-    // Animation state changer
-    void ChangeAnimationState(string newState)
-    {
-        // Stop animation from interrupting self
-        if (_currentState == newState) return;
-
-        // Play new animation
-        _animator.Play(newState);
-
-        // Update current state
-        _currentState = newState;
     }
 
     // Fires beam from self to what the mouse is pointing at
@@ -186,6 +164,23 @@ public class PlayerController : MonoBehaviour, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-
+        if (stream.IsWriting)
+        {
+            stream.SendNext(_lineRenderer.startWidth);
+            stream.SendNext(_lineRenderer.startColor.r);
+            stream.SendNext(_lineRenderer.startColor.g);
+            stream.SendNext(_lineRenderer.startColor.b);
+            stream.SendNext(_lineRenderer.positionCount);
+            Vector3[] positions = new Vector3[_lineRenderer.positionCount];
+            _lineRenderer.GetPositions(positions);
+            stream.SendNext(positions);
+        }
+        else
+        {
+            _lineRenderer.startWidth = (float) stream.ReceiveNext();
+            _lineRenderer.startColor = new Color((float) stream.ReceiveNext(), (float) stream.ReceiveNext(), (float) stream.ReceiveNext());
+            _lineRenderer.positionCount = (int) stream.ReceiveNext();
+            _lineRenderer.SetPositions((Vector3[]) stream.ReceiveNext());
+        }
     }
 }

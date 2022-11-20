@@ -15,7 +15,7 @@ public class GameController : MonoBehaviour
         }
         set {
             _timeLeft = value;
-            HUDPresenter.Instance.UpdateTimer(value);
+            // HUDPresenter.Instance.UpdateTimer(value);
         }
     }
     private float _timeLeft;
@@ -25,7 +25,8 @@ public class GameController : MonoBehaviour
         Events.OnSetScore += SetScore;
         Events.OnGetScore += GetScore;
         Events.OnEndOfRound += EndOfRound;
-        GameActive = false; // Will wait for countdown to become active
+        // GameActive = false; // Will wait for countdown to become active
+        GameActive = true;
         Score = 0;
     }
 
@@ -35,15 +36,15 @@ public class GameController : MonoBehaviour
     }
 
     private void Update() {
-        if (GameActive) {
-            // End the round if time has run out or if all the cells have been opened
-            if (TimeLeft <= 0 || Grid.Instance.CellsOpened == (Grid.Instance.Columns-2)* (Grid.Instance.Rows-2)) {
-                Events.EndOfRound();
-            }
-            else {
-                TimeLeft -= Time.deltaTime;
-            }
-        }
+        // if (GameActive) {
+        //     // End the round if time has run out or if all the cells have been opened
+        //     if (TimeLeft <= 0 || GridOld.Instance.CellsOpened == (GridOld.Instance.Columns-2)* (GridOld.Instance.Rows-2)) {
+        //         EventsOld.EndOfRound();
+        //     }
+        //     else {
+        //         TimeLeft -= Time.deltaTime;
+        //     }
+        // }
     }
 
     private void SetScore(int value) {
