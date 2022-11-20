@@ -71,12 +71,6 @@ public class GameController : MonoBehaviour
         Application.Quit();
     }
 
-    // Loads scene with inserted build index
-    public void LoadScene(int index)
-    {
-        SceneManager.LoadScene(index);
-    }
-
     private void OnDestroy() {
         Events.OnSetScore -= SetScore;
         Events.OnGetScore -= GetScore;
