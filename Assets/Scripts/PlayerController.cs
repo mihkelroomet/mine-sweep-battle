@@ -1,10 +1,10 @@
 using UnityEngine;
 using Photon.Pun;
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IPunObservable
 {
-    private Rigidbody2D _rb;
-    private LineRenderer _lineRenderer;
-    private PhotonView _view;
+    [SerializeField] private Rigidbody2D _rb;
+    [SerializeField] private LineRenderer _lineRenderer;
+    [SerializeField] private PhotonView _view;
 
     private float _beamTimer;
     private bool _defusing;
@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     private float _inputVertical;
 
     // Animations and states
-    private Animator _animator;
+    [SerializeField] private Animator _animator;
     private string _currentState;
     private const string PLAYER_IDLE = "Player_Idle";
     private const string PLAYER_MOVE_L = "Player_Move_L";
@@ -35,10 +35,6 @@ public class PlayerController : MonoBehaviour
 
     private void Awake() {
         Instance = this;
-        _rb = gameObject.GetComponent<Rigidbody2D>();
-        _lineRenderer = gameObject.GetComponent<LineRenderer>();
-        _view = gameObject.GetComponent<PhotonView>();
-        _animator = gameObject.GetComponent<Animator>();
         _stunTimer = -1;
         _beamTimer = -1;
         _stunDuration = 1.5f;
@@ -56,6 +52,8 @@ public class PlayerController : MonoBehaviour
         {
             // If not stunned
             if (_stunTimer < 0) {
+                _animator.SetBool("Stunned", false);
+
                 // If the game is active
                 if (GameController.Instance.GameActive) {
                     _inputHorizontal = Input.GetAxisRaw("Horizontal");
@@ -77,11 +75,11 @@ public class PlayerController : MonoBehaviour
                         FireBeam(0.1f, Color.green);
                     }
                 }
-                
             }
 
             // If stunned
             else {
+                _animator.SetBool("Stunned", true);
                 _stunTimer -= Time.deltaTime;
             }
 
@@ -91,54 +89,37 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // If the player is moving and the game is active
-        if ((_inputHorizontal != 0 || _inputVertical != 0) && GameController.Instance.GameActive)
+        if (_view.IsMine) // If this is the player character the player spawned
         {
-            // If player tries to move during defusing, break the process
-            if (_defusing)
-            {
-                _defusing = false;
-                _lineRenderer.positionCount = 0;
-            }
-
-            // To avoid player getting faster when moving diagonally
-            if (_inputHorizontal != 0 && _inputVertical != 0)
-            {
-                _inputHorizontal *= _speedLimiter;
-                _inputVertical *= _speedLimiter;
-            }
-            _rb.velocity = new Vector2(_inputHorizontal * _walkSpeed, _inputVertical * _walkSpeed);
-
             // Update player animations
-            if (_inputVertical < 0)
-            {
-                ChangeAnimationState(PLAYER_MOVE_D);
-            }
-            else if (_inputVertical > 0)
-            {
-                ChangeAnimationState(PLAYER_MOVE_U);
-            }
-            else if (_inputHorizontal > 0)
-            {
-                ChangeAnimationState(PLAYER_MOVE_R);
-            }
-            else if (_inputHorizontal < 0)
-            {
-                ChangeAnimationState(PLAYER_MOVE_L);
-            }
+            _animator.SetFloat("HorizontalInput", _inputHorizontal);
+            _animator.SetFloat("VerticalInput", _inputVertical);
 
-            if (!MovingAudio.isPlaying) {
-                MovingAudio.Play();
+            // If the player is moving and the game is active
+            if ((_inputHorizontal != 0 || _inputVertical != 0) && GameController.Instance.GameActive)
+            {
+                // If player tries to move during defusing, break the process
+                if (_defusing)
+                {
+                    _defusing = false;
+                    _lineRenderer.positionCount = 0;
+                }
+
+                // To avoid player getting faster when moving diagonally
+                if (_inputHorizontal != 0 && _inputVertical != 0)
+                {
+                    _inputHorizontal *= _speedLimiter;
+                    _inputVertical *= _speedLimiter;
+                }
+                _rb.velocity = new Vector2(_inputHorizontal * _walkSpeed, _inputVertical * _walkSpeed);
+
+                if (!MovingAudio.isPlaying) {
+                    MovingAudio.Play();
+                }
             }
-        }
-        else
-        {
-            _rb.velocity = new Vector2(0f, 0f);
-            if (_stunTimer > 0) {
-                ChangeAnimationState(PLAYER_STUNNED);
-            }
-            else {
-                ChangeAnimationState(PLAYER_IDLE);
+            else
+            {
+                _rb.velocity = new Vector2(0f, 0f);
             }
         }
     }
@@ -180,7 +161,7 @@ public class PlayerController : MonoBehaviour
             foreach (RaycastHit2D hit in hits) {
                 if (hit.collider.CompareTag("Cell")) {
                     Cell cell = hit.transform.GetComponent<Cell>();
-                    cell.ShootWith(color);
+                    cell.ShootWith(color, this);
                 }
             }
         }
@@ -203,5 +184,8 @@ public class PlayerController : MonoBehaviour
         _stunTimer = _stunDuration;
     }
 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
 
+    }
 }

@@ -199,7 +199,7 @@ public class Cell : MonoBehaviour
         }
     }
 
-    public void ShootWith(Color beamColor) {
+    public void ShootWith(Color beamColor, PlayerController player) {
         if (!IsOpen() && !IsBorderCell()) {
             // Stun player if they made the wrong call
             if (IsBomb() && beamColor == Color.red || !IsBomb() && beamColor == Color.green) {
@@ -217,7 +217,7 @@ public class Cell : MonoBehaviour
 
                 _bombSpriteTimer = 0.2f;
                 ChangeColor(Color.red);
-                PlayerController.Instance.Stun();
+                player.Stun();
             }
 
             // Show the bomb and turn the cell green

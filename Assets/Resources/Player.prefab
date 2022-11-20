@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 6340303991436053695}
   - component: {fileID: 9023548745522867038}
   - component: {fileID: 2284589782483530612}
-  - component: {fileID: -4012782514855002866}
+  - component: {fileID: -6182970928322363373}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -578,6 +578,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f6df3668a401c84ea6e6a386a602240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rb: {fileID: 6340303991436053690}
+  _lineRenderer: {fileID: 6340303991436053694}
+  _view: {fileID: 9023548745522867038}
+  _animator: {fileID: 6340303991436053691}
   Fire1Audio: {fileID: 6340303991436053639}
   Fire2Audio: {fileID: 6340303991436053638}
   MovingAudio: {fileID: 6340303991436053636}
@@ -598,10 +602,11 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
+  observableSearch: 0
   ObservedComponents:
+  - {fileID: 6340303991436053695}
   - {fileID: 2284589782483530612}
-  - {fileID: -4012782514855002866}
+  - {fileID: -6182970928322363373}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -638,7 +643,7 @@ MonoBehaviour:
     InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 0
---- !u!114 &-4012782514855002866
+--- !u!114 &-6182970928322363373
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -651,8 +656,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowLayerWeightsInspector: 1
-  ShowParameterInspector: 0
-  m_SynchronizeParameters: []
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 4
+    SynchronizeType: 0
+    Name: Stunned
+  - Type: 1
+    SynchronizeType: 0
+    Name: VerticalInput
+  - Type: 1
+    SynchronizeType: 0
+    Name: HorizontalInput
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
