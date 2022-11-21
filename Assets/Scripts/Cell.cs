@@ -1,16 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class Cell : MonoBehaviour
 {
     private BoxCollider2D _boxCollider2D;
+    public bool IsBomb {get; set;}
+
+    // Cell Sprites
     private SpriteRenderer _spriteRenderer;
-    private Sprite[] _openCellSprites;
-    private bool _isBomb;
-    private int _currentNumber;
-    public Sprite BorderCellSprite;
-    public Sprite UnopenedCellSprite;
+    private Sprite[] _cellSprites;
     public Sprite OpenCellSprite0;
     public Sprite OpenCellSprite1;
     public Sprite OpenCellSprite2;
@@ -20,19 +18,35 @@ public class Cell : MonoBehaviour
     public Sprite OpenCellSprite6;
     public Sprite OpenCellSprite7;
     public Sprite OpenCellSprite8;
+    public Sprite UnopenedCellSprite;
+    public Sprite BorderCellSprite;
+    public byte CurrentCellSprite {
+        get {
+            return _currentCellSprite;
+        }
+        set {
+            _boxCollider2D.isTrigger = true;
+            _spriteRenderer.sprite = _cellSprites[value];
+            _currentCellSprite = value;
+        }
+    }
+    private byte _currentCellSprite;
 
-    public ParticleSystem explosion;
-    public ParticleSystem cellOpened;
-    public ParticleSystem bombDefused;
-    public SpriteRenderer bombsprite;
-
+    // Bomb Sprite
+    public SpriteRenderer BombSpritePrefab;
     private float _bombSpriteTimer;
-    private SpriteRenderer _bombSprite;
+    private SpriteRenderer _bombSpriteRenderer;
 
-    public int OpenEmptyScore;
-    public int OpenBombScore;
-    public int FailEmptyPenalty;
-    public int FailBombPenalty;
+    // Particle Effects
+    public ParticleSystem Explosion;
+    public ParticleSystem CellOpened;
+    public ParticleSystem BombDefused;
+
+    // Scoring
+    public int OpenEmptyScore = 10;
+    public int OpenBombScore = 100;
+    public int FailEmptyPenalty = -10;
+    public int FailBombPenalty = -100;
 
     // Sounds
     public AudioSource CorrectEmptySound;
@@ -48,42 +62,25 @@ public class Cell : MonoBehaviour
     {
         _boxCollider2D = GetComponent<BoxCollider2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        _openCellSprites = new Sprite[]{OpenCellSprite0, OpenCellSprite1, OpenCellSprite2, OpenCellSprite3, OpenCellSprite4,
-        OpenCellSprite5, OpenCellSprite6, OpenCellSprite7, OpenCellSprite8};
-        _isBomb = false;
-        _currentNumber = -1;
-        OpenEmptyScore = 10;
-        OpenBombScore = 100;
-        FailEmptyPenalty = 10;
-        FailBombPenalty = 100;
+        _cellSprites = new Sprite[]{OpenCellSprite0, OpenCellSprite1, OpenCellSprite2, OpenCellSprite3, OpenCellSprite4,
+        OpenCellSprite5, OpenCellSprite6, OpenCellSprite7, OpenCellSprite8, UnopenedCellSprite, BorderCellSprite};
+        IsBomb = false;
+        CurrentCellSprite = 9; // 9 - Unopened Cell Sprite
     }
 
-    private void Update() {
+    private void Update()
+    {
         CountBombSpriteDown();
     }
 
-    public bool IsOpen() {
-        return _spriteRenderer.sprite != UnopenedCellSprite && _spriteRenderer.sprite != BorderCellSprite;
+    public bool IsOpen()
+    {
+        return CurrentCellSprite < 9;
     }
 
-    // Returns true if part of border
     public bool IsBorderCell()
     {
-        return _spriteRenderer.sprite == BorderCellSprite;
-    }
-
-    public void MakeIntoBorderCell() {
-        _spriteRenderer.sprite = BorderCellSprite;
-    }
-
-    public bool IsBomb() {
-        return _isBomb;
-    }
-
-    // Puts a bomb down under the cell
-    // Used in initializing cell
-    public void PlantBomb() {
-        _isBomb = true;
+        return CurrentCellSprite == 10;
     }
 
     // Changes the color of a cell
@@ -94,15 +91,15 @@ public class Cell : MonoBehaviour
 
     // If the cell had a bomb, remove it and update indicators around it
     public void DefuseBomb() {
-        if (IsBomb() && !IsBorderCell()) {
-            _isBomb = false;
+        if (IsBomb && !IsBorderCell()) {
+            IsBomb = false;
             List<Cell> surroundingCells = GetSurroundingCells();
 
             foreach (Cell cell in surroundingCells)
             {
                 // Updating indicators around
                 if (cell.IsOpen()) {
-                    cell.ShowNumber(Mathf.Max(cell.GetNumber() - 1, 0));
+                    cell.CurrentCellSprite = (byte) Mathf.Max(cell.CurrentCellSprite - 1, 0);
                 }
             }
 
@@ -112,36 +109,23 @@ public class Cell : MonoBehaviour
             // which will result in incorrect info shown
             foreach (Cell cell in surroundingCells)
             {
-                if (cell.GetNumber() == 0) {
+                if (cell.CurrentCellSprite == 0) {
                     cell.OpenSurroundingCells();
                 }
             }
         }
     }
 
-    public int GetNumber() {
-        return _currentNumber;
-    }
-
-    // Changes the sprite to show the given number
-    public void ShowNumber(int number) {
-        _boxCollider2D.isTrigger = true;
-        _spriteRenderer.sprite = _openCellSprites[number];
-        _currentNumber = number;
-    }
-
     // Opens cell
     public void Open() {
         if (!IsOpen() && !IsBorderCell())
         {
-            int bombCount = CountBombsAround();
-            ShowNumber(bombCount);
+            byte bombCount = CountBombsAround();
+            CurrentCellSprite = bombCount;
             Grid.Instance.CellsOpened += 1; // Counting the opened cell
             if (bombCount == 0) {
                 OpenSurroundingCells();
             }
-        }
-        else {
         }
     }
 
@@ -154,12 +138,12 @@ public class Cell : MonoBehaviour
     }
 
     // Counts bombs around itself
-    private int CountBombsAround() {
-        int bombCount = 0;
+    private byte CountBombsAround() {
+        byte bombCount = 0;
 
         foreach (Cell cell in GetSurroundingCells())
         {
-            if (cell.IsBomb()) {
+            if (cell.IsBomb) {
                 bombCount++;
             }
         }
@@ -194,24 +178,26 @@ public class Cell : MonoBehaviour
             _bombSpriteTimer -= Time.deltaTime;
             if (_bombSpriteTimer <= 0) {
                 ChangeColor(Color.white);
-                Destroy(_bombSprite);
+                HideBombSprite();
             }
         }
     }
 
     public void ShootWith(Color beamColor, PlayerController player) {
+
+        // Animations and sounds
         if (!IsOpen() && !IsBorderCell()) {
             // Stun player if they made the wrong call
-            if (IsBomb() && beamColor == Color.red || !IsBomb() && beamColor == Color.green) {
+            if (IsBomb && beamColor == Color.red || !IsBomb && beamColor == Color.green) {
                 // Play the explosion particle system and when bomb explodes
-                if (IsBomb()) {
-                    Instantiate(explosion, transform.position, transform.rotation);
-                    _bombSprite = Instantiate(bombsprite, transform);
-                    Events.SetScore(Events.GetScore() - FailBombPenalty);
+                if (IsBomb) {
+                    Instantiate(Explosion, transform.position, transform.rotation);
+                    DisplayBombSprite();
+                    // Events.SetScore(Events.GetScore() + FailBombPenalty);
                     IncorrectBombSound.Play();
                 }
                 else {
-                    Events.SetScore(Events.GetScore() - FailEmptyPenalty);
+                    // Events.SetScore(Events.GetScore() + FailEmptyPenalty);
                     IncorrectEmptySound.Play();
                 }
 
@@ -221,25 +207,32 @@ public class Cell : MonoBehaviour
             }
 
             // Show the bomb and turn the cell green
-            else if (IsBomb() && beamColor == Color.green)
+            else if (IsBomb && beamColor == Color.green)
             {
-                Instantiate(bombDefused, transform.position, transform.rotation);
+                Instantiate(BombDefused, transform.position, transform.rotation);
                 ChangeColor(Color.green);
-                _bombSprite = Instantiate(bombsprite, transform);
+                DisplayBombSprite();
                 _bombSpriteTimer = 0.2f;
-                Events.SetScore(Events.GetScore() + OpenBombScore);
+                // Events.SetScore(Events.GetScore() + OpenBombScore);
                 CorrectBombSound.Play();
             }
-            else if (!IsBomb() && beamColor == Color.red) // Could just be 'else' but this is more elaborate
+            else if (!IsBomb && beamColor == Color.red) // Could just be 'else' but this is more elaborate
             {
-                Instantiate(cellOpened, transform.position, transform.rotation);
-                Events.SetScore(Events.GetScore() + OpenEmptyScore);
+                Instantiate(CellOpened, transform.position, transform.rotation);
+                // Events.SetScore(Events.GetScore() + OpenEmptyScore);
                 CorrectEmptySound.Play();
             }
         }
         
-
         DefuseBomb();
         Open();
+    }
+
+    private void DisplayBombSprite() {
+        _bombSpriteRenderer = Instantiate(BombSpritePrefab, transform);
+    }
+
+    private void HideBombSprite() {
+        Destroy(_bombSpriteRenderer);
     }
 }

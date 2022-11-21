@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 3031209560486508642}
   - component: {fileID: 3031209560486508643}
   - component: {fileID: 3031209560486508640}
-  - component: {fileID: 3031209560486508653}
   - component: {fileID: -7473268530686192488}
   - component: {fileID: 855574770136678397}
   - component: {fileID: -2640184780887656951}
   - component: {fileID: -6204689499494018204}
+  - component: {fileID: 6383394763925990499}
   m_Layer: 3
   m_Name: Cell
   m_TagString: Cell
@@ -116,41 +116,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.32, y: 0.32}
   m_EdgeRadius: 0
---- !u!114 &3031209560486508653
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3031209560486508641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 238e6fc9d602c344db3f8ba95d9b9bb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  BorderCellSprite: {fileID: 377484783, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  UnopenedCellSprite: {fileID: 1772478013, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  OpenCellSprite0: {fileID: 899826896, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  OpenCellSprite1: {fileID: 50317425, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  OpenCellSprite2: {fileID: -1334439808, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  OpenCellSprite3: {fileID: 2075853758, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  OpenCellSprite4: {fileID: -1308790142, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  OpenCellSprite5: {fileID: -772587642, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  OpenCellSprite6: {fileID: -818377725, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  OpenCellSprite7: {fileID: -573634070, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  OpenCellSprite8: {fileID: 363937110, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  explosion: {fileID: 3599392410574270388, guid: 509943d31a4e6a1428d09cafbc6ebdcb, type: 3}
-  cellOpened: {fileID: 6361724047665199194, guid: f2c0e61442141d148a756e09d4c2e4cb, type: 3}
-  bombDefused: {fileID: 7747433875304670565, guid: 0dc470246f8dcba49acbef5949ce7d83, type: 3}
-  bombsprite: {fileID: 1387060823428541819, guid: e9f4f250d48799f4bacd1da97afadffa, type: 3}
-  OpenEmptyScore: 0
-  OpenBombScore: 0
-  FailEmptyPenalty: 0
-  FailBombPenalty: 0
-  CorrectEmptySound: {fileID: -7473268530686192488}
-  CorrectBombSound: {fileID: 855574770136678397}
-  IncorrectEmptySound: {fileID: -2640184780887656951}
-  IncorrectBombSound: {fileID: -6204689499494018204}
 --- !u!82 &-7473268530686192488
 AudioSource:
   m_ObjectHideFlags: 0
@@ -535,3 +500,38 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &6383394763925990499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3031209560486508641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57ede0a120a16d34d9624e998a443747, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OpenCellSprite0: {fileID: 899826896, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  OpenCellSprite1: {fileID: 50317425, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  OpenCellSprite2: {fileID: -1334439808, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  OpenCellSprite3: {fileID: 2075853758, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  OpenCellSprite4: {fileID: -1308790142, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  OpenCellSprite5: {fileID: -772587642, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  OpenCellSprite6: {fileID: -818377725, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  OpenCellSprite7: {fileID: -573634070, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  OpenCellSprite8: {fileID: 363937110, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  UnopenedCellSprite: {fileID: 1772478013, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  BorderCellSprite: {fileID: 377484783, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  BombSpritePrefab: {fileID: 8409035989049937335, guid: ce96ec821d7a0d442b104d98e7877861, type: 3}
+  Explosion: {fileID: 3599392410574270388, guid: 351abbd5731a40d44968a340f43d8a59, type: 3}
+  CellOpened: {fileID: 6361724047665199194, guid: 776db49ffd492e2428ba7511952cbbea, type: 3}
+  BombDefused: {fileID: 7747433875304670565, guid: 30541ff0c3fd60c4bbb250a58584802f, type: 3}
+  OpenEmptyScore: 10
+  OpenBombScore: 100
+  FailEmptyPenalty: -10
+  FailBombPenalty: -100
+  CorrectEmptySound: {fileID: -7473268530686192488}
+  CorrectBombSound: {fileID: 855574770136678397}
+  IncorrectEmptySound: {fileID: -2640184780887656951}
+  IncorrectBombSound: {fileID: -6204689499494018204}

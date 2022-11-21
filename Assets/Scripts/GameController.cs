@@ -38,8 +38,8 @@ public class GameController : MonoBehaviour
     private void Update() {
         // if (GameActive) {
         //     // End the round if time has run out or if all the cells have been opened
-        //     if (TimeLeft <= 0 || GridOld.Instance.CellsOpened == (GridOld.Instance.Columns-2)* (GridOld.Instance.Rows-2)) {
-        //         EventsOld.EndOfRound();
+        //     if (TimeLeft <= 0 || Grid.Instance.CellsOpened == (Grid.Instance.Columns-2)* (Grid.Instance.Rows-2)) {
+        //         Events.EndOfRound();
         //     }
         //     else {
         //         TimeLeft -= Time.deltaTime;
