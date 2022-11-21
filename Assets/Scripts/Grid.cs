@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 
@@ -13,23 +14,31 @@ public class Grid : MonoBehaviour
     public float BombProbability;
     private byte[][] _gridState; // bombless cells mapped to 0-10 according to their cell sprite number, bomb cells mapped to 11
     [SerializeField] private PhotonView _view;
+    private bool _initialized;
 
     private void Awake() {
         Instance = this;
         CellsOpened = 0;
+        _initialized = false;
     }
 
-    void Start()
+    IEnumerator Start()
     {
-        InitiateGrid();
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            yield return new WaitUntil(() => PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("Columns")); // Wait until the room has been initialized by Host
+        }
+
+        InitializeGrid();
 
         if (PhotonNetwork.IsMasterClient)
         {
-            InitiateRoomProperties();
+            InitializeRoomProperties();
         }
+        _initialized = true;
     }
 
-    private void InitiateGrid()
+    private void InitializeGrid()
     {
         ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
         if (!PhotonNetwork.IsMasterClient)
@@ -117,13 +126,13 @@ public class Grid : MonoBehaviour
         }
     }
 
-    private void InitiateRoomProperties()
+    private void InitializeRoomProperties()
     {
         ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
 
-        properties.Add("Columns", Columns);
-        properties.Add("Rows", Rows);
-        properties.Add("CellsOpened", CellsOpened);
+        if (!properties.TryAdd("Columns", Columns)) properties["Columns"] = Columns;
+        if (!properties.TryAdd("Rows", Rows)) properties["Rows"] = Rows;
+        if (!properties.TryAdd("CellsOpened", CellsOpened)) properties["CellsOpened"] = CellsOpened;
 
         for (int col = 0; col < Columns; col++)
         {
@@ -140,7 +149,22 @@ public class Grid : MonoBehaviour
                     _gridState[col][row] = cell.CurrentSprite;
                 }
             }
-            properties.Add("GridState_Column" + col, _gridState[col]);
+            if (!properties.TryAdd("GridState_Column" + col, _gridState[col])) properties["GridState_Column" + col] = _gridState[col];
+        }
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+    }
+
+    private void OnDestroy()
+    {
+        ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
+
+        properties.Remove("Columns");
+        properties.Remove("Rows");
+        properties.Remove("CellsOpened");
+        for (int col = 0; col < Columns; col++)
+        {
+            properties.Remove("GridState_Column" + col);
         }
 
         PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
@@ -177,8 +201,11 @@ public class Grid : MonoBehaviour
     [PunRPC]
     void SetCurrentSpriteRPC(int col, int row, byte value)
     {
-        CellGrid[col][row].CurrentSprite = value;
-        SetGridStateIndicator(col, row, value);
+        if (PhotonNetwork.IsMasterClient || _initialized)
+        {
+            CellGrid[col][row].CurrentSprite = value;
+            SetGridStateIndicator(col, row, value);
+        }
     }
 
     public void SetGridStateIndicator(int col, int row, byte value)

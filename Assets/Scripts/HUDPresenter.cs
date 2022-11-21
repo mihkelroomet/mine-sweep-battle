@@ -64,6 +64,7 @@ public class HUDPresenter : MonoBehaviour
         FinalScores.text = finalScores.TrimEnd();
 
         ScoreBoard.SetActive(true);
+        RestartButton.gameObject.SetActive(PhotonNetwork.IsMasterClient); // Only let Host press restart otherwise it gets messed up
         EndAudio.Play();
     }
 

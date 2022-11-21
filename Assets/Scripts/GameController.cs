@@ -36,7 +36,7 @@ public class GameController : MonoBehaviour
         if (_view.IsMine)
         {
             ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.LocalPlayer.CustomProperties;
-            properties.Add("Score", 0);
+            if (!properties.TryAdd("Score", 0)) properties["Score"] = 0; // Try to add property "Score". If it exists, assign the value to it instead.
             PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
         }
     }
@@ -82,7 +82,15 @@ public class GameController : MonoBehaviour
 
     public void Restart()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        
+        PhotonNetwork.LoadLevel(SceneManager.GetActiveScene().name); // First Host reloads
+        _view.RPC("RestartRPC", RpcTarget.Others); // And then everyone else
+    }
+
+    [PunRPC]
+    void RestartRPC()
+    {
+        PhotonNetwork.LoadLevel(SceneManager.GetActiveScene().name);
     }
 
     public void BackToMainMenu()
