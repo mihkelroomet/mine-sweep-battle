@@ -20,17 +20,17 @@ public class Cell : MonoBehaviour
     public Sprite OpenCellSprite8;
     public Sprite UnopenedCellSprite;
     public Sprite BorderCellSprite;
-    public byte CurrentCellSprite {
+    public byte CurrentSprite {
         get {
-            return _currentCellSprite;
+            return _currentSprite;
         }
         set {
-            _boxCollider2D.isTrigger = true;
+            if (value < 9) _boxCollider2D.isTrigger = true;
             _spriteRenderer.sprite = _cellSprites[value];
-            _currentCellSprite = value;
+            _currentSprite = value;
         }
     }
-    private byte _currentCellSprite;
+    private byte _currentSprite;
 
     // Bomb Sprite
     public SpriteRenderer BombSpritePrefab;
@@ -55,8 +55,8 @@ public class Cell : MonoBehaviour
     public AudioSource IncorrectBombSound;
 
     // Position in grid
-    public int X {get; set;}
-    public int Y {get; set;}
+    public int Col {get; set;}
+    public int Row {get; set;}
 
     private void Awake()
     {
@@ -65,7 +65,7 @@ public class Cell : MonoBehaviour
         _cellSprites = new Sprite[]{OpenCellSprite0, OpenCellSprite1, OpenCellSprite2, OpenCellSprite3, OpenCellSprite4,
         OpenCellSprite5, OpenCellSprite6, OpenCellSprite7, OpenCellSprite8, UnopenedCellSprite, BorderCellSprite};
         IsBomb = false;
-        CurrentCellSprite = 9; // 9 - Unopened Cell Sprite
+        CurrentSprite = 9; // 9 - Unopened Cell Sprite
     }
 
     private void Update()
@@ -75,12 +75,12 @@ public class Cell : MonoBehaviour
 
     public bool IsOpen()
     {
-        return CurrentCellSprite < 9;
+        return CurrentSprite < 9;
     }
 
     public bool IsBorderCell()
     {
-        return CurrentCellSprite == 10;
+        return CurrentSprite == 10;
     }
 
     // Changes the color of a cell
@@ -92,14 +92,14 @@ public class Cell : MonoBehaviour
     // If the cell had a bomb, remove it and update indicators around it
     public void DefuseBomb() {
         if (IsBomb && !IsBorderCell()) {
-            IsBomb = false;
+            Grid.Instance.RemoveBomb(Col, Row);
             List<Cell> surroundingCells = GetSurroundingCells();
 
             foreach (Cell cell in surroundingCells)
             {
                 // Updating indicators around
                 if (cell.IsOpen()) {
-                    cell.CurrentCellSprite = (byte) Mathf.Max(cell.CurrentCellSprite - 1, 0);
+                    Grid.Instance.SetCurrentSprite(cell.Col, cell.Row, (byte) Mathf.Max(cell.CurrentSprite - 1, 0));
                 }
             }
 
@@ -109,7 +109,7 @@ public class Cell : MonoBehaviour
             // which will result in incorrect info shown
             foreach (Cell cell in surroundingCells)
             {
-                if (cell.CurrentCellSprite == 0) {
+                if (cell.CurrentSprite == 0) {
                     cell.OpenSurroundingCells();
                 }
             }
@@ -121,8 +121,8 @@ public class Cell : MonoBehaviour
         if (!IsOpen() && !IsBorderCell())
         {
             byte bombCount = CountBombsAround();
-            CurrentCellSprite = bombCount;
-            Grid.Instance.CellsOpened += 1; // Counting the opened cell
+            Grid.Instance.SetCurrentSprite(Col, Row, bombCount);
+            Grid.Instance.SetCellsOpened(Grid.Instance.CellsOpened + 1);
             if (bombCount == 0) {
                 OpenSurroundingCells();
             }
@@ -155,11 +155,11 @@ public class Cell : MonoBehaviour
     private List<Cell> GetSurroundingCells() {
         List<Cell> surroundingCells = new List<Cell>();
 
-        for (int col = X - 1; col <= X + 1; col++)
+        for (int col = Col - 1; col <= Col + 1; col++)
         {
             if (col >= 0 && col < Grid.Instance.Columns)
             {
-                for (int row = Y - 1; row <= Y + 1; row++)
+                for (int row = Row - 1; row <= Row + 1; row++)
                 {
                     if (row >= 0 && row < Grid.Instance.Rows)
                     {

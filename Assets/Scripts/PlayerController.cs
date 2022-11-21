@@ -33,11 +33,9 @@ public class PlayerController : MonoBehaviour, IPunObservable
         _stunDuration = 1.5f;
     }
 
-    void Start()
-    {
-
+    private void Start() {
+        if (_view.IsMine) Camera.main.transform.parent = this.transform; // Center camera on player
     }
-
 
     void Update()
     {

@@ -12,6 +12,7 @@ public class Grid : MonoBehaviour
     public int Rows;
     public float BombProbability;
     private byte[][] _gridState; // bombless cells mapped to 0-10 according to their cell sprite number, bomb cells mapped to 11
+    [SerializeField] private PhotonView _view;
 
     private void Awake() {
         Instance = this;
@@ -66,14 +67,14 @@ public class Grid : MonoBehaviour
                 CellGrid[col][row] = cell;
 
                 // Give the cell its location info
-                cell.X = col;
-                cell.Y = row;
+                cell.Col = col;
+                cell.Row = row;
 
                 if (PhotonNetwork.IsMasterClient)
                 {
                     // Make the outer edges into borders
                     if (col == 0 || col == Columns - 1 || row == 0 || row == Rows - 1) {
-                        cell.CurrentCellSprite = 10;
+                        cell.CurrentSprite = 10;
                     }
                     else {
                         // Plant bombs randomly, but not in the middle
@@ -93,7 +94,7 @@ public class Grid : MonoBehaviour
                     }
                     else
                     {
-                        cell.CurrentCellSprite = gridStateIndicator;
+                        cell.CurrentSprite = gridStateIndicator;
                     }
                 }
             }
@@ -136,12 +137,58 @@ public class Grid : MonoBehaviour
                 }
                 else
                 {
-                    _gridState[col][row] = cell.CurrentCellSprite;
+                    _gridState[col][row] = cell.CurrentSprite;
                 }
             }
             properties.Add("GridState_Column" + col, _gridState[col]);
         }
 
         PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+    }
+
+    public void SetCellsOpened(int value)
+    {
+        _view.RPC("SetCellsOpenedRPC", RpcTarget.All, value);
+    }
+
+    [PunRPC]
+    void SetCellsOpenedRPC(int value)
+    {
+        CellsOpened = value;
+    }
+
+    public void RemoveBomb(int col, int row)
+    {
+        _view.RPC("RemoveBombRPC", RpcTarget.All, col, row);
+    }
+
+    [PunRPC]
+    void RemoveBombRPC(int col, int row)
+    {
+        CellGrid[col][row].IsBomb = false;
+        SetGridStateIndicator(col, row, 9); // Updating state for defusal in case someone connects before Open is called
+    }
+
+    public void SetCurrentSprite(int col, int row, byte value)
+    {
+        _view.RPC("SetCurrentSpriteRPC", RpcTarget.All, col, row, value);
+    }
+
+    [PunRPC]
+    void SetCurrentSpriteRPC(int col, int row, byte value)
+    {
+        CellGrid[col][row].CurrentSprite = value;
+        SetGridStateIndicator(col, row, value);
+    }
+
+    public void SetGridStateIndicator(int col, int row, byte value)
+    {
+        _view.RPC("SetGridStateIndicatorRPC", RpcTarget.MasterClient, col, row, value);
+    }
+
+    [PunRPC]
+    void SetGridStateIndicatorRPC(int col, int row, byte value)
+    {
+        _gridState[col][row] = value;
     }
 }

@@ -331,6 +331,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1190549852}
   - component: {fileID: 1190549851}
+  - component: {fileID: 1190549853}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -350,11 +351,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57f89f80d47e7f240bff646a4c8e3008, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CellsOpened: 0
   CellPrefab: {fileID: 6383394763925990499, guid: 99e0cb6d3c881fd4aa14590c9f92e94e, type: 3}
   Columns: 50
   Rows: 50
   BombProbability: 0.1
+  _view: {fileID: 1190549853}
 --- !u!4 &1190549852
 Transform:
   m_ObjectHideFlags: 0
@@ -370,6 +371,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1190549853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1190549850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1439327544
 GameObject:
   m_ObjectHideFlags: 0
