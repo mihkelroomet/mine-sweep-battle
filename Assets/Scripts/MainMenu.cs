@@ -7,9 +7,11 @@ using Photon.Realtime;
 public class MainMenu : MonoBehaviourPunCallbacks
 {
     public Button PracticeButton;
-    public TMP_InputField CreateInput;
+    public TMP_InputField CreateNameInputField;
+    public TMP_InputField CreateInputField;
     public Button CreateButton;
-    public TMP_InputField JoinInput;
+    public TMP_InputField JoinNameInputField;
+    public TMP_InputField JoinInputField;
     public Button JoinButton;
     public Button QuitButton;
 
@@ -27,7 +29,9 @@ public class MainMenu : MonoBehaviourPunCallbacks
     {
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = _maxPlayers;
-        PhotonNetwork.CreateRoom(CreateInput.text, roomOptions);
+        PhotonNetwork.CreateRoom(CreateInputField.text, roomOptions);
+        string playerName = CreateNameInputField.text;
+        PhotonNetwork.LocalPlayer.NickName = playerName.Equals("") ? "Player" : playerName;
     }
 
     public void CreatePracticeRoom()
@@ -35,11 +39,14 @@ public class MainMenu : MonoBehaviourPunCallbacks
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = 1;
         PhotonNetwork.CreateRoom(Random.Range(0, 1_000_000).ToString(), roomOptions);
+        PhotonNetwork.LocalPlayer.NickName = "Trainee";
     }
 
     public void JoinRoom()
     {
-        PhotonNetwork.JoinRoom(JoinInput.text);
+        PhotonNetwork.JoinRoom(JoinInputField.text);
+        string playerName = JoinNameInputField.text;
+        PhotonNetwork.LocalPlayer.NickName = playerName.Equals("") ? "Player" : playerName;
     }
 
 	public override void OnJoinedRoom()

@@ -1,10 +1,13 @@
 using UnityEngine;
+using TMPro;
 using Photon.Pun;
 public class PlayerController : MonoBehaviour, IPunObservable
 {
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private PhotonView _view;
+    [SerializeField] private GameObject _namePanel;
+    [SerializeField] private TMP_Text _nametag;
 
     private float _beamTimer;
     private bool _defusing;
@@ -34,7 +37,15 @@ public class PlayerController : MonoBehaviour, IPunObservable
     }
 
     private void Start() {
-        if (_view.IsMine) Camera.main.transform.parent = this.transform; // Center camera on player
+        if (_view.IsMine)
+        {
+            Camera.main.transform.parent = this.transform; // Center camera on player
+            _nametag.text = PhotonNetwork.LocalPlayer.NickName;
+        }
+        else
+        {
+            _namePanel.SetActive(false); // Temporary solution until we implement showing everyone's nametags to everyone
+        }
     }
 
     void Update()
@@ -172,6 +183,8 @@ public class PlayerController : MonoBehaviour, IPunObservable
             Vector3[] positions = new Vector3[_lineRenderer.positionCount];
             _lineRenderer.GetPositions(positions);
             stream.SendNext(positions);
+
+            stream.SendNext(_namePanel.transform.position);
         }
         else
         {
@@ -179,6 +192,8 @@ public class PlayerController : MonoBehaviour, IPunObservable
             _lineRenderer.startColor = new Color((float) stream.ReceiveNext(), (float) stream.ReceiveNext(), (float) stream.ReceiveNext());
             _lineRenderer.positionCount = (int) stream.ReceiveNext();
             _lineRenderer.SetPositions((Vector3[]) stream.ReceiveNext());
+
+            _namePanel.transform.position = (Vector3) stream.ReceiveNext();
         }
     }
 }
