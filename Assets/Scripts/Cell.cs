@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class Cell : MonoBehaviour
 {
@@ -193,11 +195,11 @@ public class Cell : MonoBehaviour
                 if (IsBomb) {
                     Instantiate(Explosion, transform.position, transform.rotation);
                     DisplayBombSprite();
-                    // Events.SetScore(Events.GetScore() + FailBombPenalty);
+                    Events.SetScore(Events.GetScore() + FailBombPenalty);
                     IncorrectBombSound.Play();
                 }
                 else {
-                    // Events.SetScore(Events.GetScore() + FailEmptyPenalty);
+                    Events.SetScore(Events.GetScore() + FailEmptyPenalty);
                     IncorrectEmptySound.Play();
                 }
 
@@ -213,13 +215,13 @@ public class Cell : MonoBehaviour
                 ChangeColor(Color.green);
                 DisplayBombSprite();
                 _bombSpriteTimer = 0.2f;
-                // Events.SetScore(Events.GetScore() + OpenBombScore);
+                Events.SetScore(Events.GetScore() + OpenBombScore);
                 CorrectBombSound.Play();
             }
             else if (!IsBomb && beamColor == Color.red) // Could just be 'else' but this is more elaborate
             {
                 Instantiate(CellOpened, transform.position, transform.rotation);
-                // Events.SetScore(Events.GetScore() + OpenEmptyScore);
+                Events.SetScore(Events.GetScore() + OpenEmptyScore);
                 CorrectEmptySound.Play();
             }
         }
