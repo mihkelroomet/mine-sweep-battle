@@ -24,7 +24,7 @@
 /[Aa]ssets/Plugins/Editor/JetBrains*
 
 # Photon
-/[Aa]ssets/Photon*
+#/[Aa]ssets/Photon*
 
 # Visual Studio cache directory
 .vs/
