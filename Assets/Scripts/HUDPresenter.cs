@@ -1,24 +1,31 @@
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class HUDPresenter : MonoBehaviour
 {
     public static HUDPresenter Instance;
-    public TextMeshProUGUI ScoreText;
-    public TextMeshProUGUI FinalScores;
-    // Panel
+    public TMP_Text ScoreText;
+    public TMP_Text TimerText;
     public GameObject ScoreBoard;
+    public TMP_Text FinalScores;
     public AudioSource TickAudio;
     public AudioSource StartAudio;
     public AudioSource EndAudio;
-
-    // ref var for my TMP text component
-    public TMP_Text TimerText;
+    public Button RestartButton;
+    public Button MainMenuButton;
+    public Button QuitButton;
 
     private void Awake() {
         Instance = this;
         Events.OnSetScore += SetScore;
         Events.OnEndOfRound += ShowScoreboard;
+        RestartButton.onClick.AddListener(() => GameController.Instance.Restart());
+        MainMenuButton.onClick.AddListener(() => GameController.Instance.BackToMainMenu());
+        QuitButton.onClick.AddListener(() => GameController.Instance.Quit());
     }
 
     void Start()
@@ -45,17 +52,19 @@ public class HUDPresenter : MonoBehaviour
 
     public void ShowScoreboard()
     {
-        // This is just a mock way of showing scores for now
-        if (Events.GetScore() > 10_000) {
-            FinalScores.text = "1.You\t" + Events.GetScore() + "\n2.Noob\t\t\t-10";
+        string finalScores = "";
+        byte placing = 1;
+        Player[] sortedPlayerList = PhotonNetwork.PlayerList.OrderByDescending(player => player.CustomProperties["Score"]).ToArray();
+
+        foreach (Player player in sortedPlayerList)
+        {
+            finalScores += placing++ + "." + player.NickName + "\t" + player.CustomProperties["Score"] + "\n";
         }
-        else if (Events.GetScore() >= -10) {
-            FinalScores.text = "1.You\t\t\t" + Events.GetScore() + "\n2.Noob\t\t\t-10";
-        }
-        else {
-            FinalScores.text = "1.Noob\t\t\t-10\n2.You\t\t\t" + Events.GetScore();
-        }
+
+        FinalScores.text = finalScores.TrimEnd();
+
         ScoreBoard.SetActive(true);
+        RestartButton.gameObject.SetActive(PhotonNetwork.IsMasterClient); // Only let Host press restart otherwise it gets messed up
         EndAudio.Play();
     }
 
