@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0647643df85aa244a20c9068915e467, type: 3}
+  m_Name: FootstepsAudio
+  m_EditorClassIdentifier: 
+  VolumeMin: 0.863
+  VolumeMax: 1.187
+  PitchMin: 0.936
+  PitchMax: 1.098
+  Cooldown: 0.145
+  Clips:
+  - {fileID: 8300000, guid: 8a9fe3997f77c3c4183fe358ce06d09c, type: 3}
+  - {fileID: 8300000, guid: 69bec46fdc97a0948a8f62b7f2b287b9, type: 3}
+  - {fileID: 8300000, guid: 691539aea434e8f4596466ee095e4854, type: 3}

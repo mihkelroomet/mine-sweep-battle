@@ -25,9 +25,11 @@ public class PlayerController : MonoBehaviour, IPunObservable
     [SerializeField] private Animator _animator;
 
     public static PlayerController Instance;
-    public AudioSource Fire1Audio;
-    public AudioSource Fire2Audio;
-    public AudioSource MovingAudio;
+
+    // Audio
+    public AudioClipGroup FootstepsAudio;
+    public AudioClipGroup Fire1Audio;
+    public AudioClipGroup Fire2Audio;
 
     private void Awake() {
         Instance = this;
@@ -114,9 +116,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
             }
             _rb.velocity = new Vector2(_inputHorizontal * _walkSpeed, _inputVertical * _walkSpeed);
 
-            if (!MovingAudio.isPlaying) {
-                MovingAudio.Play();
-            }
+            FootstepsAudio.Play();
         }
         else
         {
