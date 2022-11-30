@@ -51,11 +51,6 @@ public class Cell : MonoBehaviour
     public int FailBombPenalty = -100;
 
     // Sounds
-    //public AudioSource CorrectEmptySound;
-    //public AudioSource CorrectBombSound;
-    //public AudioSource IncorrectEmptySound;
-    //public AudioSource IncorrectBombSound;
-
     public AudioClipGroup CorrectEmptySound;
     public AudioClipGroup CorrectBombSound;
     public AudioClipGroup IncorrectEmptySound;
