@@ -172,7 +172,7 @@ public class Grid : MonoBehaviour
 
     public void SetCellsOpened(int value)
     {
-        _view.RPC("SetCellsOpenedRPC", RpcTarget.AllViaServer, value);
+        _view.RPC("SetCellsOpenedRPC", RpcTarget.All, value);
     }
 
     [PunRPC]
@@ -183,7 +183,7 @@ public class Grid : MonoBehaviour
 
     public void RemoveBomb(int col, int row)
     {
-        _view.RPC("RemoveBombRPC", RpcTarget.AllViaServer, col, row);
+        _view.RPC("RemoveBombRPC", RpcTarget.All, col, row);
     }
 
     [PunRPC]
@@ -195,7 +195,7 @@ public class Grid : MonoBehaviour
 
     public void SetCurrentSprite(int col, int row, byte value)
     {
-        _view.RPC("SetCurrentSpriteRPC", RpcTarget.AllViaServer, col, row, value);
+        _view.RPC("SetCurrentSpriteRPC", RpcTarget.All, col, row, value);
     }
 
     [PunRPC]
