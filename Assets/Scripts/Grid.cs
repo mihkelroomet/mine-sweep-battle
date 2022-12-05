@@ -12,29 +12,33 @@ public class Grid : MonoBehaviour
     public int Columns;
     public int Rows;
     public float BombProbability;
+    public float GridCheckInterval;
     private byte[][] _gridState; // bombless cells mapped to 0-10 according to their cell sprite number, bomb cells mapped to 11
     [SerializeField] private PhotonView _view;
     private bool _initialized;
+    private float _timeTillNextGridCheck;
 
     private void Awake() {
         Instance = this;
         CellsOpened = 0;
         _initialized = false;
+        _timeTillNextGridCheck = GridCheckInterval;
     }
 
     IEnumerator Start()
     {
         if (!PhotonNetwork.IsMasterClient)
         {
-            yield return new WaitUntil(() => PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("Columns")); // Wait until the room has been initialized by Host
+            // try with the new roomReady property that gets added on room create
+            _view.RPC("UpdateRoomPropertiesRPC", RpcTarget.MasterClient);
+            Debug.Log("Room up to date: " + PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("UpToDate"));
+            yield return new WaitUntil(() => PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("UpToDate")); // Wait until the properties have been refreshed by Host
+            Debug.Log("Cells opened: " + PhotonNetwork.CurrentRoom.CustomProperties["CellsOpened"]);
+            _view.RPC("SetRoomPropertiesOutOfDateRPC", RpcTarget.MasterClient);
         }
 
         InitializeGrid();
 
-        if (PhotonNetwork.IsMasterClient)
-        {
-            InitializeRoomProperties();
-        }
         _initialized = true;
     }
 
@@ -126,8 +130,12 @@ public class Grid : MonoBehaviour
         }
     }
 
-    private void InitializeRoomProperties()
+    [PunRPC]
+    private IEnumerator UpdateRoomPropertiesRPC()
     {
+        Debug.Log("updating room properties");
+        while (!_initialized) yield return new WaitForSeconds(0.1f);
+
         ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
 
         if (!properties.TryAdd("Columns", Columns)) properties["Columns"] = Columns;
@@ -152,22 +160,45 @@ public class Grid : MonoBehaviour
             if (!properties.TryAdd("GridState_Column" + col, _gridState[col])) properties["GridState_Column" + col] = _gridState[col];
         }
 
+        if (!properties.TryAdd("UpToDate", true)) properties["UpToDate"] = true;
+
         PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+    
+        Debug.Log("Room up to date: " + PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("UpToDate"));
     }
 
-    private void OnDestroy()
+    [PunRPC]
+    private void SetRoomPropertiesOutOfDateRPC()
     {
+        Debug.Log("setting room properties out of date");
         ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
 
-        properties.Remove("Columns");
-        properties.Remove("Rows");
-        properties.Remove("CellsOpened");
-        for (int col = 0; col < Columns; col++)
-        {
-            properties.Remove("GridState_Column" + col);
-        }
+        properties.Remove("UpToDate");
 
         PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+
+        Debug.Log("Room up to date: " + PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("UpToDate"));
+    }
+
+    private void OnDestroy() {
+        Debug.Log("on destroy");
+        if (PhotonNetwork.IsMasterClient)
+        {
+            ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
+
+            properties.Remove("Columns");
+            properties.Remove("Rows");
+            properties.Remove("CellsOpened");
+            for (int col = 0; col < Columns; col++)
+            {
+                properties.Remove("GridState_Column" + col);
+            }
+            properties.Remove("UpToDate");
+
+            PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+        }
+
+        Debug.Log("Room up to date: " + PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("UpToDate"));
     }
 
     public void SetCellsOpened(int value)
@@ -217,5 +248,11 @@ public class Grid : MonoBehaviour
     void SetGridStateIndicatorRPC(int col, int row, byte value)
     {
         _gridState[col][row] = value;
+
+        ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
+
+        if (!properties.TryAdd("GridState_Column" + col, _gridState[col])) properties["GridState_Column" + col] = _gridState[col];
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
     }
 }
