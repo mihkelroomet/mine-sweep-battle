@@ -172,7 +172,7 @@ public class Grid : MonoBehaviour
 
     public void SetCellsOpened(int value)
     {
-        _view.RPC("SetCellsOpenedRPC", RpcTarget.All, value);
+        _view.RPC("SetCellsOpenedRPC", RpcTarget.AllViaServer, value);
     }
 
     [PunRPC]
@@ -183,7 +183,7 @@ public class Grid : MonoBehaviour
 
     public void RemoveBomb(int col, int row)
     {
-        _view.RPC("RemoveBombRPC", RpcTarget.All, col, row);
+        _view.RPC("RemoveBombRPC", RpcTarget.AllViaServer, col, row);
     }
 
     [PunRPC]
@@ -195,15 +195,16 @@ public class Grid : MonoBehaviour
 
     public void SetCurrentSprite(int col, int row, byte value)
     {
-        _view.RPC("SetCurrentSpriteRPC", RpcTarget.All, col, row, value);
+        _view.RPC("SetCurrentSpriteRPC", RpcTarget.AllViaServer, col, row, value);
     }
 
     [PunRPC]
     void SetCurrentSpriteRPC(int col, int row, byte value)
     {
-        if (PhotonNetwork.IsMasterClient || _initialized)
+        CellGrid[col][row].CurrentSprite = value;
+        // The stuff - all to do with SetGridStateIndicator - below prob not neccesary actually
+        if (PhotonNetwork.IsMasterClient)
         {
-            CellGrid[col][row].CurrentSprite = value;
             SetGridStateIndicator(col, row, value);
         }
     }
