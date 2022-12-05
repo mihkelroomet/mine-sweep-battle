@@ -29,6 +29,9 @@ public class MainMenu : MonoBehaviourPunCallbacks
     {
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = _maxPlayers;
+        ExitGames.Client.Photon.Hashtable roomProps = new ExitGames.Client.Photon.Hashtable();
+        roomProps.Add("UpToDate", false);
+        roomOptions.CustomRoomProperties = roomProps;
         PhotonNetwork.CreateRoom(CreateInputField.text, roomOptions);
         string playerName = CreateNameInputField.text;
         PhotonNetwork.LocalPlayer.NickName = playerName.Equals("") ? "Player" : playerName;

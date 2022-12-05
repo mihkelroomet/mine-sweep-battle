@@ -6,7 +6,18 @@ using Photon.Realtime;
 public class Cell : MonoBehaviour
 {
     private BoxCollider2D _boxCollider2D;
-    public bool IsBomb {get; set;}
+    public bool IsBomb {
+        get
+        {
+            return _isBomb;
+        }
+        set
+        {
+            _isBomb = value;
+            if (_isBomb) CurrentSprite = 9;
+        }
+    }
+    private bool _isBomb;
 
     // Cell Sprites
     private SpriteRenderer _spriteRenderer;
@@ -23,10 +34,12 @@ public class Cell : MonoBehaviour
     public Sprite UnopenedCellSprite;
     public Sprite BorderCellSprite;
     public byte CurrentSprite {
-        get {
+        get
+        {
             return _currentSprite;
         }
-        set {
+        set
+        {
             if (value < 9) _boxCollider2D.isTrigger = true;
             _spriteRenderer.sprite = _cellSprites[value];
             _currentSprite = value;

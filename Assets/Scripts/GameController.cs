@@ -79,12 +79,9 @@ public class GameController : MonoBehaviour
         GameActive = false;
     }
 
-
     public void Restart()
     {
-        
-        PhotonNetwork.LoadLevel(SceneManager.GetActiveScene().name); // First Host reloads
-        _view.RPC("RestartRPC", RpcTarget.Others); // And then everyone else
+        _view.RPC("RestartRPC", RpcTarget.All);
     }
 
     [PunRPC]
