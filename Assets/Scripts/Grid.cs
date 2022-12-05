@@ -201,8 +201,8 @@ public class Grid : MonoBehaviour
     [PunRPC]
     void SetCurrentSpriteRPC(int col, int row, byte value)
     {
-        CellGrid[col][row].CurrentSprite = value;
-        // The stuff - all to do with SetGridStateIndicator - below prob not neccesary actually
+        if (PhotonNetwork.IsMasterClient || _initialized) CellGrid[col][row].CurrentSprite = value;
+        // The stuff below - all to do with SetGridStateIndicator - prob not neccesary actually
         if (PhotonNetwork.IsMasterClient)
         {
             SetGridStateIndicator(col, row, value);
