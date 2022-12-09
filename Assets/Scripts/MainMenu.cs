@@ -47,14 +47,20 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void JoinRoom()
     {
+        LevelLoader.Instance.PlayTransition();
         PhotonNetwork.JoinRoom(JoinInputField.text);
         string playerName = JoinNameInputField.text;
         PhotonNetwork.LocalPlayer.NickName = playerName.Equals("") ? "Player" : playerName;
     }
 
-	public override void OnJoinedRoom()
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        LevelLoader.Instance.ExitTransition();
+    }
+    public override void OnJoinedRoom()
 	{
-		PhotonNetwork.LoadLevel("In-Game");
+        PhotonNetwork.LoadLevel("In-Game");
+        //LevelLoader.Instance.LoadLevelPhoton("In-Game");
 	}
 
     public void QuitGame()

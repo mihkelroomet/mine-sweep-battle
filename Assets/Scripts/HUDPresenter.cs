@@ -11,26 +11,23 @@ public class HUDPresenter : MonoBehaviour
     public TMP_Text ScoreText;
     public TMP_Text TimerText;
     public GameObject ScoreBoard;
+    public GameObject EscMenu;
     public TMP_Text FinalScores;
     public AudioSource TickAudio;
     public AudioSource StartAudio;
     public AudioSource EndAudio;
     public Button RestartButton;
-    public Button MainMenuButton;
-    public Button QuitButton;
 
     private void Awake() {
         Instance = this;
         Events.OnSetScore += SetScore;
         Events.OnEndOfRound += ShowScoreboard;
-        RestartButton.onClick.AddListener(() => GameController.Instance.Restart());
-        MainMenuButton.onClick.AddListener(() => GameController.Instance.BackToMainMenu());
-        QuitButton.onClick.AddListener(() => GameController.Instance.Quit());
     }
 
     void Start()
     {
         ScoreBoard.SetActive(false);
+        EscMenu.SetActive(false);
     }
 
     // Update timer text
@@ -63,13 +60,32 @@ public class HUDPresenter : MonoBehaviour
 
         FinalScores.text = finalScores.TrimEnd();
 
+        EscMenu.SetActive(false);
         ScoreBoard.SetActive(true);
         RestartButton.gameObject.SetActive(PhotonNetwork.IsMasterClient); // Only let Host press restart otherwise it gets messed up
         EndAudio.Play();
     }
 
+    public void ShowEscMenu()
+    {
+        EscMenu.SetActive(!EscMenu.activeSelf);
+    }
 
     private void OnDestroy() {
         Events.OnEndOfRound -= ShowScoreboard;
     }
+
+    public void RestartButtonClicked()
+    {
+        GameController.Instance.Restart();
+    }
+    public void MainMenuButtonClicked()
+    {
+        GameController.Instance.BackToMainMenu();
+    }
+    public void QuitButtonClicked()
+    {
+        GameController.Instance.Quit();
+    }
+
 }

@@ -57,6 +57,10 @@ public class GameController : MonoBehaviour
             else {
                 // TimeLeft -= Time.deltaTime;
             }
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                HUDPresenter.Instance.ShowEscMenu();
+            }
         }
     }
 
@@ -87,12 +91,14 @@ public class GameController : MonoBehaviour
     [PunRPC]
     void RestartRPC()
     {
-        PhotonNetwork.LoadLevel(SceneManager.GetActiveScene().name);
+        //PhotonNetwork.LoadLevel(SceneManager.GetActiveScene().name);
+        LevelLoader.Instance.LoadLevelPhoton(SceneManager.GetActiveScene().name);
     }
 
     public void BackToMainMenu()
     {
-        SceneManager.LoadScene("MainMenu");
+        LevelLoader.Instance.LoadLevel("MainMenu");
+        //SceneManager.LoadScene("MainMenu");
         PhotonNetwork.LeaveRoom();
     }
 
