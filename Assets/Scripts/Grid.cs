@@ -32,6 +32,11 @@ public class Grid : MonoBehaviour
             while (! (bool) PhotonNetwork.CurrentRoom.CustomProperties["UpToDate"]) yield return new WaitForSeconds(0.1f);
             _view.RPC("SetRoomPropertiesOutOfDateRPC", RpcTarget.MasterClient);
         }
+        else
+        {
+            Rows = (int) PhotonNetwork.CurrentRoom.CustomProperties["Rows"];
+            Columns = (int) PhotonNetwork.CurrentRoom.CustomProperties["Columns"];
+        }
 
         InitializeGrid();
 

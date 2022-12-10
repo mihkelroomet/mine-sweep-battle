@@ -24,16 +24,6 @@ public class LevelLoader : MonoBehaviour
         StartCoroutine(LoadScene(levelName));
     }
 
-    public void PlayTransition()
-    {
-        Transition.SetTrigger("Start");
-    }
-
-    public void ExitTransition()
-    {
-        Transition.SetTrigger("Fail");
-    }
-
     IEnumerator LoadPhoton(string levelName)
     {
         Transition.SetTrigger("Start");
@@ -46,5 +36,19 @@ public class LevelLoader : MonoBehaviour
         Transition.SetTrigger("Start");
         yield return new WaitForSeconds(TransitionTime);
         SceneManager.LoadScene(levelName);
+    }
+    public void PlayTransition()
+    {
+        Transition.SetTrigger("Start");
+    }
+
+    public void ExitTransition()
+    {
+        Transition.SetTrigger("Fail");
+    }
+
+    public void SetActive()
+    {
+        gameObject.SetActive(true);
     }
 }

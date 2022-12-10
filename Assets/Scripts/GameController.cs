@@ -85,14 +85,15 @@ public class GameController : MonoBehaviour
 
     public void Restart()
     {
+        LevelLoader.Instance.PlayTransition();
         _view.RPC("RestartRPC", RpcTarget.All);
     }
 
     [PunRPC]
     void RestartRPC()
     {
-        //PhotonNetwork.LoadLevel(SceneManager.GetActiveScene().name);
-        LevelLoader.Instance.LoadLevelPhoton(SceneManager.GetActiveScene().name);
+        PhotonNetwork.LoadLevel(SceneManager.GetActiveScene().name);
+        //LevelLoader.Instance.LoadLevelPhoton(SceneManager.GetActiveScene().name);
     }
 
     public void BackToMainMenu()

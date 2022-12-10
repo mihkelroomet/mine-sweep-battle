@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 40799268}
   - component: {fileID: 40799270}
   - component: {fileID: 40799269}
+  - component: {fileID: 40799271}
   m_Layer: 5
   m_Name: EscMenu
   m_TagString: Untagged
@@ -204,6 +205,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 40799267}
   m_CullTransparentMesh: 1
+--- !u!225 &40799271
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 40799267}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 1
 --- !u!1 &107471791
 GameObject:
   m_ObjectHideFlags: 0
