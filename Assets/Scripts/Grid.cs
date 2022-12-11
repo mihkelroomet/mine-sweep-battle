@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
@@ -16,14 +17,16 @@ public class Grid : MonoBehaviour
     [HideInInspector]
     public float BombProbability;
     public float GridCheckInterval;
-    private byte[][] _gridState; // bombless cells mapped to 0-10 according to their cell sprite number, bomb cells mapped to 11
+    private byte[][] _gridState; // 0-8 - Opened, 9 - Unopened Non-Bomb, 10 - Border, 11 - Unopened Bomb
     [SerializeField] private PhotonView _view;
     private bool _initialized;
+    private Queue<GridUpdateEvent> _gridUpdateEventQueue;
 
     private void Awake() {
         Instance = this;
         CellsOpened = 0;
         _initialized = false;
+        _gridUpdateEventQueue = new Queue<GridUpdateEvent>();
     }
 
     IEnumerator Start()
@@ -45,6 +48,8 @@ public class Grid : MonoBehaviour
         InitializeGrid();
 
         _initialized = true;
+
+        if (!PhotonNetwork.IsMasterClient) ApplyGridUpdatesReceivedDuringInit();
     }
 
     private void InitializeGrid()
@@ -106,14 +111,7 @@ public class Grid : MonoBehaviour
                 else // If not Host
                 {
                     byte gridStateIndicator = (byte) ((byte[]) properties["GridState_Column" + col])[row];
-                    if (gridStateIndicator == 11)
-                    {
-                        cell.IsBomb = true;
-                    }
-                    else
-                    {
-                        cell.CurrentSprite = gridStateIndicator;
-                    }
+                    cell.CurrentSprite = gridStateIndicator;
                 }
             }
         }
@@ -132,6 +130,18 @@ public class Grid : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Applies any updates to the grid that were received during Initialization 
+    /// </summary>
+    private void ApplyGridUpdatesReceivedDuringInit()
+    {
+        while (_gridUpdateEventQueue.Count != 0)
+        {
+            GridUpdateEvent gridUpdateEvent = _gridUpdateEventQueue.Dequeue();
+            CellGrid[gridUpdateEvent.Column][gridUpdateEvent.Row].CurrentSprite = gridUpdateEvent.CellSprite;
         }
     }
 
@@ -190,18 +200,6 @@ public class Grid : MonoBehaviour
         CellsOpened = value;
     }
 
-    public void RemoveBomb(int col, int row)
-    {
-        _view.RPC("RemoveBombRPC", RpcTarget.All, col, row);
-    }
-
-    [PunRPC]
-    void RemoveBombRPC(int col, int row)
-    {
-        CellGrid[col][row].IsBomb = false;
-        SetGridStateIndicator(col, row, 9); // Updating state for defusal in case someone connects before Open is called
-    }
-
     public void SetCurrentSprite(int col, int row, byte value)
     {
         _view.RPC("SetCurrentSpriteRPC", RpcTarget.All, col, row, value);
@@ -211,27 +209,6 @@ public class Grid : MonoBehaviour
     void SetCurrentSpriteRPC(int col, int row, byte value)
     {
         if (PhotonNetwork.IsMasterClient || _initialized) CellGrid[col][row].CurrentSprite = value;
-        // The stuff below - all to do with SetGridStateIndicator - prob not neccesary actually
-        if (PhotonNetwork.IsMasterClient)
-        {
-            SetGridStateIndicator(col, row, value);
-        }
-    }
-
-    public void SetGridStateIndicator(int col, int row, byte value)
-    {
-        _view.RPC("SetGridStateIndicatorRPC", RpcTarget.MasterClient, col, row, value);
-    }
-
-    [PunRPC]
-    void SetGridStateIndicatorRPC(int col, int row, byte value)
-    {
-        _gridState[col][row] = value;
-
-        ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
-
-        if (!properties.TryAdd("GridState_Column" + col, _gridState[col])) properties["GridState_Column" + col] = _gridState[col];
-
-        PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+        else _gridUpdateEventQueue.Enqueue(new GridUpdateEvent(col, row, value));
     }
 }

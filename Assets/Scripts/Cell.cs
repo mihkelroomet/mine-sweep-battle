@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
-using Photon.Realtime;
 
 public class Cell : MonoBehaviour
 {
@@ -9,19 +7,18 @@ public class Cell : MonoBehaviour
     public bool IsBomb {
         get
         {
-            return _isBomb;
+            return CurrentSprite == 11;
         }
         set
         {
-            _isBomb = value;
-            if (_isBomb) CurrentSprite = 9;
+            if (value) CurrentSprite = 11; // When planting bomb
+            else Open(); // When removing bomb
         }
     }
-    private bool _isBomb;
 
     // Cell Sprites
     private SpriteRenderer _spriteRenderer;
-    private Sprite[] _cellSprites;
+    private Sprite[] _cellSprites; // 0-8 - Opened, 9 - Unopened Non-Bomb, 10 - Border, 11 - Unopened Bomb
     public Sprite OpenCellSprite0;
     public Sprite OpenCellSprite1;
     public Sprite OpenCellSprite2;
@@ -40,9 +37,14 @@ public class Cell : MonoBehaviour
         }
         set
         {
-            if (value < 9) _boxCollider2D.isTrigger = true;
-            _spriteRenderer.sprite = _cellSprites[value];
-            _currentSprite = value;
+            // Only valid changes are higher → lower during game and 9 → higher at grid initialization
+            if (value < _currentSprite || value > _currentSprite && _currentSprite == 9)
+            {
+                if (value < 9) _boxCollider2D.isTrigger = true; // Enable stepping on if opened
+                else _boxCollider2D.isTrigger = false; // Disable stepping on if unopened
+                _spriteRenderer.sprite = _cellSprites[value];
+                _currentSprite = value;
+            }
         }
     }
     private byte _currentSprite;
@@ -78,9 +80,8 @@ public class Cell : MonoBehaviour
         _boxCollider2D = GetComponent<BoxCollider2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _cellSprites = new Sprite[]{OpenCellSprite0, OpenCellSprite1, OpenCellSprite2, OpenCellSprite3, OpenCellSprite4,
-        OpenCellSprite5, OpenCellSprite6, OpenCellSprite7, OpenCellSprite8, UnopenedCellSprite, BorderCellSprite};
-        IsBomb = false;
-        CurrentSprite = 9; // 9 - Unopened Cell Sprite
+        OpenCellSprite5, OpenCellSprite6, OpenCellSprite7, OpenCellSprite8, UnopenedCellSprite, BorderCellSprite, UnopenedCellSprite};
+        _currentSprite = 9; // 9 - Unopened Non-Bomb Cell Sprite
     }
 
     private void Update()
@@ -98,16 +99,21 @@ public class Cell : MonoBehaviour
         return CurrentSprite == 10;
     }
 
-    // Changes the color of a cell
-    // Used when shooting cells to change to green / red and then back to white later
+    /// <summary>
+    /// Changes the color of a cell<br></br>
+    /// Used when shooting cells to change to green / red and then back to white later
+    /// </summary>
     public void ChangeColor(Color color) {
         _spriteRenderer.color = color;
     }
 
-    // If the cell had a bomb, remove it and update indicators around it
-    public void DefuseBomb() {
+    /// <summary>
+    /// Removes bomb and updates surrounding indicators<br></br>
+    /// Meant to be called right before Open only
+    /// </summary>
+    public void RemoveBomb() {
         if (IsBomb && !IsBorderCell()) {
-            Grid.Instance.RemoveBomb(Col, Row);
+            Grid.Instance.SetCurrentSprite(Col, Row, 9);
             List<Cell> surroundingCells = GetSurroundingCells();
 
             foreach (Cell cell in surroundingCells)
@@ -131,7 +137,6 @@ public class Cell : MonoBehaviour
         }
     }
 
-    // Opens cell
     public void Open() {
         if (!IsOpen() && !IsBorderCell())
         {
@@ -144,7 +149,6 @@ public class Cell : MonoBehaviour
         }
     }
 
-    // Opens surrounding cells
     private void OpenSurroundingCells() {
         foreach (Cell cell in GetSurroundingCells())
         {
@@ -152,7 +156,9 @@ public class Cell : MonoBehaviour
         }
     }
 
-    // Counts bombs around itself
+    /// <summary>
+    /// Counts bombs in the 8 surrounding cells
+    /// </summary>
     private byte CountBombsAround() {
         byte bombCount = 0;
 
@@ -166,7 +172,6 @@ public class Cell : MonoBehaviour
         return bombCount;
     }
 
-    // Returns surrounding cells
     private List<Cell> GetSurroundingCells() {
         List<Cell> surroundingCells = new List<Cell>();
 
@@ -185,17 +190,6 @@ public class Cell : MonoBehaviour
         }
         
         return surroundingCells;
-    }
-
-    // Makes sure the bomb sprite disappears
-    private void CountBombSpriteDown() {
-        if (_bombSpriteTimer > 0) {
-            _bombSpriteTimer -= Time.deltaTime;
-            if (_bombSpriteTimer <= 0) {
-                ChangeColor(Color.white);
-                HideBombSprite();
-            }
-        }
     }
 
     public void ShootWith(Color beamColor, PlayerController player) {
@@ -239,8 +233,21 @@ public class Cell : MonoBehaviour
             }
         }
         
-        DefuseBomb();
+        RemoveBomb();
         Open();
+    }
+
+    /// <summary>
+    /// Makes sure the bomb sprite disappears
+    /// </summary>
+    private void CountBombSpriteDown() {
+        if (_bombSpriteTimer > 0) {
+            _bombSpriteTimer -= Time.deltaTime;
+            if (_bombSpriteTimer <= 0) {
+                ChangeColor(Color.white);
+                HideBombSprite();
+            }
+        }
     }
 
     private void DisplayBombSprite() {
