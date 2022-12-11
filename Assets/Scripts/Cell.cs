@@ -72,7 +72,7 @@ public class Cell : MonoBehaviour
     public AudioClipGroup IncorrectBombSound;
 
     // Position in grid
-    public int Col {get; set;}
+    public int Column {get; set;}
     public int Row {get; set;}
 
     private void Awake()
@@ -105,6 +105,7 @@ public class Cell : MonoBehaviour
     /// </summary>
     public void ChangeColor(Color color) {
         _spriteRenderer.color = color;
+        _bombSpriteTimer = 0.2f;
     }
 
     /// <summary>
@@ -113,14 +114,14 @@ public class Cell : MonoBehaviour
     /// </summary>
     public void RemoveBomb() {
         if (IsBomb && !IsBorderCell()) {
-            Grid.Instance.SetCurrentSprite(Col, Row, 9);
+            Grid.Instance.SetCurrentSprite(Column, Row, 9);
             List<Cell> surroundingCells = GetSurroundingCells();
 
             foreach (Cell cell in surroundingCells)
             {
                 // Updating indicators around
                 if (cell.IsOpen()) {
-                    Grid.Instance.SetCurrentSprite(cell.Col, cell.Row, (byte) Mathf.Max(cell.CurrentSprite - 1, 0));
+                    Grid.Instance.SetCurrentSprite(cell.Column, cell.Row, (byte) Mathf.Max(cell.CurrentSprite - 1, 0));
                 }
             }
 
@@ -141,7 +142,7 @@ public class Cell : MonoBehaviour
         if (!IsOpen() && !IsBorderCell())
         {
             byte bombCount = CountBombsAround();
-            Grid.Instance.SetCurrentSprite(Col, Row, bombCount);
+            Grid.Instance.SetCurrentSprite(Column, Row, bombCount);
             if (bombCount == 0) {
                 OpenSurroundingCells();
             }
@@ -174,7 +175,7 @@ public class Cell : MonoBehaviour
     private List<Cell> GetSurroundingCells() {
         List<Cell> surroundingCells = new List<Cell>();
 
-        for (int col = Col - 1; col <= Col + 1; col++)
+        for (int col = Column - 1; col <= Column + 1; col++)
         {
             if (col >= 0 && col < Grid.Instance.Columns)
             {
@@ -199,41 +200,66 @@ public class Cell : MonoBehaviour
             if (IsBomb && beamColor == Color.red || !IsBomb && beamColor == Color.green) {
                 // Play the explosion particle system and when bomb explodes
                 if (IsBomb) {
-                    Instantiate(Explosion, transform.position, transform.rotation);
-                    DisplayBombSprite();
                     Events.SetScore(Events.GetScore() + FailBombPenalty);
-                    IncorrectBombSound.Play();
+                    Grid.Instance.DisplayEffectsOnCellShotEvent(Column, Row, 1);
                 }
                 else {
                     Events.SetScore(Events.GetScore() + FailEmptyPenalty);
-                    IncorrectEmptySound.Play();
+                    Grid.Instance.DisplayEffectsOnCellShotEvent(Column, Row, 2);
                 }
 
-                _bombSpriteTimer = 0.2f;
-                ChangeColor(Color.red);
                 player.Stun();
             }
 
             // Show the bomb and turn the cell green
             else if (IsBomb && beamColor == Color.green)
             {
-                Instantiate(BombDefused, transform.position, transform.rotation);
-                ChangeColor(Color.green);
-                DisplayBombSprite();
-                _bombSpriteTimer = 0.2f;
                 Events.SetScore(Events.GetScore() + OpenBombScore);
-                CorrectBombSound.Play();
+                Grid.Instance.DisplayEffectsOnCellShotEvent(Column, Row, 3);
             }
             else if (!IsBomb && beamColor == Color.red) // Could just be 'else' but this is more elaborate
             {
-                Instantiate(CellOpened, transform.position, transform.rotation);
                 Events.SetScore(Events.GetScore() + OpenEmptyScore);
-                CorrectEmptySound.Play();
+                Grid.Instance.DisplayEffectsOnCellShotEvent(Column, Row, 4);
             }
         }
         
         RemoveBomb();
         Open();
+    }
+
+    /// <summary>
+    /// Displays cell effects on getting shot<br></br>
+    /// 1 - Incorrect shot on bomb cell<br></br>
+    /// 2 - Incorrect shot on empty cell<br></br>
+    /// 3 - Correct shot on bomb cell<br></br>
+    /// 4 - Correct shot on empty cell
+    /// </summary>
+    public void DisplayEffectsOnCellShotEvent(byte eventType)
+    {
+        switch (eventType)
+        {
+            case 1:
+                Instantiate(Explosion, transform.position, transform.rotation);
+                DisplayBombSprite();
+                ChangeColor(Color.red);
+                IncorrectBombSound.Play();
+                break;
+            case 2:
+                ChangeColor(Color.red);
+                IncorrectEmptySound.Play();
+                break;
+            case 3:
+                Instantiate(BombDefused, transform.position, transform.rotation);
+                DisplayBombSprite();
+                ChangeColor(Color.green);
+                CorrectBombSound.Play();
+                break;
+            case 4:
+                Instantiate(CellOpened, transform.position, transform.rotation);
+                CorrectEmptySound.Play();
+                break;
+        }
     }
 
     /// <summary>
@@ -251,6 +277,7 @@ public class Cell : MonoBehaviour
 
     private void DisplayBombSprite() {
         _bombSpriteRenderer = Instantiate(BombSpritePrefab, transform);
+        _bombSpriteTimer = 0.2f;
     }
 
     private void HideBombSprite() {

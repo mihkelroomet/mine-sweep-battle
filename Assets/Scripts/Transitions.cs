@@ -38,7 +38,6 @@ public class Transitions : MonoBehaviour
 
     public void PlayExitTransition()
     {
-        Debug.Log("exit");
         Transition.SetTrigger("Close");
     }
 }

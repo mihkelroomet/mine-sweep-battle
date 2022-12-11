@@ -1076,7 +1076,6 @@ GameObject:
   m_Component:
   - component: {fileID: 637535958}
   - component: {fileID: 637535957}
-  - component: {fileID: 637535960}
   - component: {fileID: 637535959}
   m_Layer: 0
   m_Name: Controllers
@@ -1137,19 +1136,6 @@ MonoBehaviour:
   sceneViewId: 2
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &637535960
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 637535956}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 321296ec862d38a4e8c79faf03ed19ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  AudioSourcePrefab: {fileID: 4752302503664244409, guid: a3a0e7cb8f30c4546805d65f52bda334, type: 3}
 --- !u!1 &722372633
 GameObject:
   m_ObjectHideFlags: 0
@@ -1718,7 +1704,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57f89f80d47e7f240bff646a4c8e3008, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CellPrefab: {fileID: 6383394763925990499, guid: 99e0cb6d3c881fd4aa14590c9f92e94e, type: 3}
+  CellPrefab: {fileID: 6383394763925990499, guid: e3d673eeb10a6fc479e46fe437d6d75d, type: 3}
   Columns: 16
   Rows: 16
   BombProbability: 0.15

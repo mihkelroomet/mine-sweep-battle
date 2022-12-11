@@ -91,7 +91,7 @@ public class Grid : MonoBehaviour
                 CellGrid[col][row] = cell;
 
                 // Give the cell its location info
-                cell.Col = col;
+                cell.Column = col;
                 cell.Row = row;
 
                 if (PhotonNetwork.IsMasterClient)
@@ -199,5 +199,16 @@ public class Grid : MonoBehaviour
     {
         if (PhotonNetwork.IsMasterClient || _initialized) CellGrid[col][row].CurrentSprite = value;
         else _gridUpdateEventQueue.Enqueue(new GridUpdateEvent(col, row, value));
+    }
+
+    public void DisplayEffectsOnCellShotEvent(int col, int row, byte eventType)
+    {
+        _view.RPC("DisplayEffectsOnCellShotEventRPC", RpcTarget.All, col, row, eventType);
+    }
+
+    [PunRPC]
+    void DisplayEffectsOnCellShotEventRPC(int col, int row, byte eventType)
+    {
+        if (PhotonNetwork.IsMasterClient || _initialized) CellGrid[col][row].DisplayEffectsOnCellShotEvent(eventType);
     }
 }

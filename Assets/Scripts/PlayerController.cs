@@ -157,10 +157,10 @@ public class PlayerController : MonoBehaviour, IPunObservable
         }
 
         if (color == Color.red) {
-            Fire1Audio.Play();
+            PlayFireAudio(1);
         }
         else {
-            Fire2Audio.Play();
+            PlayFireAudio(2);
         }
     }
 
@@ -169,6 +169,25 @@ public class PlayerController : MonoBehaviour, IPunObservable
         _inputHorizontal = 0;
         _inputVertical = 0;
         _stunTimer = _stunDuration;
+    }
+
+    public void PlayFireAudio(byte fireType)
+    {
+        _view.RPC("PlayFireAudioRPC", RpcTarget.All, fireType);
+    }
+
+    [PunRPC]
+    void PlayFireAudioRPC(byte fireType)
+    {
+        switch (fireType)
+        {
+            case 1:
+                Fire1Audio.Play();
+                break;
+            case 2:
+                Fire2Audio.Play();
+                break;
+        }
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
