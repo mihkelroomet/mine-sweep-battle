@@ -24,52 +24,54 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     [SerializeField]
     private byte _maxPlayers = 10;
+    [SerializeField]
+    private float _bombProbability = 0.25f;
+    [SerializeField]
+    private int _roundLength = 60;
 
     private void Awake() {
         PracticeButton.onClick.AddListener(() => CreatePracticeRoom());
         CreateButton.onClick.AddListener(() => CreateRoom());
         JoinButton.onClick.AddListener(() => JoinRoom());
         QuitButton.onClick.AddListener(() => QuitGame());
-    }
-
-    public void CreateRoom()
-    {
-        RoomOptions roomOptions = new RoomOptions();
-        roomOptions.MaxPlayers = _maxPlayers;
-        ExitGames.Client.Photon.Hashtable roomProps = new ExitGames.Client.Photon.Hashtable();
-        roomProps.Add("UpToDate", false);
-        roomProps.Add("Rows", (int) RowSlider.value);
-        roomProps.Add("Columns", (int) ColumnSlider.value);
-        roomOptions.CustomRoomProperties = roomProps;
-        PhotonNetwork.CreateRoom(CreateInputField.text, roomOptions);
-        string playerName = CreateNameInputField.text;
-        PhotonNetwork.LocalPlayer.NickName = playerName.Equals("") ? "Player" : playerName;
+        Transitions.Instance.PlayEnterTransition();
     }
 
     public void CreatePracticeRoom()
     {
+        CreateRoom(50, 50, 1, 0.25f, 60, "Trainee", Random.Range(0, 1_000_000).ToString());
+    }
+
+    public void CreateRoom()
+    {
+        CreateRoom((int) RowSlider.value, (int) ColumnSlider.value, _maxPlayers, _bombProbability, _roundLength, CreateNameInputField.text, CreateInputField.text);
+    }
+
+    public void CreateRoom(int rows, int columns, byte maxPlayers, float bombProbability, int roundLength, string playerName, string roomName)
+    {
         RoomOptions roomOptions = new RoomOptions();
-        roomOptions.MaxPlayers = 1;
-        PhotonNetwork.CreateRoom(Random.Range(0, 1_000_000).ToString(), roomOptions);
-        PhotonNetwork.LocalPlayer.NickName = "Trainee";
+        roomOptions.MaxPlayers = maxPlayers;
+        ExitGames.Client.Photon.Hashtable roomProps = new ExitGames.Client.Photon.Hashtable();
+        roomProps.Add("UpToDate", false);
+        roomProps.Add("Rows", (int) rows);
+        roomProps.Add("Columns", (int) columns);
+        roomProps.Add("BombProbability", (float) bombProbability);
+        roomProps.Add("RoundLength", (int) roundLength);
+        roomOptions.CustomRoomProperties = roomProps;
+        PhotonNetwork.CreateRoom(roomName, roomOptions);
+        PhotonNetwork.LocalPlayer.NickName = playerName;
     }
 
     public void JoinRoom()
     {
-        LevelLoader.Instance.PlayTransition();
         PhotonNetwork.JoinRoom(JoinInputField.text);
         string playerName = JoinNameInputField.text;
         PhotonNetwork.LocalPlayer.NickName = playerName.Equals("") ? "Player" : playerName;
     }
 
-    public override void OnJoinRoomFailed(short returnCode, string message)
-    {
-        LevelLoader.Instance.ExitTransition();
-    }
     public override void OnJoinedRoom()
 	{
         PhotonNetwork.LoadLevel("In-Game");
-        //LevelLoader.Instance.LoadLevelPhoton("In-Game");
 	}
 
     public void SetRows(float rows)

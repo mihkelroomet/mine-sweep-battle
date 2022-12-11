@@ -9,8 +9,11 @@ public class Grid : MonoBehaviour
     public int CellsOpened {get; set;} // Number of cells that have been opened in total
     public Cell CellPrefab;
     public Cell[][] CellGrid {get; set;}
+    [HideInInspector]
     public int Columns;
+    [HideInInspector]
     public int Rows;
+    [HideInInspector]
     public float BombProbability;
     public float GridCheckInterval;
     private byte[][] _gridState; // bombless cells mapped to 0-10 according to their cell sprite number, bomb cells mapped to 11
@@ -36,6 +39,7 @@ public class Grid : MonoBehaviour
         {
             Rows = (int) PhotonNetwork.CurrentRoom.CustomProperties["Rows"];
             Columns = (int) PhotonNetwork.CurrentRoom.CustomProperties["Columns"];
+            BombProbability = (float) PhotonNetwork.CurrentRoom.CustomProperties["BombProbability"];
         }
 
         InitializeGrid();

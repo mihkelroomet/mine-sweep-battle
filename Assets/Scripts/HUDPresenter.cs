@@ -22,6 +22,7 @@ public class HUDPresenter : MonoBehaviour
         Instance = this;
         Events.OnSetScore += SetScore;
         Events.OnEndOfRound += ShowScoreboard;
+        Transitions.Instance.PlayEnterTransition();
     }
 
     void Start()

@@ -1,5 +1,5 @@
+using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Photon.Pun;
 
 public class GameController : MonoBehaviour
@@ -85,21 +85,23 @@ public class GameController : MonoBehaviour
 
     public void Restart()
     {
-        LevelLoader.Instance.PlayTransition();
         _view.RPC("RestartRPC", RpcTarget.All);
     }
 
     [PunRPC]
     void RestartRPC()
     {
-        PhotonNetwork.LoadLevel(SceneManager.GetActiveScene().name);
-        //LevelLoader.Instance.LoadLevelPhoton(SceneManager.GetActiveScene().name);
+        Transitions.Instance.ExitSceneWithTransition("In-Game");
     }
 
     public void BackToMainMenu()
     {
-        LevelLoader.Instance.LoadLevel("MainMenu");
-        //SceneManager.LoadScene("MainMenu");
+        StartCoroutine(BackToMainMenuCoroutine());
+    }
+
+    IEnumerator BackToMainMenuCoroutine()
+    {
+        yield return Transitions.Instance.ExitSceneWithTransitionCoroutine("MainMenu");
         PhotonNetwork.LeaveRoom();
     }
 
