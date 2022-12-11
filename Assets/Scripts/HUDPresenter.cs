@@ -56,7 +56,7 @@ public class HUDPresenter : MonoBehaviour
 
         foreach (Player player in sortedPlayerList)
         {
-            finalScores += placing++ + "." + player.NickName + "\t" + player.CustomProperties["Score"] + "\n";
+            finalScores += placing++ + "." + player.NickName + "\t\t\t" + player.CustomProperties["Score"] + "\n";
         }
 
         FinalScores.text = finalScores.TrimEnd();

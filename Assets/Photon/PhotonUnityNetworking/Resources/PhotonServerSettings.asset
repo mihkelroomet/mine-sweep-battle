@@ -48,6 +48,8 @@ MonoBehaviour:
   - SetRoomPropertiesOutOfDateRPC
   - DisplayEffectsOnCellShotEventRPC
   - PlayFireAudioRPC
+  - SetTimeLeftOutOfDateRPC
+  - UpdateTimeLeftRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

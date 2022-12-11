@@ -9,7 +9,6 @@ public class GameController : MonoBehaviour
     public static GameController Instance;
     [SerializeField] private PhotonView _view;
     public int Score;
-    public float RoundTime;
 
     public float TimeLeft
     {
@@ -18,7 +17,7 @@ public class GameController : MonoBehaviour
         }
         set {
             _timeLeft = value;
-            // HUDPresenter.Instance.UpdateTimer(value);
+            HUDPresenter.Instance.UpdateTimer(value);
         }
     }
     private float _timeLeft;
@@ -33,8 +32,7 @@ public class GameController : MonoBehaviour
         Events.OnSetScore += SetScore;
         Events.OnGetScore += GetScore;
         Events.OnEndOfRound += EndOfRound;
-        // GameActive = false; // Will wait for countdown to become active
-        GameActive = true;
+        GameActive = false; // Will wait for countdown to become active once we add it back in
         Score = 0;
         _gameEndCheckInterval = 0.1f;
         _nextGameEndCheckTime = Time.time + _gameEndCheckInterval;
@@ -47,10 +45,22 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void Start()
+    IEnumerator Start()
     {
-        TimeLeft = RoundTime;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            TimeLeft = (int) PhotonNetwork.CurrentRoom.CustomProperties["RoundLength"];
+            ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
+            PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+        }
+        else {
+            _view.RPC("UpdateTimeLeftRPC", RpcTarget.MasterClient);
+            while (! (bool) PhotonNetwork.CurrentRoom.CustomProperties["TimeLeftUpToDate"]) yield return new WaitForSeconds(0.1f);
+            TimeLeft = (float) PhotonNetwork.CurrentRoom.CustomProperties["TimeLeft"];
+            _view.RPC("SetTimeLeftOutOfDateRPC", RpcTarget.MasterClient);
+        }
         Events.SetScore(Score);
+        GameActive = true;
     }
 
     private void Update()
@@ -80,7 +90,7 @@ public class GameController : MonoBehaviour
                 Events.EndOfRound();
             }
             else {
-                // TimeLeft -= Time.deltaTime;
+                TimeLeft -= Time.deltaTime;
             }
             if (Input.GetKeyDown(KeyCode.Escape))
             {
@@ -106,6 +116,23 @@ public class GameController : MonoBehaviour
     private void EndOfRound()
     {
         GameActive = false;
+    }
+
+    [PunRPC]
+    void UpdateTimeLeftRPC()
+    {
+        ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
+        if (!properties.TryAdd("TimeLeft", TimeLeft)) properties["TimeLeft"] = TimeLeft;
+        if (!properties.TryAdd("TimeLeftUpToDate", true)) properties["TimeLeftUpToDate"] = true;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+    }
+
+    [PunRPC]
+    void SetTimeLeftOutOfDateRPC()
+    {
+        ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
+        if (!properties.TryAdd("TimeLeftUpToDate", false)) properties["TimeLeftUpToDate"] = false;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
     }
 
     public void Restart()

@@ -52,11 +52,12 @@ public class MainMenu : MonoBehaviourPunCallbacks
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = maxPlayers;
         ExitGames.Client.Photon.Hashtable roomProps = new ExitGames.Client.Photon.Hashtable();
-        roomProps.Add("UpToDate", false);
         roomProps.Add("Rows", (int) rows);
         roomProps.Add("Columns", (int) columns);
         roomProps.Add("BombProbability", (float) bombProbability);
         roomProps.Add("RoundLength", (int) roundLength);
+        roomProps.Add("UpToDate", false);
+        roomProps.Add("TimeLeftUpToDate", false);
         roomOptions.CustomRoomProperties = roomProps;
         PhotonNetwork.CreateRoom(roomName, roomOptions);
         PhotonNetwork.LocalPlayer.NickName = playerName;
