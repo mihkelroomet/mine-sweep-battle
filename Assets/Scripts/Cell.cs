@@ -142,7 +142,6 @@ public class Cell : MonoBehaviour
         {
             byte bombCount = CountBombsAround();
             Grid.Instance.SetCurrentSprite(Col, Row, bombCount);
-            Grid.Instance.SetCellsOpened(Grid.Instance.CellsOpened + 1);
             if (bombCount == 0) {
                 OpenSurroundingCells();
             }

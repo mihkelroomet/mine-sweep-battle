@@ -23,6 +23,10 @@ public class GameController : MonoBehaviour
     }
     private float _timeLeft;
 
+    // For periodically checking if all cells have been opened
+    private float _gameEndCheckInterval;
+    private float _nextGameEndCheckTime;
+
     private void Awake()
     {
         Instance = this;
@@ -32,6 +36,8 @@ public class GameController : MonoBehaviour
         // GameActive = false; // Will wait for countdown to become active
         GameActive = true;
         Score = 0;
+        _gameEndCheckInterval = 0.1f;
+        _nextGameEndCheckTime = Time.time + _gameEndCheckInterval;
 
         if (_view.IsMine)
         {
@@ -49,9 +55,28 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        if (GameActive) {
+        if (GameActive)
+        {
+            bool allCellsOpened = false;
+            if (_nextGameEndCheckTime <= Time.time && Grid.Instance.Initialized)
+            {
+                allCellsOpened = true;
+                foreach (Cell[] cellColumn in Grid.Instance.CellGrid)
+                {
+                    foreach (Cell cell in cellColumn)
+                    {
+                        if (cell.IsBomb)
+                        {
+                            allCellsOpened = false;
+                            break;
+                        }
+                    }
+                }
+                _nextGameEndCheckTime = Time.time + _gameEndCheckInterval;
+            }
+
             // End the round if time has run out or if all the cells have been opened
-            if (TimeLeft <= 0 || Grid.Instance.CellsOpened == (Grid.Instance.Columns-2)* (Grid.Instance.Rows-2)) {
+            if (TimeLeft <= 0 || allCellsOpened) {
                 Events.EndOfRound();
             }
             else {

@@ -6,8 +6,6 @@ using Photon.Pun;
 public class Grid : MonoBehaviour
 {
     public static Grid Instance;
-    [HideInInspector]
-    public int CellsOpened {get; set;} // Number of cells that have been opened in total
     public Cell CellPrefab;
     public Cell[][] CellGrid {get; set;}
     [HideInInspector]
@@ -19,12 +17,16 @@ public class Grid : MonoBehaviour
     public float GridCheckInterval;
     private byte[][] _gridState; // 0-8 - Opened, 9 - Unopened Non-Bomb, 10 - Border, 11 - Unopened Bomb
     [SerializeField] private PhotonView _view;
+    public bool Initialized {
+        get {
+            return _initialized;
+        }
+    }
     private bool _initialized;
     private Queue<GridUpdateEvent> _gridUpdateEventQueue;
 
     private void Awake() {
         Instance = this;
-        CellsOpened = 0;
         _initialized = false;
         _gridUpdateEventQueue = new Queue<GridUpdateEvent>();
     }
@@ -59,7 +61,6 @@ public class Grid : MonoBehaviour
         {
             Columns = (int) properties["Columns"];
             Rows = (int) properties["Rows"];
-            CellsOpened = (int) properties["CellsOpened"];
         }
 
         CellGrid = new Cell[Columns][];
@@ -154,7 +155,6 @@ public class Grid : MonoBehaviour
 
         if (!properties.TryAdd("Columns", Columns)) properties["Columns"] = Columns;
         if (!properties.TryAdd("Rows", Rows)) properties["Rows"] = Rows;
-        if (!properties.TryAdd("CellsOpened", CellsOpened)) properties["CellsOpened"] = CellsOpened;
 
         for (int col = 0; col < Columns; col++)
         {
@@ -187,17 +187,6 @@ public class Grid : MonoBehaviour
         if (!properties.TryAdd("UpToDate", false)) properties["UpToDate"] = false;
 
         PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
-    }
-
-    public void SetCellsOpened(int value)
-    {
-        _view.RPC("SetCellsOpenedRPC", RpcTarget.All, value);
-    }
-
-    [PunRPC]
-    void SetCellsOpenedRPC(int value)
-    {
-        CellsOpened = value;
     }
 
     public void SetCurrentSprite(int col, int row, byte value)
