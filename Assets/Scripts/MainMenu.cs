@@ -3,12 +3,18 @@ using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Collections.Generic;
 
 public class MainMenu : MonoBehaviourPunCallbacks
 {
     public Button PracticeButton;
     public TMP_InputField CreateNameInputField;
     public TMP_InputField CreateInputField;
+
+    public RoomListing roomListingPrefab;
+    public Transform Content;
+
+    private List<RoomListing> _listings = new List<RoomListing>();
 
     public TMP_InputField RowCountField;
     public Slider RowSlider;
@@ -72,8 +78,56 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
 	{
+
         PhotonNetwork.LoadLevel("In-Game");
 	}
+
+    // Join the lobby again after exiting a game, so the room list works
+    public override void OnConnectedToMaster()
+    {
+        PhotonNetwork.JoinLobby();
+    }
+
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        foreach (RoomInfo info in roomList)
+        {
+            if (info.RemovedFromList)
+            {
+                int index = _listings.FindIndex(x => x.RoomInfo.Name == info.Name);
+                if (index != -1)
+                {
+                    Destroy(_listings[index].gameObject);
+                    _listings.RemoveAt(index);
+                }
+            }
+            //Added to rooms list
+            else
+            {
+                int index = _listings.FindIndex(x => x.RoomInfo.Name == info.Name);
+                if (index != -1)
+                {
+                    _listings[index].SetRoomInfo(info);
+                }
+                else
+                {
+                    RoomListing listing = Instantiate(roomListingPrefab, Content);
+                    Button listingButton = listing.GetComponent<Button>();
+                    listingButton.onClick.AddListener(() => SelectRoom(listing));
+                    if (listing != null)
+                    {
+                        listing.SetRoomInfo(info);
+                        _listings.Add(listing);
+                    }
+                }
+            }
+        }
+    }
+
+    public void SelectRoom(RoomListing room)
+    {
+        JoinInputField.text = room.RoomInfo.Name;
+    }
 
     public void SetRows(float rows)
     {
