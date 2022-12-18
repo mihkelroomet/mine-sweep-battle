@@ -14,6 +14,7 @@ public class AudioClipGroup : ScriptableObject
     [Range(0, 2)]
     public float PitchMax = 1;
     public float Cooldown = 0.1f;
+    public float MaxAudibleDistance = 7f;
 
     public List<AudioClip> Clips;
 
@@ -26,12 +27,18 @@ public class AudioClipGroup : ScriptableObject
 
     public void Play()
     {
-        if (AudioSourcePool.Instance == null) return;
-        
-        Play(AudioSourcePool.Instance.GetSource());
+        Play(PlayerController.Instance.transform);
     }
 
-    public void Play(AudioSource source)
+    public void Play(Transform parent)
+    {
+        if (AudioSourcePool.Instance == null) return;
+        
+        // Don't play sounds if their source is too far
+        if (Vector3.Distance(PlayerController.Instance.transform.position, parent.transform.position) < MaxAudibleDistance) Play(AudioSourcePool.Instance.GetSource(), parent);
+    }
+
+    public void Play(AudioSource source, Transform parent)
     {
         if (timestamp > Time.time) return;
         if (Clips.Count <= 0) return;
@@ -40,8 +47,10 @@ public class AudioClipGroup : ScriptableObject
 
         source.volume = Random.Range(VolumeMin, VolumeMax);
         source.pitch = Random.Range(PitchMin, PitchMax);
-
         source.clip = Clips[Random.Range(0, Clips.Count)];
+        source.transform.parent = parent;
+        source.transform.position = parent.transform.position;
+
         source.Play();
     }
 

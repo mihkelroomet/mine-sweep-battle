@@ -607,6 +607,7 @@ MonoBehaviour:
   _namePanel: {fileID: 6180710124938520495}
   _nametag: {fileID: 2347122354120365502}
   _animator: {fileID: 8606360999431299259}
+  AudioListenerPrefab: {fileID: 2937236546330399345, guid: cf05cf63037deb2459b83b32d7c55a8d, type: 3}
   FootstepsAudio: {fileID: 11400000, guid: 2cc055013de51e54b89621ce6edf2805, type: 2}
   Fire1Audio: {fileID: 11400000, guid: dcce7ddfa58d6d94c98d757eaab3f551, type: 2}
   Fire2Audio: {fileID: 11400000, guid: fadf7e1d3777033418e4d5c435b68185, type: 2}

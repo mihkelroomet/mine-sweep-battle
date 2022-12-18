@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0647643df85aa244a20c9068915e467, type: 3}
   m_Name: FootstepsAudio
   m_EditorClassIdentifier: 
-  VolumeMin: 0.863
-  VolumeMax: 1.187
+  VolumeMin: 0.559
+  VolumeMax: 0.654
   PitchMin: 0.936
   PitchMax: 1.098
   Cooldown: 0.145

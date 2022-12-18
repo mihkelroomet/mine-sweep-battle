@@ -5820,7 +5820,6 @@ MonoBehaviour:
   PracticeButton: {fileID: 338067186}
   CreateNameInputField: {fileID: 1516804964}
   CreateInputField: {fileID: 337607284}
-  RoomInfoPrefab: {fileID: 1988516787509452065, guid: 9a3dd3bfd52732a4991bb5b1aa596efa, type: 3}
   roomListingPrefab: {fileID: 3058392103965146382, guid: 9a3dd3bfd52732a4991bb5b1aa596efa, type: 3}
   Content: {fileID: 957425813}
   RowCountField: {fileID: 780615885}
@@ -5834,7 +5833,7 @@ MonoBehaviour:
   QuitButton: {fileID: 940628011}
   _maxPlayers: 10
   _bombProbability: 0.25
-  _roundLength: 5
+  _roundLength: 60
 --- !u!1 &1025878818
 GameObject:
   m_ObjectHideFlags: 0

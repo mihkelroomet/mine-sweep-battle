@@ -47,6 +47,7 @@ public class GameController : MonoBehaviour
 
     IEnumerator Start()
     {
+        AudioSourcePool.Instance.ClearAudioSources(); // Because audiosources have parents that get destroyed on new scene load
         if (PhotonNetwork.IsMasterClient)
         {
             TimeLeft = (int) PhotonNetwork.CurrentRoom.CustomProperties["RoundLength"];

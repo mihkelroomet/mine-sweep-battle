@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0647643df85aa244a20c9068915e467, type: 3}
   m_Name: Fire2
   m_EditorClassIdentifier: 
-  VolumeMin: 0.79
-  VolumeMax: 1.193
-  PitchMin: 0.9
-  PitchMax: 1.1
+  VolumeMin: 0.156
+  VolumeMax: 0.196
+  PitchMin: 0.95
+  PitchMax: 1.05
   Cooldown: 0.1
   Clips:
   - {fileID: 8300000, guid: 70247f86c13228f40884af1c5db509ae, type: 3}

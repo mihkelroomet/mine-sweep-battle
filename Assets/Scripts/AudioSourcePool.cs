@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,5 +34,10 @@ public class AudioSourcePool : MonoBehaviour
         audioSources.Add(newSource);
 
         return newSource;
+    }
+
+    public void ClearAudioSources()
+    {
+        audioSources = new List<AudioSource>();
     }
 }

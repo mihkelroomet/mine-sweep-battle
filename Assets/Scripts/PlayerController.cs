@@ -27,12 +27,17 @@ public class PlayerController : MonoBehaviour, IPunObservable
     public static PlayerController Instance;
 
     // Audio
+    public AudioListener AudioListenerPrefab;
     public AudioClipGroup FootstepsAudio;
     public AudioClipGroup Fire1Audio;
     public AudioClipGroup Fire2Audio;
 
     private void Awake() {
-        Instance = this;
+        if (_view.IsMine)
+        {
+            Instance = this;
+            Instantiate(AudioListenerPrefab, transform);
+        }
         _stunTimer = -1;
         _beamTimer = -1;
         _stunDuration = 1.5f;
@@ -116,7 +121,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
             }
             _rb.velocity = new Vector2(_inputHorizontal * _walkSpeed, _inputVertical * _walkSpeed);
 
-            FootstepsAudio.Play();
+            FootstepsAudio.Play(transform);
         }
         else
         {
@@ -182,10 +187,10 @@ public class PlayerController : MonoBehaviour, IPunObservable
         switch (fireType)
         {
             case 1:
-                Fire1Audio.Play();
+                Fire1Audio.Play(transform);
                 break;
             case 2:
-                Fire2Audio.Play();
+                Fire2Audio.Play(transform);
                 break;
         }
     }

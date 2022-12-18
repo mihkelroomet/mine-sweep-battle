@@ -86,7 +86,7 @@ public class Cell : MonoBehaviour
 
     private void Update()
     {
-        CountBombSpriteDown();
+        if (_bombSpriteRenderer || _spriteRenderer.color != Color.white) CountBombSpriteDown();
     }
 
     public bool IsOpen()
@@ -243,21 +243,21 @@ public class Cell : MonoBehaviour
                 Instantiate(Explosion, transform.position, transform.rotation);
                 DisplayBombSprite();
                 ChangeColor(Color.red);
-                IncorrectBombSound.Play();
+                IncorrectBombSound.Play(transform);
                 break;
             case 2:
                 ChangeColor(Color.red);
-                IncorrectEmptySound.Play();
+                IncorrectEmptySound.Play(transform);
                 break;
             case 3:
                 Instantiate(BombDefused, transform.position, transform.rotation);
                 DisplayBombSprite();
                 ChangeColor(Color.green);
-                CorrectBombSound.Play();
+                CorrectBombSound.Play(transform);
                 break;
             case 4:
                 Instantiate(CellOpened, transform.position, transform.rotation);
-                CorrectEmptySound.Play();
+                CorrectEmptySound.Play(transform);
                 break;
         }
     }
@@ -281,6 +281,6 @@ public class Cell : MonoBehaviour
     }
 
     private void HideBombSprite() {
-        Destroy(_bombSpriteRenderer);
+        if (_bombSpriteRenderer) Destroy(_bombSpriteRenderer.gameObject);
     }
 }
