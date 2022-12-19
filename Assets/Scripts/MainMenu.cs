@@ -31,7 +31,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     [SerializeField]
     private byte _maxPlayers = 10;
     [SerializeField]
-    private float _bombProbability = 0.25f;
+    private float _mineProbability = 0.25f;
     [SerializeField]
     private int _roundLength = 60;
 
@@ -50,17 +50,17 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        CreateRoom((int) RowSlider.value, (int) ColumnSlider.value, _maxPlayers, _bombProbability, _roundLength, CreateNameInputField.text, CreateInputField.text);
+        CreateRoom((int) RowSlider.value, (int) ColumnSlider.value, _maxPlayers, _mineProbability, _roundLength, CreateNameInputField.text, CreateInputField.text);
     }
 
-    public void CreateRoom(int rows, int columns, byte maxPlayers, float bombProbability, int roundLength, string playerName, string roomName)
+    public void CreateRoom(int rows, int columns, byte maxPlayers, float mineProbability, int roundLength, string playerName, string roomName)
     {
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = maxPlayers;
         ExitGames.Client.Photon.Hashtable roomProps = new ExitGames.Client.Photon.Hashtable();
         roomProps.Add("Rows", (int) rows);
         roomProps.Add("Columns", (int) columns);
-        roomProps.Add("BombProbability", (float) bombProbability);
+        roomProps.Add("MineProbability", (float) mineProbability);
         roomProps.Add("RoundLength", (int) roundLength);
         roomProps.Add("UpToDate", false);
         roomProps.Add("TimeLeftUpToDate", false);

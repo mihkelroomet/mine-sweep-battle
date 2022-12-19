@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3031209560486508641}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.1734363, y: 0.41022578, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -135,15 +135,15 @@ MonoBehaviour:
   OpenCellSprite8: {fileID: 363937110, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
   UnopenedCellSprite: {fileID: 1772478013, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
   BorderCellSprite: {fileID: 377484783, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  BombSpritePrefab: {fileID: 8409035989049937335, guid: ce96ec821d7a0d442b104d98e7877861, type: 3}
+  MineSpritePrefab: {fileID: 8409035989049937335, guid: ce96ec821d7a0d442b104d98e7877861, type: 3}
   Explosion: {fileID: 3599392410574270388, guid: 351abbd5731a40d44968a340f43d8a59, type: 3}
   CellOpened: {fileID: 6361724047665199194, guid: 776db49ffd492e2428ba7511952cbbea, type: 3}
-  BombDefused: {fileID: 7747433875304670565, guid: 30541ff0c3fd60c4bbb250a58584802f, type: 3}
+  MineDefused: {fileID: 7747433875304670565, guid: 30541ff0c3fd60c4bbb250a58584802f, type: 3}
   OpenEmptyScore: 10
-  OpenBombScore: 100
+  OpenMineScore: 100
   FailEmptyPenalty: -10
-  FailBombPenalty: -100
+  FailMinePenalty: -100
   CorrectEmptySound: {fileID: 11400000, guid: df1e5fa7cb147bc49af06ba6022a56b7, type: 2}
-  CorrectBombSound: {fileID: 11400000, guid: 6c42418ed2aa3f840ae8fcc69b0c05e3, type: 2}
+  CorrectMineSound: {fileID: 11400000, guid: 6c42418ed2aa3f840ae8fcc69b0c05e3, type: 2}
   IncorrectEmptySound: {fileID: 11400000, guid: 101b041fb472b3e4cb65a35999b87ec9, type: 2}
-  IncorrectBombSound: {fileID: 11400000, guid: 9b83ffc759499fd4f8ea3ad970b30428, type: 2}
+  IncorrectMineSound: {fileID: 11400000, guid: 9b83ffc759499fd4f8ea3ad970b30428, type: 2}

@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d0647643df85aa244a20c9068915e467, type: 3}
-  m_Name: IncorrectBomb
+  m_Name: CorrectMine
   m_EditorClassIdentifier: 
-  VolumeMin: 0.9
-  VolumeMax: 1.1
+  VolumeMin: 0.8
+  VolumeMax: 1.2
   PitchMin: 0.9
   PitchMax: 1.1
   Cooldown: 0.1
   Clips:
-  - {fileID: 8300000, guid: f1ed2baf99ceb2945808adbab5fa1362, type: 3}
+  - {fileID: 8300000, guid: 402b65bb0f29a5347b929f9c5e5a1972, type: 3}

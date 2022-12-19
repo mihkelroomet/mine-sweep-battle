@@ -1089,6 +1089,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _view: {fileID: 637535959}
   Score: 0
+  Powerups: 0
 --- !u!4 &637535958
 Transform:
   m_ObjectHideFlags: 0
@@ -1097,7 +1098,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 637535956}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 485.07175, y: 252.6686, z: 3.2586524}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1697,7 +1698,10 @@ MonoBehaviour:
   CellPrefab: {fileID: 6383394763925990499, guid: e3d673eeb10a6fc479e46fe437d6d75d, type: 3}
   Columns: 16
   Rows: 16
-  BombProbability: 0.15
+  MineProbability: 0
+  PowerupProbability: 0.25
+  PowerupBombPrefab: {fileID: 2984073728794956417, guid: 568fb33f6fc5dac42b23247d3fadb943, type: 3}
+  BombPrefab: {fileID: 2632736368757817404, guid: 90d19f51ecc11d14db4bc79ac0420e30, type: 3}
   GridCheckInterval: 1
   _view: {fileID: 1190549853}
 --- !u!4 &1190549852
@@ -1708,7 +1712,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1190549850}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 485.07175, y: 252.6686, z: 3.2586524}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2969,7 +2973,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1754681596}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 499.0603, y: 277.1686, z: 1.6017175}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

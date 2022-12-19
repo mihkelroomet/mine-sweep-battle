@@ -83,6 +83,12 @@ public class PlayerController : MonoBehaviour, IPunObservable
                     _beamTimer = 0.15f;
                     FireBeam(0.1f, Color.green);
                 }
+
+                if (Input.GetKeyDown(KeyCode.E) && Events.GetPowerups() > 0)
+                {
+                    Events.SetPowerups(Events.GetPowerups() - 1);
+                    Grid.Instance.PlantBomb(_view.GetInstanceID(), transform.position, transform.rotation);
+                }
             }
         }
 

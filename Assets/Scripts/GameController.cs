@@ -9,6 +9,7 @@ public class GameController : MonoBehaviour
     public static GameController Instance;
     [SerializeField] private PhotonView _view;
     public int Score;
+    public int Powerups;
 
     public float TimeLeft
     {
@@ -28,12 +29,15 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (_view.IsMine) Instance = this;
         Events.OnSetScore += SetScore;
         Events.OnGetScore += GetScore;
+        Events.OnSetPowerups += SetPowerups;
+        Events.OnGetPowerups += GetPowerups;
         Events.OnEndOfRound += EndOfRound;
         GameActive = false; // Will wait for countdown to become active once we add it back in
         Score = 0;
+        Powerups = 0;
         _gameEndCheckInterval = 0.1f;
         _nextGameEndCheckTime = Time.time + _gameEndCheckInterval;
 
@@ -41,6 +45,7 @@ public class GameController : MonoBehaviour
         {
             ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.LocalPlayer.CustomProperties;
             if (!properties.TryAdd("Score", 0)) properties["Score"] = 0; // Try to add property "Score". If it exists, assign the value to it instead.
+            if (!properties.TryAdd("Powerups", 0)) properties["Powerups"] = 0; // Try to add property "Powerups". If it exists, assign the value to it instead.
             PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
         }
     }
@@ -76,7 +81,7 @@ public class GameController : MonoBehaviour
                 {
                     foreach (Cell cell in cellColumn)
                     {
-                        if (cell.IsBomb)
+                        if (cell.IsMine)
                         {
                             allCellsOpened = false;
                             break;
@@ -109,9 +114,23 @@ public class GameController : MonoBehaviour
         PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
     }
 
+    private void SetPowerups(int value)
+    {
+        Powerups = value;
+
+        ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.LocalPlayer.CustomProperties;
+        properties["Powerups"] = value;
+        PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
+    }
+
     private int GetScore()
     {
         return Score;
+    }
+
+    private int GetPowerups()
+    {
+        return Powerups;
     }
 
     private void EndOfRound()
@@ -167,6 +186,8 @@ public class GameController : MonoBehaviour
     {
         Events.OnSetScore -= SetScore;
         Events.OnGetScore -= GetScore;
+        Events.OnSetPowerups -= SetPowerups;
+        Events.OnGetPowerups -= GetPowerups;
         Events.OnEndOfRound -= EndOfRound;
     }
 }

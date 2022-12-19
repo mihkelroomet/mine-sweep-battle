@@ -4,21 +4,21 @@ using UnityEngine;
 public class Cell : MonoBehaviour
 {
     private BoxCollider2D _boxCollider2D;
-    public bool IsBomb {
+    public bool IsMine {
         get
         {
             return CurrentSprite == 11;
         }
         set
         {
-            if (value) CurrentSprite = 11; // When planting bomb
-            else Open(); // When removing bomb
+            if (value) CurrentSprite = 11; // When planting mine
+            else Open(); // When removing mine
         }
     }
 
     // Cell Sprites
     private SpriteRenderer _spriteRenderer;
-    private Sprite[] _cellSprites; // 0-8 - Opened, 9 - Unopened Non-Bomb, 10 - Border, 11 - Unopened Bomb
+    private Sprite[] _cellSprites; // 0-8 - Opened, 9 - Unopened Non-Mine, 10 - Border, 11 - Unopened Mine
     public Sprite OpenCellSprite0;
     public Sprite OpenCellSprite1;
     public Sprite OpenCellSprite2;
@@ -50,26 +50,26 @@ public class Cell : MonoBehaviour
     private byte _currentSprite;
 
     // Bomb Sprite
-    public SpriteRenderer BombSpritePrefab;
-    private float _bombSpriteTimer;
-    private SpriteRenderer _bombSpriteRenderer;
+    public SpriteRenderer MineSpritePrefab;
+    private float _mineSpriteTimer;
+    private SpriteRenderer _mineSpriteRenderer;
 
     // Particle Effects
     public ParticleSystem Explosion;
     public ParticleSystem CellOpened;
-    public ParticleSystem BombDefused;
+    public ParticleSystem MineDefused;
 
     // Scoring
     public int OpenEmptyScore = 10;
-    public int OpenBombScore = 100;
+    public int OpenMineScore = 100;
     public int FailEmptyPenalty = -10;
-    public int FailBombPenalty = -100;
+    public int FailMinePenalty = -100;
 
     // Sounds
     public AudioClipGroup CorrectEmptySound;
-    public AudioClipGroup CorrectBombSound;
+    public AudioClipGroup CorrectMineSound;
     public AudioClipGroup IncorrectEmptySound;
-    public AudioClipGroup IncorrectBombSound;
+    public AudioClipGroup IncorrectMineSound;
 
     // Position in grid
     public int Column {get; set;}
@@ -81,12 +81,12 @@ public class Cell : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _cellSprites = new Sprite[]{OpenCellSprite0, OpenCellSprite1, OpenCellSprite2, OpenCellSprite3, OpenCellSprite4,
         OpenCellSprite5, OpenCellSprite6, OpenCellSprite7, OpenCellSprite8, UnopenedCellSprite, BorderCellSprite, UnopenedCellSprite};
-        _currentSprite = 9; // 9 - Unopened Non-Bomb Cell Sprite
+        _currentSprite = 9; // 9 - Unopened Non-Mine Cell Sprite
     }
 
     private void Update()
     {
-        if (_bombSpriteRenderer || _spriteRenderer.color != Color.white) CountBombSpriteDown();
+        if (_mineSpriteRenderer || _spriteRenderer.color != Color.white) CountMineSpriteDown();
     }
 
     public bool IsOpen()
@@ -105,15 +105,15 @@ public class Cell : MonoBehaviour
     /// </summary>
     public void ChangeColor(Color color) {
         _spriteRenderer.color = color;
-        _bombSpriteTimer = 0.2f;
+        _mineSpriteTimer = 0.2f;
     }
 
     /// <summary>
-    /// Removes bomb and updates surrounding indicators<br></br>
+    /// Removes mine and updates surrounding indicators<br></br>
     /// Meant to be called right before Open only
     /// </summary>
-    public void RemoveBomb() {
-        if (IsBomb && !IsBorderCell()) {
+    public void RemoveMine() {
+        if (IsMine && !IsBorderCell()) {
             Grid.Instance.SetCurrentSprite(Column, Row, 9);
             List<Cell> surroundingCells = GetSurroundingCells();
 
@@ -141,7 +141,7 @@ public class Cell : MonoBehaviour
     public void Open() {
         if (!IsOpen() && !IsBorderCell())
         {
-            byte bombCount = CountBombsAround();
+            byte bombCount = CountMinesAround();
             Grid.Instance.SetCurrentSprite(Column, Row, bombCount);
             if (bombCount == 0) {
                 OpenSurroundingCells();
@@ -157,14 +157,14 @@ public class Cell : MonoBehaviour
     }
 
     /// <summary>
-    /// Counts bombs in the 8 surrounding cells
+    /// Counts mines in the 8 surrounding cells
     /// </summary>
-    private byte CountBombsAround() {
+    private byte CountMinesAround() {
         byte bombCount = 0;
 
         foreach (Cell cell in GetSurroundingCells())
         {
-            if (cell.IsBomb) {
+            if (cell.IsMine) {
                 bombCount++;
             }
         }
@@ -197,42 +197,42 @@ public class Cell : MonoBehaviour
         // Animations and sounds
         if (!IsOpen() && !IsBorderCell()) {
             // Stun player if they made the wrong call
-            if (IsBomb && beamColor == Color.red || !IsBomb && beamColor == Color.green) {
-                // Play the explosion particle system and when bomb explodes
-                if (IsBomb) {
-                    Events.SetScore(Events.GetScore() + FailBombPenalty);
-                    Grid.Instance.DisplayEffectsOnCellShotEvent(Column, Row, 1);
+            if (IsMine && beamColor == Color.red || !IsMine && beamColor == Color.green) {
+                // Play the explosion particle system and when mine explodes
+                if (IsMine) {
+                    Events.SetScore(Events.GetScore() + FailMinePenalty);
+                    Grid.Instance.HandleCellShotEvent(Column, Row, 1);
                 }
                 else {
                     Events.SetScore(Events.GetScore() + FailEmptyPenalty);
-                    Grid.Instance.DisplayEffectsOnCellShotEvent(Column, Row, 2);
+                    Grid.Instance.HandleCellShotEvent(Column, Row, 2);
                 }
 
                 player.Stun();
             }
 
-            // Show the bomb and turn the cell green
-            else if (IsBomb && beamColor == Color.green)
+            // Show the mine and turn the cell green
+            else if (IsMine && beamColor == Color.green)
             {
-                Events.SetScore(Events.GetScore() + OpenBombScore);
-                Grid.Instance.DisplayEffectsOnCellShotEvent(Column, Row, 3);
+                Events.SetScore(Events.GetScore() + OpenMineScore);
+                Grid.Instance.HandleCellShotEvent(Column, Row, 3);
             }
-            else if (!IsBomb && beamColor == Color.red) // Could just be 'else' but this is more elaborate
+            else if (!IsMine && beamColor == Color.red) // Could just be 'else' but this is more elaborate
             {
                 Events.SetScore(Events.GetScore() + OpenEmptyScore);
-                Grid.Instance.DisplayEffectsOnCellShotEvent(Column, Row, 4);
+                Grid.Instance.HandleCellShotEvent(Column, Row, 4);
             }
         }
         
-        RemoveBomb();
+        RemoveMine();
         Open();
     }
 
     /// <summary>
     /// Displays cell effects on getting shot<br></br>
-    /// 1 - Incorrect shot on bomb cell<br></br>
+    /// 1 - Incorrect shot on mine cell<br></br>
     /// 2 - Incorrect shot on empty cell<br></br>
-    /// 3 - Correct shot on bomb cell<br></br>
+    /// 3 - Correct shot on mine cell<br></br>
     /// 4 - Correct shot on empty cell
     /// </summary>
     public void DisplayEffectsOnCellShotEvent(byte eventType)
@@ -241,19 +241,19 @@ public class Cell : MonoBehaviour
         {
             case 1:
                 Instantiate(Explosion, transform.position, transform.rotation);
-                DisplayBombSprite();
+                DisplayMineSprite();
                 ChangeColor(Color.red);
-                IncorrectBombSound.Play(transform);
+                IncorrectMineSound.Play(transform);
                 break;
             case 2:
                 ChangeColor(Color.red);
                 IncorrectEmptySound.Play(transform);
                 break;
             case 3:
-                Instantiate(BombDefused, transform.position, transform.rotation);
-                DisplayBombSprite();
+                Instantiate(MineDefused, transform.position, transform.rotation);
+                DisplayMineSprite();
                 ChangeColor(Color.green);
-                CorrectBombSound.Play(transform);
+                CorrectMineSound.Play(transform);
                 break;
             case 4:
                 Instantiate(CellOpened, transform.position, transform.rotation);
@@ -263,24 +263,24 @@ public class Cell : MonoBehaviour
     }
 
     /// <summary>
-    /// Makes sure the bomb sprite disappears
+    /// Makes sure the mine sprite disappears
     /// </summary>
-    private void CountBombSpriteDown() {
-        if (_bombSpriteTimer > 0) {
-            _bombSpriteTimer -= Time.deltaTime;
-            if (_bombSpriteTimer <= 0) {
+    private void CountMineSpriteDown() {
+        if (_mineSpriteTimer > 0) {
+            _mineSpriteTimer -= Time.deltaTime;
+            if (_mineSpriteTimer <= 0) {
                 ChangeColor(Color.white);
-                HideBombSprite();
+                HideMineSprite();
             }
         }
     }
 
-    private void DisplayBombSprite() {
-        _bombSpriteRenderer = Instantiate(BombSpritePrefab, transform);
-        _bombSpriteTimer = 0.2f;
+    private void DisplayMineSprite() {
+        _mineSpriteRenderer = Instantiate(MineSpritePrefab, transform);
+        _mineSpriteTimer = 0.2f;
     }
 
-    private void HideBombSprite() {
-        if (_bombSpriteRenderer) Destroy(_bombSpriteRenderer.gameObject);
+    private void HideMineSprite() {
+        if (_mineSpriteRenderer) Destroy(_mineSpriteRenderer.gameObject);
     }
 }

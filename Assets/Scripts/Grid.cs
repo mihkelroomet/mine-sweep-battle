@@ -13,9 +13,12 @@ public class Grid : MonoBehaviour
     [HideInInspector]
     public int Rows;
     [HideInInspector]
-    public float BombProbability;
+    public float MineProbability;
+    public float PowerupProbability;
+    public Transform PowerupBombPrefab;
+    public Bomb BombPrefab;
     public float GridCheckInterval;
-    private byte[][] _gridState; // 0-8 - Opened, 9 - Unopened Non-Bomb, 10 - Border, 11 - Unopened Bomb
+    private byte[][] _gridState; // 0-8 - Opened, 9 - Unopened Non-Mine, 10 - Border, 11 - Unopened Mine
     [SerializeField] private PhotonView _view;
     public bool Initialized {
         get {
@@ -44,7 +47,7 @@ public class Grid : MonoBehaviour
         {
             Rows = (int) PhotonNetwork.CurrentRoom.CustomProperties["Rows"];
             Columns = (int) PhotonNetwork.CurrentRoom.CustomProperties["Columns"];
-            BombProbability = (float) PhotonNetwork.CurrentRoom.CustomProperties["BombProbability"];
+            MineProbability = (float) PhotonNetwork.CurrentRoom.CustomProperties["MineProbability"];
         }
 
         InitializeGrid();
@@ -101,10 +104,10 @@ public class Grid : MonoBehaviour
                         cell.CurrentSprite = 10;
                     }
                     else {
-                        // Plant bombs randomly, but not in the middle
+                        // Plant mines randomly, but not in the middle
                         if (Mathf.Abs(col - colMidpoint) >= 2.1 || Mathf.Abs(row - rowMidpoint) >= 2.1) {
-                            if (Random.value < BombProbability) {
-                                cell.IsBomb = true;
+                            if (Random.value < MineProbability) {
+                                cell.IsMine = true;
                             }
                         }
                     }
@@ -162,7 +165,7 @@ public class Grid : MonoBehaviour
             {
                 Cell cell = CellGrid[col][row];
 
-                if (cell.IsBomb)
+                if (cell.IsMine)
                 {
                     _gridState[col][row] = 11;
                 }
@@ -201,14 +204,34 @@ public class Grid : MonoBehaviour
         else _gridUpdateEventQueue.Enqueue(new GridUpdateEvent(col, row, value));
     }
 
-    public void DisplayEffectsOnCellShotEvent(int col, int row, byte eventType)
+    public void HandleCellShotEvent(int col, int row, byte eventType)
     {
-        _view.RPC("DisplayEffectsOnCellShotEventRPC", RpcTarget.All, col, row, eventType);
+        _view.RPC("HandleCellShotEventRPC", RpcTarget.All, col, row, eventType);
+        if (eventType == 4 && Random.Range(0f, 1f) < PowerupProbability) _view.RPC("DisplayPowerupRPC", RpcTarget.All, col, row);
     }
 
     [PunRPC]
-    void DisplayEffectsOnCellShotEventRPC(int col, int row, byte eventType)
+    void HandleCellShotEventRPC(int col, int row, byte eventType)
     {
         if (PhotonNetwork.IsMasterClient || _initialized) CellGrid[col][row].DisplayEffectsOnCellShotEvent(eventType);
+    }
+
+    [PunRPC]
+    void DisplayPowerupRPC(int col, int row)
+    {
+        Transform tf = CellGrid[col][row].transform;
+        Instantiate(PowerupBombPrefab, tf.position, tf.rotation);
+    }
+
+    public void PlantBomb(int playerID, Vector3 position, Quaternion rotation)
+    {
+        _view.RPC("PlantBombRPC", RpcTarget.All, playerID, position, rotation);
+    }
+
+    [PunRPC]
+    void PlantBombRPC(int playerID, Vector3 position, Quaternion rotation)
+    {
+        Bomb bomb = GameObject.Instantiate(BombPrefab, position, rotation);
+        bomb.BeneficiaryID = playerID;
     }
 }

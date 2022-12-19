@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7747433875304670565}
   - component: {fileID: 1859612930091920396}
   m_Layer: 0
-  m_Name: BombDefused
+  m_Name: MineDefused
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4308097993251124684}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -1.077, y: -0.16208106, z: -0.57610935}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

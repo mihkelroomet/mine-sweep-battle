@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -48,7 +47,7 @@ public class AudioClipGroup : ScriptableObject
         source.volume = Random.Range(VolumeMin, VolumeMax);
         source.pitch = Random.Range(PitchMin, PitchMax);
         source.clip = Clips[Random.Range(0, Clips.Count)];
-        source.transform.parent = parent;
+        source.transform.parent = parent; // Necessary for moving objects
         source.transform.position = parent.transform.position;
 
         source.Play();
