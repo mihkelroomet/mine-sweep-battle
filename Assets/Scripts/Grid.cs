@@ -14,10 +14,8 @@ public class Grid : MonoBehaviour
     public int Rows;
     [HideInInspector]
     public float MineProbability;
-    public float PowerupProbability;
-    public Transform PowerupBombPrefab;
+    public float PowerupSpawnProbability;
     public Bomb BombPrefab;
-    public float GridCheckInterval;
     private byte[][] _gridState; // 0-8 - Opened, 9 - Unopened Non-Mine, 10 - Border, 11 - Unopened Mine
     [SerializeField] private PhotonView _view;
     public bool Initialized {
@@ -120,9 +118,9 @@ public class Grid : MonoBehaviour
             }
         }
 
+        // If master, open cells in the middle of the grid
         if (PhotonNetwork.IsMasterClient)
         {
-            // Open cells in the middle of the grid
             for (int col = 0; col < Columns-1; col++)
             {
                 for (int row = 0; row < Rows-1; row++)
@@ -133,6 +131,19 @@ public class Grid : MonoBehaviour
                         cell.Open();
                     }
                 }
+            }
+        }
+
+        // If not master, instantiate powerups fetched from master
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            for (int i = 0; i < (int) properties["NumberOfPowerups"]; i++)
+            {
+                int col = (int) properties["Powerup" + i + "Column"];
+                int row = (int) properties["Powerup" + i + "Row"];
+                byte type = (byte) properties["Powerup" + i + "Type"];
+                float expiresAt = (float) properties["Powerup" + i + "ExpiresAt"];
+                PowerupSpawner.Instance.SpawnPowerup(col, row, type, expiresAt);
             }
         }
     }
@@ -159,6 +170,7 @@ public class Grid : MonoBehaviour
         if (!properties.TryAdd("Columns", Columns)) properties["Columns"] = Columns;
         if (!properties.TryAdd("Rows", Rows)) properties["Rows"] = Rows;
 
+        // Cell sprites
         for (int col = 0; col < Columns; col++)
         {
             for (int row = 0; row < Rows; row++)
@@ -175,6 +187,18 @@ public class Grid : MonoBehaviour
                 }
             }
             if (!properties.TryAdd("GridState_Column" + col, _gridState[col])) properties["GridState_Column" + col] = _gridState[col];
+        }
+
+        // Powerups
+        int numberOfPowerups = PowerupSpawner.Instance.transform.childCount;
+        if (!properties.TryAdd("NumberOfPowerups", numberOfPowerups)) properties["NumberOfPowerups"] = numberOfPowerups;
+        for (int i = 0; i < numberOfPowerups; i++)
+        {
+            CollectablePowerup powerup = PowerupSpawner.Instance.transform.GetChild(i).GetComponent<CollectablePowerup>();
+            if (!properties.TryAdd("Powerup" + i + "Column", powerup.Column)) properties["Powerup" + i + "Column"] = powerup.Column;
+            if (!properties.TryAdd("Powerup" + i + "Row", powerup.Row)) properties["Powerup" + i + "Row"] = powerup.Row;
+            if (!properties.TryAdd("Powerup" + i + "Type", (byte) powerup.Data.Type)) properties["Powerup" + i + "Type"] = (byte) powerup.Data.Type;
+            if (!properties.TryAdd("Powerup" + i + "ExpiresAt", powerup.ExpiresAt)) properties["Powerup" + i + "ExpiresAt"] = powerup.ExpiresAt;
         }
 
         if (!properties.TryAdd("UpToDate", true)) properties["UpToDate"] = true;
@@ -207,7 +231,12 @@ public class Grid : MonoBehaviour
     public void HandleCellShotEvent(int col, int row, byte eventType)
     {
         _view.RPC("HandleCellShotEventRPC", RpcTarget.All, col, row, eventType);
-        if (eventType == 4 && Random.Range(0f, 1f) < PowerupProbability) _view.RPC("DisplayPowerupRPC", RpcTarget.All, col, row);
+        // Chance to spawn powerup if empty cell is opened correctly
+        if (eventType == 4 && Random.Range(0f, 1f) < PowerupSpawnProbability)
+        {
+            byte type = PowerupSpawner.ChooseRandomPowerup(PowerupSpawner.Instance.Powerups);
+            _view.RPC("SpawnPowerupRPC", RpcTarget.All, col, row, type);
+        }
     }
 
     [PunRPC]
@@ -217,10 +246,9 @@ public class Grid : MonoBehaviour
     }
 
     [PunRPC]
-    void DisplayPowerupRPC(int col, int row)
+    void SpawnPowerupRPC(int col, int row, byte type)
     {
-        Transform tf = CellGrid[col][row].transform;
-        Instantiate(PowerupBombPrefab, tf.position, tf.rotation);
+        if (PhotonNetwork.IsMasterClient || _initialized) PowerupSpawner.Instance.SpawnPowerup(col, row, type);
     }
 
     public void PlantBomb(int playerID, Vector3 position, Quaternion rotation)

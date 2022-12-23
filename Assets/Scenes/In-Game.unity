@@ -2034,10 +2034,8 @@ MonoBehaviour:
   Columns: 16
   Rows: 16
   MineProbability: 0
-  PowerupProbability: 0.25
-  PowerupBombPrefab: {fileID: 2984073728794956417, guid: 568fb33f6fc5dac42b23247d3fadb943, type: 3}
+  PowerupSpawnProbability: 0.5
   BombPrefab: {fileID: 2632736368757817404, guid: 90d19f51ecc11d14db4bc79ac0420e30, type: 3}
-  GridCheckInterval: 1
   _view: {fileID: 1190549853}
 --- !u!4 &1190549852
 Transform:
@@ -3370,7 +3368,7 @@ GameObject:
   - component: {fileID: 1754681597}
   - component: {fileID: 1754681598}
   m_Layer: 0
-  m_Name: SpawnPlayers
+  m_Name: PlayerSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4395,3 +4393,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2117205251}
   m_CullTransparentMesh: 1
+--- !u!1 &2126365023
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2126365024}
+  - component: {fileID: 2126365025}
+  m_Layer: 0
+  m_Name: PowerupSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2126365024
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126365023}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.176018}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2126365025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126365023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3713ffd96312084b973c25a00f73c57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ExpiryTime: 4
+  Powerups:
+  - {fileID: 11400000, guid: ca1aa4f01c62e6545990aa51000353ec, type: 2}
+  - {fileID: 11400000, guid: a0c5885e3d3928240b1c0f95b1cafc77, type: 2}
+  CollectablePowerupPrefab: {fileID: -4975283127223071479, guid: 568fb33f6fc5dac42b23247d3fadb943, type: 3}

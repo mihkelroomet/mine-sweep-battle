@@ -29,7 +29,7 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
-        if (_view.IsMine) Instance = this;
+        Instance = this;
         Events.OnSetScore += SetScore;
         Events.OnGetScore += GetScore;
         Events.OnSetPowerups += SetPowerups;

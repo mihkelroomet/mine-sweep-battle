@@ -1,7 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
 
-public class SpawnPlayers : MonoBehaviour
+public class PlayerSpawner : MonoBehaviour
 {
     public GameObject PlayerPrefab;
 

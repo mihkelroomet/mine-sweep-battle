@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 2984073728794956417}
   - component: {fileID: 3589824062030608424}
   - component: {fileID: 1337157351730340684}
-  - component: {fileID: 2356910822643948118}
+  - component: {fileID: -4975283127223071479}
   m_Layer: 3
-  m_Name: PowerupBomb
+  m_Name: CollectablePowerup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,7 +83,7 @@ SpriteRenderer:
   m_Size: {x: 0.32, y: 0.32}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &1337157351730340684
@@ -112,7 +112,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.2, y: 0.2}
   m_EdgeRadius: 0
---- !u!114 &2356910822643948118
+--- !u!114 &-4975283127223071479
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
