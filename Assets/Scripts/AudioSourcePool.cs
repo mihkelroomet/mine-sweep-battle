@@ -7,7 +7,7 @@ public class AudioSourcePool : MonoBehaviour
 
     public AudioSource AudioSourcePrefab;
 
-    private List<AudioSource> audioSources;
+    private List<AudioSource> _audioSources;
 
     private void Awake()
     {
@@ -17,13 +17,13 @@ public class AudioSourcePool : MonoBehaviour
             return;
         }
         Instance = this;
-        audioSources = new List<AudioSource>();
+        _audioSources = new List<AudioSource>();
         DontDestroyOnLoad(this.gameObject);
     }
 
     public AudioSource GetSource()
     {
-        foreach (AudioSource source in audioSources)
+        foreach (AudioSource source in _audioSources)
         {
             if (!source.isPlaying)
             {
@@ -31,13 +31,18 @@ public class AudioSourcePool : MonoBehaviour
             }
         }
         AudioSource newSource = GameObject.Instantiate(AudioSourcePrefab, transform);
-        audioSources.Add(newSource);
+        _audioSources.Add(newSource);
 
         return newSource;
     }
 
     public void ClearAudioSources()
     {
-        audioSources = new List<AudioSource>();
+        _audioSources = new List<AudioSource>();
+    }
+
+    public void RemoveAudioSource(AudioSource audioSource)
+    {
+        if (_audioSources.Contains(audioSource)) _audioSources.Remove(audioSource);
     }
 }

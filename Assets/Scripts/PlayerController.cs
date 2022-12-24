@@ -233,4 +233,16 @@ public class PlayerController : MonoBehaviour, IPunObservable
             _namePanel.transform.position = (Vector3) stream.ReceiveNext();
         }
     }
+
+    private void OnDestroy() {
+        // Removes any AudioSources attached to leaving player from the AudioSourcePool to prevent NullPointerExceptions
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform child = transform.GetChild(i);
+            if (child.CompareTag("AudioSource"))
+            {
+                AudioSourcePool.Instance.RemoveAudioSource(child.GetComponent<AudioSource>());
+            }
+        }
+    }
 }

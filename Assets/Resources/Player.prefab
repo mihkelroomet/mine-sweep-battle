@@ -113,7 +113,7 @@ GameObject:
   - component: {fileID: 2347122354120365503}
   - component: {fileID: 2347122354120365502}
   m_Layer: 6
-  m_Name: NameText
+  m_Name: NametagText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -247,9 +247,10 @@ GameObject:
   - component: {fileID: 6180710124938520488}
   - component: {fileID: 6180710124938520490}
   - component: {fileID: 6180710124938520489}
+  - component: {fileID: 3736358513900660463}
   m_Layer: 6
-  m_Name: NamePanel
-  m_TagString: Untagged
+  m_Name: NametagPanel
+  m_TagString: Non-InteractableUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -313,6 +314,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &3736358513900660463
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6180710124938520495}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &8606360999431299249
 GameObject:
   m_ObjectHideFlags: 0
