@@ -9,8 +9,8 @@ public class GameController : MonoBehaviour
     public static GameController Instance;
     [SerializeField] private PhotonView _view;
     public int Score;
-    public PowerupData FirstPowerupSlot;
-    public PowerupData SecondPowerupSlot;
+    public PowerupData PowerupInFirstSlot;
+    public PowerupData PowerupInSecondSlot;
 
     public float TimeLeft
     {
@@ -33,10 +33,10 @@ public class GameController : MonoBehaviour
         Instance = this;
         Events.OnSetScore += SetScore;
         Events.OnGetScore += GetScore;
-        Events.OnSetFirstPowerupSlot += SetFirstPowerupSlot;
-        Events.OnGetFirstPowerupSlot += GetFirstPowerupSlot;
-        Events.OnSetSecondPowerupSlot += SetSecondPowerupSlot;
-        Events.OnGetSecondPowerupSlot += GetSecondPowerupSlot;
+        Events.OnSetPowerupInFirstSlot += SetPowerupInFirstSlot;
+        Events.OnGetPowerupInFirstSlot += GetPowerupInFirstSlot;
+        Events.OnSetPowerupInSecondSlot += SetPowerupInSecondSlot;
+        Events.OnGetPowerupInSecondSlot += GetPowerupInSecondSlot;
         Events.OnEndOfRound += EndOfRound;
         GameActive = false; // Will wait for countdown to become active once we add it back in
         Score = 0;
@@ -111,14 +111,14 @@ public class GameController : MonoBehaviour
         return Score;
     }
 
-    private PowerupData GetFirstPowerupSlot()
+    private PowerupData GetPowerupInFirstSlot()
     {
-        return FirstPowerupSlot;
+        return PowerupInFirstSlot;
     }
 
-    private PowerupData GetSecondPowerupSlot()
+    private PowerupData GetPowerupInSecondSlot()
     {
-        return SecondPowerupSlot;
+        return PowerupInSecondSlot;
     }
 
     private void SetScore(int value)
@@ -130,14 +130,14 @@ public class GameController : MonoBehaviour
         PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
     }
 
-    private void SetFirstPowerupSlot(PowerupData data)
+    private void SetPowerupInFirstSlot(PowerupData data)
     {
-        FirstPowerupSlot = data;
+        PowerupInFirstSlot = data;
     }
 
-    private void SetSecondPowerupSlot(PowerupData data)
+    private void SetPowerupInSecondSlot(PowerupData data)
     {
-        SecondPowerupSlot = data;
+        PowerupInSecondSlot = data;
     }
 
     private void EndOfRound()
@@ -193,10 +193,10 @@ public class GameController : MonoBehaviour
     {
         Events.OnSetScore -= SetScore;
         Events.OnGetScore -= GetScore;
-        Events.OnSetFirstPowerupSlot -= SetFirstPowerupSlot;
-        Events.OnGetFirstPowerupSlot -= GetFirstPowerupSlot;
-        Events.OnSetSecondPowerupSlot -= SetSecondPowerupSlot;
-        Events.OnGetSecondPowerupSlot -= GetSecondPowerupSlot;
+        Events.OnSetPowerupInFirstSlot -= SetPowerupInFirstSlot;
+        Events.OnGetPowerupInFirstSlot -= GetPowerupInFirstSlot;
+        Events.OnSetPowerupInSecondSlot -= SetPowerupInSecondSlot;
+        Events.OnGetPowerupInSecondSlot -= GetPowerupInSecondSlot;
         Events.OnEndOfRound -= EndOfRound;
     }
 }

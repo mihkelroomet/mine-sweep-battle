@@ -13,8 +13,8 @@ public class HUDPresenter : MonoBehaviour
     public GameObject ScoreBoard;
     public GameObject EscMenu;
     public TMP_Text FinalScores;
-    public Image FirstPowerupSlotItem;
-    public Image SecondPowerupSlotItem;
+    public Image FirstPowerupSlotImage;
+    public Image SecondPowerupSlotImage;
     public AudioSource TickAudio;
     public AudioSource StartAudio;
     public AudioSource EndAudio;
@@ -23,8 +23,8 @@ public class HUDPresenter : MonoBehaviour
     private void Awake() {
         Instance = this;
         Events.OnSetScore += SetScore;
-        Events.OnSetFirstPowerupSlot += SetFirstPowerupSlot;
-        Events.OnSetSecondPowerupSlot += SetSecondPowerupSlot;
+        Events.OnSetPowerupInFirstSlot += SetPowerupInFirstSlot;
+        Events.OnSetPowerupInSecondSlot += SetPowerupInSecondSlot;
         Events.OnEndOfRound += ShowScoreboard;
         Transitions.Instance.PlayEnterTransition();
     }
@@ -53,23 +53,23 @@ public class HUDPresenter : MonoBehaviour
         ScoreText.text = "Score: " + value;
     }
 
-    private void SetFirstPowerupSlot(PowerupData data)
+    private void SetPowerupInFirstSlot(PowerupData data)
     {
-        if (data == null) FirstPowerupSlotItem.color = Color.clear;
+        if (data == null) FirstPowerupSlotImage.color = Color.clear;
         else
         {
-            FirstPowerupSlotItem.color = Color.white;
-            FirstPowerupSlotItem.sprite = data.Pic64;
+            FirstPowerupSlotImage.color = Color.white;
+            FirstPowerupSlotImage.sprite = data.Pic64;
         }
     }
 
-    private void SetSecondPowerupSlot(PowerupData data)
+    private void SetPowerupInSecondSlot(PowerupData data)
     {
-        if (data == null) SecondPowerupSlotItem.color = Color.clear;
+        if (data == null) SecondPowerupSlotImage.color = Color.clear;
         else
         {
-            SecondPowerupSlotItem.color = Color.white;
-            SecondPowerupSlotItem.sprite = data.Pic32;
+            SecondPowerupSlotImage.color = Color.white;
+            SecondPowerupSlotImage.sprite = data.Pic32;
         }
     }
 
@@ -99,8 +99,8 @@ public class HUDPresenter : MonoBehaviour
 
     private void OnDestroy() {
         Events.OnSetScore -= SetScore;
-        Events.OnSetFirstPowerupSlot -= SetFirstPowerupSlot;
-        Events.OnSetSecondPowerupSlot -= SetSecondPowerupSlot;
+        Events.OnSetPowerupInFirstSlot -= SetPowerupInFirstSlot;
+        Events.OnSetPowerupInSecondSlot -= SetPowerupInSecondSlot;
         Events.OnEndOfRound -= ShowScoreboard;
     }
 

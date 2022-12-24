@@ -44,8 +44,8 @@ public class CollectablePowerup : MonoBehaviour
         {
             if (other.GetComponent<PhotonView>().IsMine)
             {
-                if (Events.GetFirstPowerupSlot() == null) Events.SetFirstPowerupSlot(Data);
-                else if (Events.GetSecondPowerupSlot() == null) Events.SetSecondPowerupSlot(Data);
+                if (Events.GetPowerupInFirstSlot() == null) Events.SetPowerupInFirstSlot(Data);
+                else if (Events.GetPowerupInSecondSlot() == null) Events.SetPowerupInSecondSlot(Data);
                 else return; // Don't destroy if slots full
                 Grid.Instance.DestroyCollectablePowerup(Column, Row, (byte) Data.Type);
             }

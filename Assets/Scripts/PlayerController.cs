@@ -89,7 +89,8 @@ public class PlayerController : MonoBehaviour, IPunObservable
                     }
 
                     // Using powerups
-                    // TODO
+                    if (Input.GetKeyDown(KeyCode.Space)) UsePowerup();
+                    if (Input.GetKeyDown(KeyCode.LeftShift)) SwitchPowerups();
                 }
                 
             }
@@ -183,6 +184,29 @@ public class PlayerController : MonoBehaviour, IPunObservable
         _inputHorizontal = 0;
         _inputVertical = 0;
         _stunTimer = _stunDuration;
+    }
+
+    private void UsePowerup()
+    {
+        PowerupData powerup = Events.GetPowerupInFirstSlot();
+        switch (powerup.Type)
+        {
+            case PowerupType.BombPowerup:
+                Debug.Log("Bomb");
+                break;
+            case PowerupType.SpeedPowerup:
+                Debug.Log("Speed");
+                break;
+        }
+        Events.SetPowerupInFirstSlot(Events.GetPowerupInSecondSlot());
+        Events.SetPowerupInSecondSlot(null);
+    }
+
+    private void SwitchPowerups()
+    {
+        PowerupData dataInFirstSlot = Events.GetPowerupInFirstSlot();
+        Events.SetPowerupInFirstSlot(Events.GetPowerupInSecondSlot());
+        Events.SetPowerupInSecondSlot(dataInFirstSlot);
     }
 
     public void PlayFireAudio(byte fireType)

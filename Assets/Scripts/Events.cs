@@ -13,19 +13,19 @@ public static class Events
 
     // Powerups
 
-    public static event Func<PowerupData> OnGetFirstPowerupSlot;
+    public static event Func<PowerupData> OnGetPowerupInFirstSlot;
 
-    public static PowerupData GetFirstPowerupSlot() => OnGetFirstPowerupSlot?.Invoke() ?? null;
-    public static event Action<PowerupData> OnSetFirstPowerupSlot;
+    public static PowerupData GetPowerupInFirstSlot() => OnGetPowerupInFirstSlot?.Invoke() ?? null;
+    public static event Action<PowerupData> OnSetPowerupInFirstSlot;
 
-    public static void SetFirstPowerupSlot(PowerupData value) => OnSetFirstPowerupSlot?.Invoke(value);
+    public static void SetPowerupInFirstSlot(PowerupData value) => OnSetPowerupInFirstSlot?.Invoke(value);
 
-    public static event Func<PowerupData> OnGetSecondPowerupSlot;
+    public static event Func<PowerupData> OnGetPowerupInSecondSlot;
 
-    public static PowerupData GetSecondPowerupSlot() => OnGetSecondPowerupSlot?.Invoke() ?? null;
-    public static event Action<PowerupData> OnSetSecondPowerupSlot;
+    public static PowerupData GetPowerupInSecondSlot() => OnGetPowerupInSecondSlot?.Invoke() ?? null;
+    public static event Action<PowerupData> OnSetPowerupInSecondSlot;
 
-    public static void SetSecondPowerupSlot(PowerupData value) => OnSetSecondPowerupSlot?.Invoke(value);
+    public static void SetPowerupInSecondSlot(PowerupData value) => OnSetPowerupInSecondSlot?.Invoke(value);
 
     // End of round
     public static event Action OnEndOfRound;
