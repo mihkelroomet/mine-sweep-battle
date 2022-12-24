@@ -1,4 +1,5 @@
 using UnityEngine;
+using Photon.Pun;
 
 public class CollectablePowerup : MonoBehaviour
 {
@@ -41,8 +42,13 @@ public class CollectablePowerup : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Events.SetPowerups(Events.GetPowerups() + 1);
-            Destroy(this.gameObject);
+            if (other.GetComponent<PhotonView>().IsMine)
+            {
+                if (Events.GetFirstPowerupSlot() == null) Events.SetFirstPowerupSlot(Data);
+                else if (Events.GetSecondPowerupSlot() == null) Events.SetSecondPowerupSlot(Data);
+                else return; // Don't destroy if slots full
+                Grid.Instance.DestroyCollectablePowerup(Column, Row, (byte) Data.Type);
+            }
         }
     }
 }

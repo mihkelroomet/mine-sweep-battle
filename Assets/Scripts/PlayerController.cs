@@ -89,11 +89,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
                     }
 
                     // Using powerups
-                    if (Input.GetKeyDown(KeyCode.E) && Events.GetPowerups() > 0)
-                    {
-                        Events.SetPowerups(Events.GetPowerups() - 1);
-                        Grid.Instance.PlantBomb(_view.GetInstanceID(), transform.position, transform.rotation);
-                    }
+                    // TODO
                 }
                 
             }

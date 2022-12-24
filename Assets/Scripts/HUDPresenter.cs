@@ -13,6 +13,8 @@ public class HUDPresenter : MonoBehaviour
     public GameObject ScoreBoard;
     public GameObject EscMenu;
     public TMP_Text FinalScores;
+    public Image FirstPowerupSlotItem;
+    public Image SecondPowerupSlotItem;
     public AudioSource TickAudio;
     public AudioSource StartAudio;
     public AudioSource EndAudio;
@@ -21,6 +23,8 @@ public class HUDPresenter : MonoBehaviour
     private void Awake() {
         Instance = this;
         Events.OnSetScore += SetScore;
+        Events.OnSetFirstPowerupSlot += SetFirstPowerupSlot;
+        Events.OnSetSecondPowerupSlot += SetSecondPowerupSlot;
         Events.OnEndOfRound += ShowScoreboard;
         Transitions.Instance.PlayEnterTransition();
     }
@@ -44,8 +48,29 @@ public class HUDPresenter : MonoBehaviour
         }
     }
 
-    private void SetScore(int value) {
+    private void SetScore(int value)
+    {
         ScoreText.text = "Score: " + value;
+    }
+
+    private void SetFirstPowerupSlot(PowerupData data)
+    {
+        if (data == null) FirstPowerupSlotItem.color = Color.clear;
+        else
+        {
+            FirstPowerupSlotItem.color = Color.white;
+            FirstPowerupSlotItem.sprite = data.Pic64;
+        }
+    }
+
+    private void SetSecondPowerupSlot(PowerupData data)
+    {
+        if (data == null) SecondPowerupSlotItem.color = Color.clear;
+        else
+        {
+            SecondPowerupSlotItem.color = Color.white;
+            SecondPowerupSlotItem.sprite = data.Pic32;
+        }
     }
 
     public void ShowScoreboard()
@@ -73,6 +98,9 @@ public class HUDPresenter : MonoBehaviour
     }
 
     private void OnDestroy() {
+        Events.OnSetScore -= SetScore;
+        Events.OnSetFirstPowerupSlot -= SetFirstPowerupSlot;
+        Events.OnSetSecondPowerupSlot -= SetSecondPowerupSlot;
         Events.OnEndOfRound -= ShowScoreboard;
     }
 

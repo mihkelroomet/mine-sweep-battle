@@ -251,15 +251,21 @@ public class Grid : MonoBehaviour
         if (PhotonNetwork.IsMasterClient || _initialized) PowerupSpawner.Instance.SpawnPowerup(col, row, type);
     }
 
-    public void PlantBomb(int playerID, Vector3 position, Quaternion rotation)
+    public void DestroyCollectablePowerup(int col, int row, byte type)
     {
-        _view.RPC("PlantBombRPC", RpcTarget.All, playerID, position, rotation);
+        _view.RPC("DestroyCollectablePowerupRPC", RpcTarget.All, col, row, type);
     }
 
     [PunRPC]
-    void PlantBombRPC(int playerID, Vector3 position, Quaternion rotation)
+    void DestroyCollectablePowerupRPC(int col, int row, byte type)
     {
-        Bomb bomb = GameObject.Instantiate(BombPrefab, position, rotation);
-        bomb.BeneficiaryID = playerID;
+        for (int i = 0; i < PowerupSpawner.Instance.transform.childCount; i++)
+        {
+            CollectablePowerup powerup = PowerupSpawner.Instance.transform.GetChild(i).GetComponent<CollectablePowerup>();
+            if (powerup.Column == col && powerup.Row == row && (byte) powerup.Data.Type == type)
+            {
+                Destroy(powerup.gameObject);
+            }
+        }
     }
 }
