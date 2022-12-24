@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using TMPro;
 using Photon.Pun;
 public class PlayerController : MonoBehaviour, IPunObservable
@@ -68,27 +69,33 @@ public class PlayerController : MonoBehaviour, IPunObservable
                 _inputHorizontal = Input.GetAxisRaw("Horizontal");
                 _inputVertical = Input.GetAxisRaw("Vertical");
 
-                // Shooting the laserbeam
-                if (Input.GetKeyDown(KeyCode.Mouse0))
+                // If mouse not over UI
+                if (!EventSystem.current.IsPointerOverGameObject())
                 {
-                    _defusing = false; // Breaks defusing process
-                    _beamTimer = 0.1f;
-                    FireBeam(0.05f, Color.red);
-                }
+                    // Firing red beam
+                    if (Input.GetKeyDown(KeyCode.Mouse0))
+                    {
+                        _defusing = false; // Breaks defusing process
+                        _beamTimer = 0.1f;
+                        FireBeam(0.05f, Color.red);
+                    }
 
+                    // Firing green beam
+                    if (Input.GetKeyDown(KeyCode.Mouse1))
+                    {
+                        _defusing = true;
+                        _beamTimer = 0.15f;
+                        FireBeam(0.1f, Color.green);
+                    }
 
-                if (Input.GetKeyDown(KeyCode.Mouse1))
-                {
-                    _defusing = true;
-                    _beamTimer = 0.15f;
-                    FireBeam(0.1f, Color.green);
+                    // Using powerups
+                    if (Input.GetKeyDown(KeyCode.E) && Events.GetPowerups() > 0)
+                    {
+                        Events.SetPowerups(Events.GetPowerups() - 1);
+                        Grid.Instance.PlantBomb(_view.GetInstanceID(), transform.position, transform.rotation);
+                    }
                 }
-
-                if (Input.GetKeyDown(KeyCode.E) && Events.GetPowerups() > 0)
-                {
-                    Events.SetPowerups(Events.GetPowerups() - 1);
-                    Grid.Instance.PlantBomb(_view.GetInstanceID(), transform.position, transform.rotation);
-                }
+                
             }
         }
 
