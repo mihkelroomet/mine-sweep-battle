@@ -17,7 +17,11 @@ public class PlayerController : MonoBehaviour, IPunObservable
 
 
     // Player
-    private float _walkSpeed = 4f;
+    public float MovementSpeed {get; set;}
+    public float DefaultMovementSpeed;
+    public float BoostedMovementSpeed;
+    public float SpeedBoostDuration;
+    private float _speedBoostExpiresAt;
     private float _speedLimiter = 0.7f;
     private float _inputHorizontal;
     private float _inputVertical;
@@ -42,6 +46,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
         _stunTimer = -1;
         _beamTimer = -1;
         _stunDuration = 1.5f;
+        MovementSpeed = DefaultMovementSpeed;
     }
 
     private void Start() {
@@ -93,6 +98,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
                     if (Input.GetKeyDown(KeyCode.LeftShift)) SwitchPowerups();
                 }
                 
+                if (_speedBoostExpiresAt > GameController.Instance.TimeLeft) MovementSpeed = DefaultMovementSpeed;
             }
         }
 
@@ -129,7 +135,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
                 _inputHorizontal *= _speedLimiter;
                 _inputVertical *= _speedLimiter;
             }
-            _rb.velocity = new Vector2(_inputHorizontal * _walkSpeed, _inputVertical * _walkSpeed);
+            _rb.velocity = new Vector2(_inputHorizontal * MovementSpeed, _inputVertical * MovementSpeed);
 
             FootstepsAudio.Play(transform);
         }
@@ -189,13 +195,15 @@ public class PlayerController : MonoBehaviour, IPunObservable
     private void UsePowerup()
     {
         PowerupData powerup = Events.GetPowerupInFirstSlot();
+        if (powerup == null) return;
         switch (powerup.Type)
         {
             case PowerupType.BombPowerup:
-                Debug.Log("Bomb");
+                Debug.Log("Bomb Powerup Used");
                 break;
             case PowerupType.SpeedPowerup:
-                Debug.Log("Speed");
+                MovementSpeed = BoostedMovementSpeed;
+                _speedBoostExpiresAt = GameController.Instance.TimeLeft - SpeedBoostDuration;
                 break;
         }
         Events.SetPowerupInFirstSlot(Events.GetPowerupInSecondSlot());

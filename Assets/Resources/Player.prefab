@@ -1,5 +1,53 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &159030155534310945
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2316699208180319528}
+  - component: {fileID: 1694425572140842419}
+  m_Layer: 6
+  m_Name: CircleCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2316699208180319528
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159030155534310945}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8606360999431299261}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!58 &1694425572140842419
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159030155534310945}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.25}
+  serializedVersion: 2
+  m_Radius: 0.12
 --- !u!1 &2347122353960535831
 GameObject:
   m_ObjectHideFlags: 0
@@ -33,7 +81,7 @@ RectTransform:
   m_Children:
   - {fileID: 6180710124938520488}
   m_Father: {fileID: 8606360999431299261}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -250,7 +298,7 @@ GameObject:
   - component: {fileID: 3736358513900660463}
   m_Layer: 6
   m_Name: NametagPanel
-  m_TagString: Non-InteractableUI
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -340,7 +388,6 @@ GameObject:
   - component: {fileID: 8606360999431299258}
   - component: {fileID: 8606360999431299259}
   - component: {fileID: 8606360999431299256}
-  - component: {fileID: 8606360999431299257}
   - component: {fileID: 8606360999431299263}
   - component: {fileID: 6748840434298423134}
   - component: {fileID: 4550563160943468404}
@@ -364,6 +411,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2316699208180319528}
   - {fileID: 2347122353960535832}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -586,22 +634,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.35, y: 0.65}
   m_EdgeRadius: 0
---- !u!58 &8606360999431299257
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8606360999431299249}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.25}
-  serializedVersion: 2
-  m_Radius: 0.12
 --- !u!114 &8606360999431299263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -619,6 +651,9 @@ MonoBehaviour:
   _view: {fileID: 6748840434298423134}
   _namePanel: {fileID: 6180710124938520495}
   _nametag: {fileID: 2347122354120365502}
+  DefaultMovementSpeed: 4
+  BoostedMovementSpeed: 6
+  SpeedBoostDuration: 10
   _animator: {fileID: 8606360999431299259}
   AudioListenerPrefab: {fileID: 2937236546330399345, guid: cf05cf63037deb2459b83b32d7c55a8d, type: 3}
   FootstepsAudio: {fileID: 11400000, guid: 2cc055013de51e54b89621ce6edf2805, type: 2}
