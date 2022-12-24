@@ -4,12 +4,16 @@ using TMPro;
 using Photon.Pun;
 public class PlayerController : MonoBehaviour, IPunObservable
 {
+    public static PlayerController Instance;
+
+    // Components
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private PhotonView _view;
     [SerializeField] private GameObject _namePanel;
     [SerializeField] private TMP_Text _nametag;
 
+    // Beam
     private float _beamTimer;
     private bool _defusing;
     private float _stunTimer;
@@ -28,8 +32,6 @@ public class PlayerController : MonoBehaviour, IPunObservable
 
     // Animations and states
     [SerializeField] private Animator _animator;
-
-    public static PlayerController Instance;
 
     // Audio
     public AudioListener AudioListenerPrefab;
@@ -199,7 +201,9 @@ public class PlayerController : MonoBehaviour, IPunObservable
         switch (powerup.Type)
         {
             case PowerupType.BombPowerup:
-                Debug.Log("Bomb Powerup Used");
+                Vector2 movementDirection = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+                Bomb bomb = PhotonNetwork.Instantiate("Bomb", transform.position, transform.rotation).GetComponent<Bomb>();
+                bomb.MovementDirection = movementDirection;
                 break;
             case PowerupType.SpeedPowerup:
                 MovementSpeed = BoostedMovementSpeed;

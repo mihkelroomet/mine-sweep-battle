@@ -1,29 +1,32 @@
 using UnityEngine;
-using Photon.Pun;
 
 public class Bomb : MonoBehaviour
 {
-    public float ExplodeTimer = 2f;
-    public int BeneficiaryID {get; set;}
+    [SerializeField] private Rigidbody2D _rb;
+    public Vector2 MovementDirection {get; set;}
+    public float MovementSpeed;
+    public float Deceleration;
+    public float ExplodeTimer;
     private CircleCollider2D _circleCollider2D;
 
     private void Awake() {
         _circleCollider2D = GetComponent<CircleCollider2D>();
-        _circleCollider2D.enabled = false;
     }
 
     private void Update() {
         if (ExplodeTimer <= 0)
         {
-            //if (PhotonView.Find(BeneficiaryID).IsMine) Events.SetScore(Events.GetScore() + 10_000);
-            _circleCollider2D.enabled = true;
             Destroy(this.gameObject);
             return;
         }
         ExplodeTimer -= Time.deltaTime;
+
+        MovementSpeed = MovementSpeed * (1 - Deceleration * Time.deltaTime);
+
+        _rb.velocity = MovementDirection * MovementSpeed;
     }
 
-    private void OnTriggerStay2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Cell"))
         {
