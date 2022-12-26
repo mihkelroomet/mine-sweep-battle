@@ -138,10 +138,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9d7157633c676849aef5b56cb5b51f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _spriteRenderer: {fileID: 6110397246247875385}
   _rb: {fileID: -1851367107258078789}
+  _circleCollider2D: {fileID: 6118829908728403213}
+  _view: {fileID: -7366693789286334417}
   MovementSpeed: 5
   Deceleration: 4.8
+  Explosion: {fileID: 3599392410574270388, guid: feaf1a3477d0f4440b5e2240d7032119, type: 3}
+  ExplosionGrowthRate: 2
   ExplodeTimer: 0.7
+  ExplodeTime: 0.25
 --- !u!114 &-7366693789286334417
 MonoBehaviour:
   m_ObjectHideFlags: 0
