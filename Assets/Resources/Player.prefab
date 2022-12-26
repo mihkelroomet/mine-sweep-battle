@@ -651,6 +651,8 @@ MonoBehaviour:
   _view: {fileID: 6748840434298423134}
   _namePanel: {fileID: 6180710124938520495}
   _nametag: {fileID: 2347122354120365502}
+  RedBeamDuration: 0.1
+  GreenBeamDuration: 0.15
   DefaultMovementSpeed: 4
   BoostedMovementSpeed: 6
   SpeedBoostDuration: 10

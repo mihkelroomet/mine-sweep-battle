@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour, IPunObservable
     [SerializeField] private TMP_Text _nametag;
 
     // Beam
+    public float RedBeamDuration;
+    public float GreenBeamDuration;
     private float _beamTimer;
     private bool _defusing;
     private float _stunTimer;
@@ -83,7 +85,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
                     if (Input.GetKeyDown(KeyCode.Mouse0))
                     {
                         _defusing = false; // Breaks defusing process
-                        _beamTimer = 0.1f;
+                        _beamTimer = RedBeamDuration;
                         FireBeam(0.05f, Color.red);
                     }
 
@@ -91,7 +93,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
                     if (Input.GetKeyDown(KeyCode.Mouse1))
                     {
                         _defusing = true;
-                        _beamTimer = 0.15f;
+                        _beamTimer = GreenBeamDuration;
                         FireBeam(0.1f, Color.green);
                     }
 
@@ -158,33 +160,39 @@ public class PlayerController : MonoBehaviour, IPunObservable
     }
 
     // Fires beam from self to what the mouse is pointing at
-    private void FireBeam(float width, Color color) {
-        // This is necessary because raycast also hits background and background has priority, no idea why
-        RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 20f);
-
+    private void FireBeam(float width, Color color)
+    {
         _lineRenderer.startWidth = width;
         _lineRenderer.startColor = color;
         _lineRenderer.positionCount = 2;
-        _lineRenderer.SetPosition(0, gameObject.transform.position);
-        if (hits[0].collider) {
-            _lineRenderer.SetPosition(1, hits[0].point);
-            foreach (RaycastHit2D hit in hits) {
-                if (hit.collider.CompareTag("Cell")) {
+        _lineRenderer.SetPosition(0, transform.position);
+        _lineRenderer.SetPosition(1, Camera.main.ScreenToWorldPoint(Input.mousePosition)); // If no hits on unopened cell draw line to mouse
+        
+        // Shooting first cell in line
+        RaycastHit2D[] lineHits = Physics2D.LinecastAll(transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        if (lineHits.Length > 0)
+        {
+            foreach (RaycastHit2D hit in lineHits)
+            {
+                if (hit.collider.CompareTag("Cell"))
+                {
                     Cell cell = hit.transform.GetComponent<Cell>();
-                    cell.ShootWith(color, this);
+                    if (!cell.IsOpen())
+                    {
+                        _lineRenderer.SetPosition(1, hit.point);
+                        cell.ShootWith(color, this);
+                        break;
+                    }
                 }
             }
         }
-        else {
-            _lineRenderer.SetPosition(1, gameObject.transform.position);
+        else
+        {
+            _lineRenderer.SetPosition(1, transform.position);
         }
 
-        if (color == Color.red) {
-            PlayFireAudio(1);
-        }
-        else {
-            PlayFireAudio(2);
-        }
+        if (color == Color.red) PlayFireAudio(1);
+        else PlayFireAudio(2);
     }
 
     // Stuns player
