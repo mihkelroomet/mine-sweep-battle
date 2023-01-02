@@ -20,6 +20,12 @@ public class MainMenu : MonoBehaviourPunCallbacks
     public Slider RowSlider;
     public TMP_InputField ColumnCountField;
     public Slider ColumnSlider;
+    public TMP_InputField MaxPlayerCountField;
+    public Slider MaxPlayerSlider;
+    public TMP_InputField BombFrequencyCountField;
+    public Slider BombFrequencySlider;
+    public TMP_InputField RoundLengthCountField;
+    public Slider RoundLengthSlider;
 
     public Button CreateButton;
 
@@ -50,7 +56,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        CreateRoom((int) RowSlider.value, (int) ColumnSlider.value, _maxPlayers, _mineProbability, _roundLength, CreateNameInputField.text, CreateInputField.text);
+        CreateRoom((int) RowSlider.value, (int) ColumnSlider.value, (byte)MaxPlayerSlider.value,BombFrequencySlider.value/10,(int) RoundLengthSlider.value, CreateNameInputField.text, CreateInputField.text);
     }
 
     public void CreateRoom(int rows, int columns, byte maxPlayers, float mineProbability, int roundLength, string playerName, string roomName)
@@ -138,6 +144,20 @@ public class MainMenu : MonoBehaviourPunCallbacks
     {
         ColumnCountField.text = Mathf.Clamp(columns, 10, 100).ToString();
     }
+    public void SetMaxPlayer(float maxPlayer)
+    {
+        MaxPlayerCountField.text = Mathf.Clamp(maxPlayer, 1, 20).ToString();
+    }
+
+    public void SetBombFrequency(float bombFrequency)
+    {
+        BombFrequencyCountField.text = Mathf.Clamp(bombFrequency, 1, 6).ToString();
+    }
+    public void SetRoundLength(float roundLength)
+    {
+        RoundLengthCountField.text = Mathf.Clamp(roundLength, 10, 100).ToString();
+    }
+
 
     public void EndEditRows(string rows)
     {
@@ -153,6 +173,27 @@ public class MainMenu : MonoBehaviourPunCallbacks
         float.TryParse(columns, out v);
         SetColumns((int)v);
         ColumnSlider.value = v;
+    }
+    public void EndMaxPlayer(string maxPlayer)
+    {
+        float v = 10f;
+        float.TryParse(maxPlayer, out v);
+        SetMaxPlayer((int)v);
+        MaxPlayerSlider.value = v;
+    }
+    public void EndBombFrequency(string bombFrequency)
+    {
+        float v = 1f;
+        float.TryParse(bombFrequency, out v);
+        SetBombFrequency((int)v);
+        BombFrequencySlider.value = v;
+    }
+    public void EndRoundLength(string roundLength)
+    {
+        float v = 10f;
+        float.TryParse(roundLength, out v);
+        SetRoundLength((int)v);
+        RoundLengthSlider.value = v;
     }
 
     public void QuitGame()
