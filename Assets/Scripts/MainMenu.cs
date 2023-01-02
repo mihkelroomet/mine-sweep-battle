@@ -34,13 +34,6 @@ public class MainMenu : MonoBehaviourPunCallbacks
     public Button JoinButton;
     public Button QuitButton;
 
-    [SerializeField]
-    private byte _maxPlayers = 10;
-    [SerializeField]
-    private float _mineProbability = 0.25f;
-    [SerializeField]
-    private int _roundLength = 60;
-
     private void Awake() {
         PracticeButton.onClick.AddListener(() => CreatePracticeRoom());
         CreateButton.onClick.AddListener(() => CreateRoom());

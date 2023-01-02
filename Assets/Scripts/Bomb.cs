@@ -70,11 +70,14 @@ public class Bomb : MonoBehaviour
 
     private void Destruct()
     {
-        if (!_exploding)
-        {
-            _exploding = true;
-            Instantiate(Explosion, transform.position, transform.rotation);
-            _spriteRenderer.sprite = null;
-        }
+        if (!_exploding) _view.RPC("DestructRPC", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void DestructRPC()
+    {
+        _exploding = true;
+        Instantiate(Explosion, transform.position, transform.rotation);
+        _spriteRenderer.sprite = null;
     }
 }
