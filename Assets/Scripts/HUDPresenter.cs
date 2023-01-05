@@ -4,8 +4,9 @@ using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Collections.Generic;
 
-public class HUDPresenter : MonoBehaviour
+public class HUDPresenter : MonoBehaviourPunCallbacks
 {
     public static HUDPresenter Instance;
     public TMP_Text ScoreText;
@@ -20,6 +21,14 @@ public class HUDPresenter : MonoBehaviour
     public AudioSource EndAudio;
     public Button RestartButton;
 
+    // Lobby panel
+    public Button StartButton;
+    public Button LeaveButton;
+    public PlayerListing PlayerListingPrefab;
+    public Transform Content;
+
+    private List<PlayerListing> _playerListings = new List<PlayerListing>();
+
     private void Awake() {
         Instance = this;
         Events.OnSetScore += SetScore;
@@ -27,12 +36,28 @@ public class HUDPresenter : MonoBehaviour
         Events.OnSetPowerupInSecondSlot += SetPowerupInSecondSlot;
         Events.OnEndOfRound += ShowScoreboard;
         Transitions.Instance.PlayEnterTransition();
+        LeaveButton.onClick.AddListener(() => GameController.Instance.BackToMainMenu());
+        StartButton.onClick.AddListener(() => GameController.Instance.StartGame());
+        StartButton.gameObject.SetActive(false);
     }
 
     void Start()
     {
+        if (PhotonNetwork.IsMasterClient)
+            StartButton.gameObject.SetActive(true);
         ScoreBoard.SetActive(false);
         EscMenu.SetActive(false);
+
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            PlayerListing listing = Instantiate(PlayerListingPrefab, Content);
+            if (listing != null)
+            {
+                listing.SetPlayerInfo(player);
+            }
+            _playerListings.Add(listing);
+        }
+
     }
 
     // Update timer text
@@ -90,6 +115,29 @@ public class HUDPresenter : MonoBehaviour
         ScoreBoard.SetActive(true);
         RestartButton.gameObject.SetActive(PhotonNetwork.IsMasterClient); // Only let Host press restart otherwise it gets messed up
         EndAudio.Play();
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        PlayerListing listing = Instantiate(PlayerListingPrefab, Content);
+        if (listing != null)
+        {
+            listing.SetPlayerInfo(newPlayer);
+            _playerListings.Add(listing);
+        }
+        
+    }
+
+    public override void OnPlayerLeftRoom(Player leftPlayer)
+    {
+        int index = _playerListings.FindIndex(x => x.Player == leftPlayer);
+        if (index != -1)
+        {
+            Destroy(_playerListings[index].gameObject);
+            _playerListings.RemoveAt(index);
+        }
+        if (PhotonNetwork.IsMasterClient) // In case the master client left and you are the new one, enable the start button
+            StartButton.gameObject.SetActive(true);
     }
 
     public void ShowEscMenu()

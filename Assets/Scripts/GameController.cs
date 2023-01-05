@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class GameController : MonoBehaviour
     public int Score;
     public PowerupData PowerupInFirstSlot;
     public PowerupData PowerupInSecondSlot;
+
+    public GameObject LobbyScreen;
 
     public float TimeLeft
     {
@@ -38,7 +41,7 @@ public class GameController : MonoBehaviour
         Events.OnSetPowerupInSecondSlot += SetPowerupInSecondSlot;
         Events.OnGetPowerupInSecondSlot += GetPowerupInSecondSlot;
         Events.OnEndOfRound += EndOfRound;
-        GameActive = false; // Will wait for countdown to become active once we add it back in
+        GameActive = false; // Will wait for countdown to become active once we add it back in -- I used it for lobby for now -Kaarel
         Score = 0;
         _gameEndCheckInterval = 0.1f;
         _nextGameEndCheckTime = Time.time + _gameEndCheckInterval;
@@ -67,7 +70,19 @@ public class GameController : MonoBehaviour
             _view.RPC("SetTimeLeftOutOfDateRPC", RpcTarget.MasterClient);
         }
         Events.SetScore(Score);
+        //GameActive = true;
+    }
+
+    public void StartGame()
+    {
+        _view.RPC("StartRPC", RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void StartRPC()
+    {
         GameActive = true;
+        LobbyScreen.SetActive(false);
     }
 
     private void Update()
@@ -199,4 +214,6 @@ public class GameController : MonoBehaviour
         Events.OnGetPowerupInSecondSlot -= GetPowerupInSecondSlot;
         Events.OnEndOfRound -= EndOfRound;
     }
+
+
 }
