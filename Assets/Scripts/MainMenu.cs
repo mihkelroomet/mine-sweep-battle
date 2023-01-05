@@ -64,6 +64,8 @@ public class MainMenu : MonoBehaviourPunCallbacks
         roomProps.Add("UpToDate", false);
         roomProps.Add("TimeLeftUpToDate", false);
         roomOptions.CustomRoomProperties = roomProps;
+        string[] lobbyProperties = { "Rows", "Columns", "MineProbability", "RoundLength" };
+        roomOptions.CustomRoomPropertiesForLobby = lobbyProperties;
         PhotonNetwork.CreateRoom(roomName, roomOptions);
         PhotonNetwork.LocalPlayer.NickName = playerName;
     }
