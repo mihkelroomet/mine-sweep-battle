@@ -40,6 +40,8 @@ public class PlayerController : MonoBehaviour, IPunObservable
     public AudioClipGroup FootstepsAudio;
     public AudioClipGroup Fire1Audio;
     public AudioClipGroup Fire2Audio;
+    public AudioClipGroup SpeedUpAudio;
+    public AudioClipGroup SpeedDownAudio;
 
     private void Awake() {
         if (_view.IsMine)
@@ -62,6 +64,40 @@ public class PlayerController : MonoBehaviour, IPunObservable
         else
         {
             _namePanel.SetActive(false); // Temporary solution until we implement showing everyone's nametags to everyone
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (!_view.IsMine) return; // Only update if this is the player character the player spawned
+
+        // Update player animations
+        _animator.SetFloat("HorizontalInput", _inputHorizontal);
+        _animator.SetFloat("VerticalInput", _inputVertical);
+
+        // If the player is moving and the game is active
+        if ((_inputHorizontal != 0 || _inputVertical != 0) && GameController.Instance.GameActive)
+        {
+            // If player tries to move during defusing, break the process
+            if (_defusing)
+            {
+                _defusing = false;
+                _lineRenderer.positionCount = 0;
+            }
+
+            // To avoid player getting faster when moving diagonally
+            if (_inputHorizontal != 0 && _inputVertical != 0)
+            {
+                _inputHorizontal *= _speedLimiter;
+                _inputVertical *= _speedLimiter;
+            }
+            _rb.velocity = new Vector2(_inputHorizontal * MovementSpeed, _inputVertical * MovementSpeed);
+
+            FootstepsAudio.Play(transform);
+        }
+        else
+        {
+            _rb.velocity = new Vector2(0f, 0f);
         }
     }
 
@@ -102,7 +138,11 @@ public class PlayerController : MonoBehaviour, IPunObservable
                     if (Input.GetKeyDown(KeyCode.LeftShift)) SwitchPowerups();
                 }
                 
-                if (_speedBoostExpiresAt > GameController.Instance.TimeLeft) MovementSpeed = DefaultMovementSpeed;
+                if (MovementSpeed == BoostedMovementSpeed && _speedBoostExpiresAt > GameController.Instance.TimeLeft)
+                {
+                    SpeedDownAudio.Play(transform);
+                    MovementSpeed = DefaultMovementSpeed;
+                }
             }
         }
 
@@ -113,40 +153,6 @@ public class PlayerController : MonoBehaviour, IPunObservable
         }
 
         CountBeamDown();
-    }
-
-    private void FixedUpdate()
-    {
-        if (!_view.IsMine) return; // Only update if this is the player character the player spawned
-
-        // Update player animations
-        _animator.SetFloat("HorizontalInput", _inputHorizontal);
-        _animator.SetFloat("VerticalInput", _inputVertical);
-
-        // If the player is moving and the game is active
-        if ((_inputHorizontal != 0 || _inputVertical != 0) && GameController.Instance.GameActive)
-        {
-            // If player tries to move during defusing, break the process
-            if (_defusing)
-            {
-                _defusing = false;
-                _lineRenderer.positionCount = 0;
-            }
-
-            // To avoid player getting faster when moving diagonally
-            if (_inputHorizontal != 0 && _inputVertical != 0)
-            {
-                _inputHorizontal *= _speedLimiter;
-                _inputVertical *= _speedLimiter;
-            }
-            _rb.velocity = new Vector2(_inputHorizontal * MovementSpeed, _inputVertical * MovementSpeed);
-
-            FootstepsAudio.Play(transform);
-        }
-        else
-        {
-            _rb.velocity = new Vector2(0f, 0f);
-        }
     }
 
     // Makes sure the beam will eventually disappear
@@ -215,6 +221,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
                 break;
             case PowerupType.SpeedPowerup:
                 MovementSpeed = BoostedMovementSpeed;
+                SpeedUpAudio.Play(transform);
                 _speedBoostExpiresAt = GameController.Instance.TimeLeft - SpeedBoostDuration;
                 break;
         }

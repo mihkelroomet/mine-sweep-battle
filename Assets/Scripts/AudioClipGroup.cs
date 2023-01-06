@@ -31,13 +31,21 @@ public class AudioClipGroup : ScriptableObject
 
     public void Play(Transform parent)
     {
+        Play(parent, parent.position);
+    }
+
+    public void Play(Transform parent, Vector3 position)
+    {
         if (AudioSourcePool.Instance == null) return;
         
         // Don't play sounds if their source is too far
-        if (Vector3.Distance(PlayerController.Instance.transform.position, parent.transform.position) < MaxAudibleDistance) Play(AudioSourcePool.Instance.GetSource(), parent);
+        if (!PlayerController.Instance || Vector3.Distance(PlayerController.Instance.transform.position, parent.transform.position) < MaxAudibleDistance)
+        {
+            Play(AudioSourcePool.Instance.GetSource(), parent, position);
+        }
     }
 
-    public void Play(AudioSource source, Transform parent)
+    public void Play(AudioSource source, Transform parent, Vector3 position)
     {
         if (timestamp > Time.time) return;
         if (Clips.Count <= 0) return;
@@ -48,9 +56,8 @@ public class AudioClipGroup : ScriptableObject
         source.pitch = Random.Range(PitchMin, PitchMax);
         source.clip = Clips[Random.Range(0, Clips.Count)];
         source.transform.parent = parent; // Necessary for moving objects
-        source.transform.position = parent.transform.position;
+        source.transform.position = position;
 
         source.Play();
     }
-
 }

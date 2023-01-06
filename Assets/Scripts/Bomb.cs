@@ -16,6 +16,7 @@ public class Bomb : MonoBehaviour
     
     // Explosion
     public ParticleSystem Explosion;
+    public AudioClipGroup BombAudio;
     public float ExplosionGrowthRate;
     public float ExplodeTimer;
     public float ExplodeTime;
@@ -78,6 +79,7 @@ public class Bomb : MonoBehaviour
     {
         _exploding = true;
         Instantiate(Explosion, transform.position, transform.rotation);
+        BombAudio.Play(AudioSourcePool.Instance.transform, transform.position);
         _spriteRenderer.sprite = null;
         _rb.velocity = Vector2.zero;
     }
