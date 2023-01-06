@@ -79,5 +79,6 @@ public class Bomb : MonoBehaviour
         _exploding = true;
         Instantiate(Explosion, transform.position, transform.rotation);
         _spriteRenderer.sprite = null;
+        _rb.velocity = Vector2.zero;
     }
 }
