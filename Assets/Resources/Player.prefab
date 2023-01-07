@@ -392,6 +392,7 @@ GameObject:
   - component: {fileID: 6748840434298423134}
   - component: {fileID: 4550563160943468404}
   - component: {fileID: 766469467049700371}
+  - component: {fileID: 1556143621622070433}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -653,6 +654,7 @@ MonoBehaviour:
   _nametag: {fileID: 2347122354120365502}
   RedBeamDuration: 0.1
   GreenBeamDuration: 0.15
+  newColor: {r: 0, g: 0, b: 0, a: 0}
   DefaultMovementSpeed: 4
   BoostedMovementSpeed: 6
   SpeedBoostDuration: 10
@@ -748,3 +750,18 @@ MonoBehaviour:
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
+--- !u!114 &1556143621622070433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8606360999431299249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 635fc05ae9634364cb3ddaf65d0bb409, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  background:
+    serializedVersion: 2
+    rgba: 0

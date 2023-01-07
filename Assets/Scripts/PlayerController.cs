@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour, IPunObservable
     private bool _defusing;
     private float _stunTimer;
     private float _stunDuration;
+    public Color newColor;
+    private SpriteRenderer rend;
 
 
     // Player
@@ -59,6 +61,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
         if (_view.IsMine)
         {
             Camera.main.transform.parent = this.transform; // Center camera on player
+
             _nametag.text = PhotonNetwork.LocalPlayer.NickName;
         }
         else
