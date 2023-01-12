@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class PlayerColors : MonoBehaviour
 {
-    private SpriteRenderer rend;
+    private Transform playerSprite;
+    private SpriteRenderer rendTorso;
+    private SpriteRenderer rendSleeves;
+
     public Color32 background;
     public void Awake()
     {
@@ -17,7 +20,11 @@ public class PlayerColors : MonoBehaviour
     }
     private void Start()
     {
-        rend = GetComponent<SpriteRenderer>();
-        rend.color = background;
+        playerSprite = gameObject.transform.Find("PlayerSprite");
+        rendTorso = playerSprite.Find("Torso").GetComponent<SpriteRenderer>();
+        rendSleeves = playerSprite.Find("Sleeves").GetComponent<SpriteRenderer>();
+
+        rendTorso.color = background;
+        rendSleeves.color = background;
     }
 }
