@@ -42,6 +42,23 @@ public class MainMenu : MonoBehaviourPunCallbacks
         Transitions.Instance.PlayEnterTransition();
     }
 
+    private void Start()
+    {
+        List<RoomInfo> StartingRooms = ConnectToServer.Instance.RoomList;
+        foreach (RoomInfo info in StartingRooms)
+        {
+            RoomListing listing = Instantiate(roomListingPrefab, Content);
+            Button listingButton = listing.GetComponent<Button>();
+            listingButton.onClick.AddListener(() => SelectRoom(listing));
+            if (listing != null)
+            {
+                listing.SetRoomInfo(info);
+                _listings.Add(listing);
+            }
+        }
+
+    }
+
     public void CreatePracticeRoom()
     {
         CreateRoom(50, 50, 1, 0.25f, 60, "Trainee", Random.Range(0, 1_000_000).ToString());
@@ -49,7 +66,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        CreateRoom((int) RowSlider.value, (int) ColumnSlider.value, (byte)MaxPlayerSlider.value,BombFrequencySlider.value/10,(int) RoundLengthSlider.value, CreateNameInputField.text, CreateInputField.text);
+        CreateRoom((int)RowSlider.value, (int)ColumnSlider.value, (byte)MaxPlayerSlider.value, BombFrequencySlider.value / 10, (int)RoundLengthSlider.value, CreateNameInputField.text, CreateInputField.text);
     }
 
     public void CreateRoom(int rows, int columns, byte maxPlayers, float mineProbability, int roundLength, string playerName, string roomName)
@@ -57,10 +74,10 @@ public class MainMenu : MonoBehaviourPunCallbacks
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = maxPlayers;
         ExitGames.Client.Photon.Hashtable roomProps = new ExitGames.Client.Photon.Hashtable();
-        roomProps.Add("Rows", (int) rows);
-        roomProps.Add("Columns", (int) columns);
-        roomProps.Add("MineProbability", (float) mineProbability);
-        roomProps.Add("RoundLength", (int) roundLength);
+        roomProps.Add("Rows", (int)rows);
+        roomProps.Add("Columns", (int)columns);
+        roomProps.Add("MineProbability", (float)mineProbability);
+        roomProps.Add("RoundLength", (int)roundLength);
         roomProps.Add("UpToDate", false);
         roomProps.Add("TimeLeftUpToDate", false);
         roomOptions.CustomRoomProperties = roomProps;
@@ -78,10 +95,10 @@ public class MainMenu : MonoBehaviourPunCallbacks
     }
 
     public override void OnJoinedRoom()
-	{
+    {
 
         PhotonNetwork.LoadLevel("In-Game");
-	}
+    }
 
     // Join the lobby again after exiting a game, so the room list works
     public override void OnConnectedToMaster()
