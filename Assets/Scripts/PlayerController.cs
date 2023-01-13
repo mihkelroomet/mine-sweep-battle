@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private CircleCollider2D _circleCollider;
+    [SerializeField] private SpriteRenderer _crosshair;
     [SerializeField] private PhotonView _view;
     [SerializeField] private GameObject _namePanel;
     [SerializeField] private TMP_Text _nametag;
@@ -21,9 +22,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
     private bool _defusing;
     private float _stunTimer;
     private float _stunDuration;
-    public Color newColor;
-    private SpriteRenderer rend;
-
+    private Cell _targetedCell;
 
     // Player
     public float MovementSpeed {get; set;}
@@ -52,6 +51,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
             Instance = this;
             Instantiate(AudioListenerPrefab, transform);
         }
+        else _crosshair.enabled = false; // Don't show crosshair of other players
         _stunTimer = -1;
         _beamTimer = -1;
         _stunDuration = 1.5f;
@@ -156,6 +156,29 @@ public class PlayerController : MonoBehaviour, IPunObservable
             _stunTimer -= Time.deltaTime;
         }
 
+        // Update crosshair placement
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition); // If no unopened cells in the way then target at mouse
+        _crosshair.transform.position = new Vector3(mousePos.x, mousePos.y, 0); // Because z will always be wrong otherwise
+        _targetedCell = null;
+        // Targeting first cell in line
+        RaycastHit2D[] lineHits = Physics2D.LinecastAll(_circleCollider.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        if (lineHits.Length > 0)
+        {
+            foreach (RaycastHit2D hit in lineHits)
+            {
+                if (hit.collider.CompareTag("Cell"))
+                {
+                    Cell cell = hit.transform.GetComponent<Cell>();
+                    if (!cell.IsOpen())
+                    {
+                        _crosshair.transform.position = cell.transform.position;
+                        _targetedCell = cell;
+                        break;
+                    }
+                }
+            }
+        }
+
         CountBeamDown();
     }
 
@@ -176,33 +199,9 @@ public class PlayerController : MonoBehaviour, IPunObservable
         _lineRenderer.startColor = color;
         _lineRenderer.positionCount = 2;
         _lineRenderer.SetPosition(0, transform.position);
-        _lineRenderer.SetPosition(1, Camera.main.ScreenToWorldPoint(Input.mousePosition)); // If no hits on unopened cell draw line to mouse
+        _lineRenderer.SetPosition(1, _crosshair.transform.position);
         
-        // Shooting first cell in line
-        RaycastHit2D[] lineHits = Physics2D.LinecastAll(_circleCollider.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
-        Debug.Log("circle: " + _circleCollider.transform.position);
-        Debug.Log("mouse: " + Camera.main.ScreenToWorldPoint(Input.mousePosition));
-        if (lineHits.Length > 0)
-        {
-            foreach (RaycastHit2D hit in lineHits)
-            {
-                if (hit.collider.CompareTag("Cell"))
-                {
-                    Cell cell = hit.transform.GetComponent<Cell>();
-                    if (!cell.IsOpen())
-                    {
-                        Debug.Log("cell: " + hit.transform.position);
-                        _lineRenderer.SetPosition(1, hit.point);
-                        cell.ShootWith(color, this);
-                        break;
-                    }
-                }
-            }
-        }
-        else
-        {
-            _lineRenderer.SetPosition(1, transform.position);
-        }
+        if (_targetedCell != null) _targetedCell.ShootWith(color, this);
 
         if (color == Color.red) PlayFireAudio(1);
         else PlayFireAudio(2);
