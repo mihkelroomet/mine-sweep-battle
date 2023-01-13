@@ -19,4 +19,4 @@ MonoBehaviour:
   Cooldown: 0.1
   MaxAudibleDistance: 7
   Clips:
-  - {fileID: 8300000, guid: d644e97dabc3e4642adb6a7f71477998, type: 3}
+  - {fileID: 8300000, guid: 99e9ff6b3469b874da5e4cc1e5d68776, type: 3}

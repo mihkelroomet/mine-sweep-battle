@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
     // Components
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] private LineRenderer _lineRenderer;
+    [SerializeField] private CircleCollider2D _circleCollider;
     [SerializeField] private PhotonView _view;
     [SerializeField] private GameObject _namePanel;
     [SerializeField] private TMP_Text _nametag;
@@ -178,7 +179,9 @@ public class PlayerController : MonoBehaviour, IPunObservable
         _lineRenderer.SetPosition(1, Camera.main.ScreenToWorldPoint(Input.mousePosition)); // If no hits on unopened cell draw line to mouse
         
         // Shooting first cell in line
-        RaycastHit2D[] lineHits = Physics2D.LinecastAll(transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        RaycastHit2D[] lineHits = Physics2D.LinecastAll(_circleCollider.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        Debug.Log("circle: " + _circleCollider.transform.position);
+        Debug.Log("mouse: " + Camera.main.ScreenToWorldPoint(Input.mousePosition));
         if (lineHits.Length > 0)
         {
             foreach (RaycastHit2D hit in lineHits)
@@ -188,6 +191,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
                     Cell cell = hit.transform.GetComponent<Cell>();
                     if (!cell.IsOpen())
                     {
+                        Debug.Log("cell: " + hit.transform.position);
                         _lineRenderer.SetPosition(1, hit.point);
                         cell.ShootWith(color, this);
                         break;

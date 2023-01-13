@@ -291,6 +291,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rb: {fileID: 4529419453277161849}
   _lineRenderer: {fileID: 4529419453277161853}
+  _circleCollider: {fileID: 6789064636931921008}
   _view: {fileID: 1449288110315810461}
   _namePanel: {fileID: 2049734148212018796}
   _nametag: {fileID: 7577009633174076541}
@@ -995,7 +996,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5440533414996752354}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1015,7 +1016,7 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.25}
+  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.12
 --- !u!1 &7577009632762588884
