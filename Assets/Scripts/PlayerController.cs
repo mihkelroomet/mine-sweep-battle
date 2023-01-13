@@ -208,7 +208,8 @@ public class PlayerController : MonoBehaviour, IPunObservable
     }
 
     // Stuns player
-    public void Stun() {
+    public void Stun()
+    {
         _inputHorizontal = 0;
         _inputVertical = 0;
         _stunTimer = _stunDuration;

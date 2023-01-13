@@ -9,7 +9,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 {
     public Button PracticeButton;
     public TMP_InputField CreateNameInputField;
-    public TMP_InputField CreateInputField;
+    public TMP_InputField CreateRoomNameInputField;
 
     public RoomListing roomListingPrefab;
     public Transform Content;
@@ -30,7 +30,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     public Button CreateButton;
 
     public TMP_InputField JoinNameInputField;
-    public TMP_InputField JoinInputField;
+    public TMP_InputField JoinRoomNameInputField;
     public Button JoinButton;
     public Button QuitButton;
 
@@ -61,12 +61,12 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void CreatePracticeRoom()
     {
-        CreateRoom(50, 50, 1, 0.25f, 60, "Trainee", Random.Range(0, 1_000_000).ToString());
+        CreateRoom(50, 50, 1, 0.3f, 90, "Trainee", Random.Range(0, 1_000_000).ToString());
     }
 
     public void CreateRoom()
     {
-        CreateRoom((int)RowSlider.value, (int)ColumnSlider.value, (byte)MaxPlayerSlider.value, BombFrequencySlider.value / 10, (int)RoundLengthSlider.value, CreateNameInputField.text, CreateInputField.text);
+        CreateRoom((int)RowSlider.value, (int)ColumnSlider.value, (byte)MaxPlayerSlider.value, BombFrequencySlider.value / 10, (int)RoundLengthSlider.value, CreateNameInputField.text, CreateRoomNameInputField.text);
     }
 
     public void CreateRoom(int rows, int columns, byte maxPlayers, float mineProbability, int roundLength, string playerName, string roomName)
@@ -89,7 +89,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void JoinRoom()
     {
-        PhotonNetwork.JoinRoom(JoinInputField.text);
+        PhotonNetwork.JoinRoom(JoinRoomNameInputField.text);
         string playerName = JoinNameInputField.text;
         PhotonNetwork.LocalPlayer.NickName = playerName.Equals("") ? "Player" : playerName;
     }
@@ -144,7 +144,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void SelectRoom(RoomListing room)
     {
-        JoinInputField.text = room.RoomInfo.Name;
+        JoinRoomNameInputField.text = room.RoomInfo.Name;
     }
 
     public void SetRows(float rows)
@@ -156,7 +156,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     {
         ColumnCountField.text = Mathf.Clamp(columns, 10, 100).ToString();
     }
-    public void SetMaxPlayer(float maxPlayer)
+    public void SetMaxPlayers(float maxPlayer)
     {
         MaxPlayerCountField.text = Mathf.Clamp(maxPlayer, 1, 20).ToString();
     }
@@ -167,7 +167,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     }
     public void SetRoundLength(float roundLength)
     {
-        RoundLengthCountField.text = Mathf.Clamp(roundLength, 10, 100).ToString();
+        RoundLengthCountField.text = Mathf.Clamp(roundLength, 15, 300).ToString();
     }
 
 
@@ -186,21 +186,21 @@ public class MainMenu : MonoBehaviourPunCallbacks
         SetColumns((int)v);
         ColumnSlider.value = v;
     }
-    public void EndMaxPlayer(string maxPlayer)
+    public void EndEditMaxPlayers(string maxPlayer)
     {
         float v = 10f;
         float.TryParse(maxPlayer, out v);
-        SetMaxPlayer((int)v);
+        SetMaxPlayers((int)v);
         MaxPlayerSlider.value = v;
     }
-    public void EndBombFrequency(string bombFrequency)
+    public void EndEditBombFrequency(string bombFrequency)
     {
         float v = 1f;
         float.TryParse(bombFrequency, out v);
         SetBombFrequency((int)v);
         BombFrequencySlider.value = v;
     }
-    public void EndRoundLength(string roundLength)
+    public void EndEditRoundLength(string roundLength)
     {
         float v = 10f;
         float.TryParse(roundLength, out v);

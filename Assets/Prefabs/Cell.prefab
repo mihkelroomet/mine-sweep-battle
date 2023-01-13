@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1875136613, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  m_Sprite: {fileID: 1473281719, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -101,7 +101,7 @@ BoxCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
+    border: {x: 0.049999997, y: 0.049999997, z: 0.049999997, w: 0.049999997}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 0.32, y: 0.32}
     newSize: {x: 0.32, y: 0.32}
@@ -124,17 +124,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57ede0a120a16d34d9624e998a443747, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenCellSprite0: {fileID: -1661107405, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  OpenCellSprite1: {fileID: -276660373, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  OpenCellSprite2: {fileID: 891898633, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  OpenCellSprite3: {fileID: -1107902805, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  OpenCellSprite4: {fileID: -1841897974, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  OpenCellSprite5: {fileID: -1975127206, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  OpenCellSprite6: {fileID: -2004480210, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  OpenCellSprite7: {fileID: -246374937, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  OpenCellSprite8: {fileID: 1497542436, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  UnopenedCellSprite: {fileID: 1875136613, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  BorderCellSprite: {fileID: -477157549, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  OpenCellSprite0: {fileID: 399551576, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  OpenCellSprite1: {fileID: 1742541589, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  OpenCellSprite2: {fileID: -2001150330, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  OpenCellSprite3: {fileID: 2011506054, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  OpenCellSprite4: {fileID: 1076210827, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  OpenCellSprite5: {fileID: 1342177296, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  OpenCellSprite6: {fileID: -1034342864, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  OpenCellSprite7: {fileID: -1824063108, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  OpenCellSprite8: {fileID: 75809975, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  UnopenedCellSprite: {fileID: 1473281719, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  BorderCellSprite: {fileID: -1106770529, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
   MineSpritePrefab: {fileID: 8409035989049937335, guid: ce96ec821d7a0d442b104d98e7877861, type: 3}
   Explosion: {fileID: 3599392410574270388, guid: 351abbd5731a40d44968a340f43d8a59, type: 3}
   CellOpened: {fileID: 6361724047665199194, guid: 776db49ffd492e2428ba7511952cbbea, type: 3}

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SpeedPowerup
   m_EditorClassIdentifier: 
   Type: 1
-  CollectablePic: {fileID: -1019260459, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  Pic32: {fileID: 1579534865, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  CollectablePic: {fileID: -1009127190, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  Pic32: {fileID: 888780638, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
   Pic64: {fileID: -1655211229, guid: 5d6f163aaed6a7e45b41169cf265c187, type: 3}
-  ComparativeFrequency: 2
+  ComparativeFrequency: 1

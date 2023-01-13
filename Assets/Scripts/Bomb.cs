@@ -67,6 +67,22 @@ public class Bomb : MonoBehaviour
             cell.RemoveMine();
             cell.Open();
         }
+
+        if (_exploding && other.CompareTag("Player"))
+        {
+            PlayerController player = other.GetComponent<PlayerController>();
+            player.Stun();
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        // For when the player if already colliding with the bomb when it explodes
+        if (_exploding && other.CompareTag("Player"))
+        {
+            PlayerController player = other.GetComponent<PlayerController>();
+            player.Stun();
+        }
     }
 
     private void Destruct()

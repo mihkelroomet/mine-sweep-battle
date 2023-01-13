@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BombPowerup
   m_EditorClassIdentifier: 
   Type: 0
-  CollectablePic: {fileID: -2098546008, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
-  Pic32: {fileID: 7312179, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  CollectablePic: {fileID: -893455579, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
+  Pic32: {fileID: -1293939185, guid: 4ae2e7cbccee18446bbfad83ee97c86a, type: 3}
   Pic64: {fileID: -378699520, guid: 5d6f163aaed6a7e45b41169cf265c187, type: 3}
-  ComparativeFrequency: 10
+  ComparativeFrequency: 9
