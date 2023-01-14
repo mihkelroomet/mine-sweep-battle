@@ -7,15 +7,15 @@ using System.Collections.Generic;
 
 public class MainMenu : MonoBehaviourPunCallbacks
 {
-    public Button PracticeButton;
-    public TMP_InputField CreateNameInputField;
-    public TMP_InputField CreateRoomNameInputField;
-
+    // RoomListing
     public RoomListing roomListingPrefab;
     public Transform Content;
-
     private List<RoomListing> _listings = new List<RoomListing>();
+    private RoomListing _selectedRoom;
 
+    // Input Fields
+    public TMP_InputField NameInputField;
+    public TMP_InputField CreateRoomNameInputField;
     public TMP_InputField RowCountField;
     public Slider RowSlider;
     public TMP_InputField ColumnCountField;
@@ -27,10 +27,9 @@ public class MainMenu : MonoBehaviourPunCallbacks
     public TMP_InputField RoundLengthCountField;
     public Slider RoundLengthSlider;
 
+    // Buttons
+    public Button PracticeButton;
     public Button CreateButton;
-
-    public TMP_InputField JoinNameInputField;
-    public TMP_InputField JoinRoomNameInputField;
     public Button JoinButton;
     public Button QuitButton;
 
@@ -66,7 +65,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        CreateRoom((int)RowSlider.value, (int)ColumnSlider.value, (byte)MaxPlayerSlider.value, BombFrequencySlider.value / 10, (int)RoundLengthSlider.value, CreateNameInputField.text, CreateRoomNameInputField.text);
+        CreateRoom((int)RowSlider.value, (int)ColumnSlider.value, (byte)MaxPlayerSlider.value, BombFrequencySlider.value / 10, (int)RoundLengthSlider.value, NameInputField.text, CreateRoomNameInputField.text);
     }
 
     public void CreateRoom(int rows, int columns, byte maxPlayers, float mineProbability, int roundLength, string playerName, string roomName)
@@ -89,14 +88,13 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void JoinRoom()
     {
-        PhotonNetwork.JoinRoom(JoinRoomNameInputField.text);
-        string playerName = JoinNameInputField.text;
+        PhotonNetwork.JoinRoom(_selectedRoom.RoomInfo.Name);
+        string playerName = NameInputField.text;
         PhotonNetwork.LocalPlayer.NickName = playerName.Equals("") ? "Player" : playerName;
     }
 
     public override void OnJoinedRoom()
     {
-
         PhotonNetwork.LoadLevel("In-Game");
     }
 
@@ -144,7 +142,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void SelectRoom(RoomListing room)
     {
-        JoinRoomNameInputField.text = room.RoomInfo.Name;
+        _selectedRoom = room;
     }
 
     public void SetRows(float rows)
