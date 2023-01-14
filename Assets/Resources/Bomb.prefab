@@ -149,6 +149,7 @@ MonoBehaviour:
   ExplosionGrowthRate: 2
   ExplodeTimer: 0.7
   ExplodeTime: 0.25
+  BustCellScore: 125
 --- !u!114 &-7366693789286334417
 MonoBehaviour:
   m_ObjectHideFlags: 0

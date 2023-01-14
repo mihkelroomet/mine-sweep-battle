@@ -2960,24 +2960,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2021977298ff0a4d882c1990532fd59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PracticeButton: {fileID: 139761309}
-  CreateNameInputField: {fileID: 4844167386798615100}
-  CreateRoomNameInputField: {fileID: 847212714}
   roomListingPrefab: {fileID: 3058392103965146382, guid: 9a3dd3bfd52732a4991bb5b1aa596efa, type: 3}
   Content: {fileID: 957425813}
-  RowCountField: {fileID: 780615885}
-  RowSlider: {fileID: 810583643}
-  ColumnCountField: {fileID: 1208894825}
-  ColumnSlider: {fileID: 1208894824}
-  MaxPlayerCountField: {fileID: 1568085315}
-  MaxPlayerSlider: {fileID: 1568085314}
-  BombFrequencyCountField: {fileID: 1405877637}
-  BombFrequencySlider: {fileID: 1405877636}
-  RoundLengthCountField: {fileID: 1984375573}
+  NameInputField: {fileID: 4844167386798615100}
+  CreateRoomNameInputField: {fileID: 847212714}
+  RowsInputField: {fileID: 780615885}
+  RowsSlider: {fileID: 810583643}
+  ColumnsInputField: {fileID: 1208894825}
+  ColumnsSlider: {fileID: 1208894824}
+  MaxPlayersInputField: {fileID: 1568085315}
+  MaxPlayersSlider: {fileID: 1568085314}
+  MineFrequencyInputField: {fileID: 1405877637}
+  MineFrequencySlider: {fileID: 1405877636}
+  RoundLengthInputField: {fileID: 1984375573}
   RoundLengthSlider: {fileID: 1984375572}
+  PracticeButton: {fileID: 139761309}
   CreateButton: {fileID: 303897426}
-  JoinNameInputField: {fileID: 0}
-  JoinRoomNameInputField: {fileID: 0}
   JoinButton: {fileID: 1723062871}
   QuitButton: {fileID: 170500961}
 --- !u!1 &1019971734
@@ -3648,7 +3646,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3688829329561974144, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_Name
-      value: ColumnSlider
+      value: ColumnsSlider
       objectReference: {fileID: 0}
     - target: {fileID: 3688829329561974146, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -3744,7 +3742,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3688829330059866898, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_Name
-      value: ColumnInputField
+      value: ColumnsInputField
       objectReference: {fileID: 0}
     - target: {fileID: 3688829330059866900, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -3885,7 +3883,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3688829329561974144, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_Name
-      value: BombFrequencySlider
+      value: MineFrequencySlider
       objectReference: {fileID: 0}
     - target: {fileID: 3688829329561974146, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_Value
@@ -3909,7 +3907,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3688829329561974146, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetBombFrequency
+      value: SetMineFrequency
       objectReference: {fileID: 0}
     - target: {fileID: 3688829329561974147, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_Pivot.x
@@ -3997,7 +3995,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3688829330059866898, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_Name
-      value: BombFrequencyInputField
+      value: MineFrequencyInputField
       objectReference: {fileID: 0}
     - target: {fileID: 3688829330059866900, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_Text
@@ -4009,7 +4007,7 @@ PrefabInstance:
       objectReference: {fileID: 1004822712}
     - target: {fileID: 3688829330059866900, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: EndEditBombFrequency
+      value: EndEditMineFrequency
       objectReference: {fileID: 0}
     - target: {fileID: 3688829330059866900, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -4017,7 +4015,7 @@ PrefabInstance:
       objectReference: {fileID: 1004822712}
     - target: {fileID: 3688829330059866900, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: EndEditBombFrequency
+      value: EndEditMineFrequency
       objectReference: {fileID: 0}
     - target: {fileID: 3688829330101439178, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_AnchorMax.x
@@ -5915,7 +5913,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3688829329561974144, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_Name
-      value: RowSlider
+      value: RowsSlider
       objectReference: {fileID: 0}
     - target: {fileID: 3688829329561974146, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -6007,7 +6005,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3688829330059866898, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_Name
-      value: RowInputField
+      value: RowsInputField
       objectReference: {fileID: 0}
     - target: {fileID: 3688829330059866900, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Target

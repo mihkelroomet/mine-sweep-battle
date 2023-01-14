@@ -16,15 +16,15 @@ public class MainMenu : MonoBehaviourPunCallbacks
     // Input Fields
     public TMP_InputField NameInputField;
     public TMP_InputField CreateRoomNameInputField;
-    public TMP_InputField RowCountField;
-    public Slider RowSlider;
-    public TMP_InputField ColumnCountField;
-    public Slider ColumnSlider;
-    public TMP_InputField MaxPlayerCountField;
-    public Slider MaxPlayerSlider;
-    public TMP_InputField BombFrequencyCountField;
-    public Slider BombFrequencySlider;
-    public TMP_InputField RoundLengthCountField;
+    public TMP_InputField RowsInputField;
+    public Slider RowsSlider;
+    public TMP_InputField ColumnsInputField;
+    public Slider ColumnsSlider;
+    public TMP_InputField MaxPlayersInputField;
+    public Slider MaxPlayersSlider;
+    public TMP_InputField MineFrequencyInputField;
+    public Slider MineFrequencySlider;
+    public TMP_InputField RoundLengthInputField;
     public Slider RoundLengthSlider;
 
     // Buttons
@@ -65,7 +65,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        CreateRoom((int)RowSlider.value, (int)ColumnSlider.value, (byte)MaxPlayerSlider.value, BombFrequencySlider.value / 10, (int)RoundLengthSlider.value, NameInputField.text, CreateRoomNameInputField.text);
+        CreateRoom((int)RowsSlider.value, (int)ColumnsSlider.value, (byte)MaxPlayersSlider.value, MineFrequencySlider.value / 10, (int)RoundLengthSlider.value, NameInputField.text, CreateRoomNameInputField.text);
     }
 
     public void CreateRoom(int rows, int columns, byte maxPlayers, float mineProbability, int roundLength, string playerName, string roomName)
@@ -147,25 +147,25 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void SetRows(float rows)
     {
-        RowCountField.text = Mathf.Clamp(rows, 10, 100).ToString();
+        RowsInputField.text = Mathf.Clamp(rows, 10, 100).ToString();
     }
 
     public void SetColumns(float columns)
     {
-        ColumnCountField.text = Mathf.Clamp(columns, 10, 100).ToString();
+        ColumnsInputField.text = Mathf.Clamp(columns, 10, 100).ToString();
     }
     public void SetMaxPlayers(float maxPlayer)
     {
-        MaxPlayerCountField.text = Mathf.Clamp(maxPlayer, 1, 20).ToString();
+        MaxPlayersInputField.text = Mathf.Clamp(maxPlayer, 1, 20).ToString();
     }
 
-    public void SetBombFrequency(float bombFrequency)
+    public void SetMineFrequency(float mineFrequency)
     {
-        BombFrequencyCountField.text = Mathf.Clamp(bombFrequency, 1, 6).ToString();
+        MineFrequencyInputField.text = Mathf.Clamp(mineFrequency, 1, 6).ToString();
     }
     public void SetRoundLength(float roundLength)
     {
-        RoundLengthCountField.text = Mathf.Clamp(roundLength, 15, 300).ToString();
+        RoundLengthInputField.text = Mathf.Clamp(roundLength, 15, 300).ToString();
     }
 
 
@@ -174,7 +174,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
         float v = 10f;
         float.TryParse(rows, out v);
         SetRows((int)v);
-        RowSlider.value = v;
+        RowsSlider.value = v;
     }
 
     public void EndEditColumns(string columns)
@@ -182,21 +182,21 @@ public class MainMenu : MonoBehaviourPunCallbacks
         float v = 10f;
         float.TryParse(columns, out v);
         SetColumns((int)v);
-        ColumnSlider.value = v;
+        ColumnsSlider.value = v;
     }
     public void EndEditMaxPlayers(string maxPlayer)
     {
         float v = 10f;
         float.TryParse(maxPlayer, out v);
         SetMaxPlayers((int)v);
-        MaxPlayerSlider.value = v;
+        MaxPlayersSlider.value = v;
     }
-    public void EndEditBombFrequency(string bombFrequency)
+    public void EndEditMineFrequency(string mineFrequency)
     {
         float v = 1f;
-        float.TryParse(bombFrequency, out v);
-        SetBombFrequency((int)v);
-        BombFrequencySlider.value = v;
+        float.TryParse(mineFrequency, out v);
+        SetMineFrequency((int)v);
+        MineFrequencySlider.value = v;
     }
     public void EndEditRoundLength(string roundLength)
     {

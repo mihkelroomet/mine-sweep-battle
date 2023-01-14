@@ -23,6 +23,9 @@ public class Bomb : MonoBehaviour
     private bool _exploding;
     private float _explodeTimeLeft;
 
+    // Scoring
+    public int BustCellScore;
+
     private void Awake()
     {
         _exploding = false;
@@ -62,10 +65,14 @@ public class Bomb : MonoBehaviour
         {
             Cell cell = other.GetComponent<Cell>();
 
-            if (!cell.IsOpen()) Destruct();
+            if (!cell.IsOpen())
+            {
+                Events.SetScore(Events.GetScore() + BustCellScore);
+                Destruct();
+                cell.RemoveMine();
+                cell.Open();
+            }
 
-            cell.RemoveMine();
-            cell.Open();
         }
 
         if (_exploding && other.CompareTag("Player"))

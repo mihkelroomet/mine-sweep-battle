@@ -60,10 +60,10 @@ public class Cell : MonoBehaviour
     public ParticleSystem MineDefused;
 
     // Scoring
-    public int OpenEmptyScore = 10;
-    public int OpenMineScore = 100;
-    public int FailEmptyPenalty = -10;
-    public int FailMinePenalty = -100;
+    public int OpenEmptyScore;
+    public int OpenMineScore;
+    public int FailEmptyPenalty;
+    public int FailMinePenalty;
 
     // Sounds
     public AudioClipGroup CorrectEmptySound;

@@ -45,6 +45,9 @@ public class PlayerController : MonoBehaviour, IPunObservable
     public AudioClipGroup SpeedUpAudio;
     public AudioClipGroup SpeedDownAudio;
 
+    // Scoring
+    public int SpeedPowerupScore;
+
     private void Awake() {
         if (_view.IsMine)
         {
@@ -223,10 +226,11 @@ public class PlayerController : MonoBehaviour, IPunObservable
         {
             case PowerupType.BombPowerup:
                 Vector2 movementDirection = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-                Bomb bomb = PhotonNetwork.Instantiate("Bomb", transform.position, transform.rotation).GetComponent<Bomb>();
+                Bomb bomb = PhotonNetwork.Instantiate("Bomb", _circleCollider.transform.position, transform.rotation).GetComponent<Bomb>();
                 bomb.MovementDirection = movementDirection;
                 break;
             case PowerupType.SpeedPowerup:
+                Events.SetScore(Events.GetScore() + SpeedPowerupScore);
                 MovementSpeed = BoostedMovementSpeed;
                 SpeedUpAudio.Play(transform);
                 _speedBoostExpiresAt = GameController.Instance.TimeLeft - SpeedBoostDuration;
