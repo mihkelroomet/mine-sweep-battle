@@ -33,6 +33,9 @@ public class MainMenu : MonoBehaviourPunCallbacks
     public Button JoinButton;
     public Button QuitButton;
 
+    // Music
+    public AudioClip MainMenuMusic;
+
     private void Awake() {
         PracticeButton.onClick.AddListener(() => CreatePracticeRoom());
         CreateButton.onClick.AddListener(() => CreateRoom());
@@ -55,6 +58,8 @@ public class MainMenu : MonoBehaviourPunCallbacks
                 _listings.Add(listing);
             }
         }
+
+        MusicPlayer.Instance.PlayMusic(MainMenuMusic);
     }
 
     public void CreatePracticeRoom()

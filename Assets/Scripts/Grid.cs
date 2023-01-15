@@ -156,8 +156,7 @@ public class Grid : MonoBehaviour
         while (_gridUpdateEventQueue.Count != 0)
         {
             GridUpdateEvent gridUpdateEvent = _gridUpdateEventQueue.Dequeue();
-            if (gridUpdateEvent.CellSprite == 255) CellGrid[gridUpdateEvent.Column][gridUpdateEvent.Row].CurrentSprite--;
-            else CellGrid[gridUpdateEvent.Column][gridUpdateEvent.Row].CurrentSprite = gridUpdateEvent.CellSprite;
+            CellGrid[gridUpdateEvent.Column][gridUpdateEvent.Row].CurrentSprite = gridUpdateEvent.CellSprite;
         }
     }
 
@@ -227,8 +226,8 @@ public class Grid : MonoBehaviour
     {
         if (PhotonNetwork.IsMasterClient || _initialized)
         {
-            if (value == 255) CellGrid[col][row].CurrentSprite--;
-            else CellGrid[col][row].CurrentSprite = value;
+            if (value < 9) value = CellGrid[col][row].CountMinesAround();
+            CellGrid[col][row].CurrentSprite = value;
         }
         else _gridUpdateEventQueue.Enqueue(new GridUpdateEvent(col, row, value));
     }

@@ -121,7 +121,7 @@ public class Cell : MonoBehaviour
             {
                 // Updating indicators around
                 if (cell.IsOpen()) {
-                    Grid.Instance.SetCurrentSprite(cell.Column, cell.Row, 255); // 255 decrements sprite
+                    Grid.Instance.SetCurrentSprite(cell.Column, cell.Row, (byte) Mathf.Max(cell.CurrentSprite - 1, 0));
                 }
             }
 
@@ -159,7 +159,7 @@ public class Cell : MonoBehaviour
     /// <summary>
     /// Counts mines in the 8 surrounding cells
     /// </summary>
-    private byte CountMinesAround() {
+    public byte CountMinesAround() {
         byte bombCount = 0;
 
         foreach (Cell cell in GetSurroundingCells())
