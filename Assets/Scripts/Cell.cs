@@ -276,8 +276,11 @@ public class Cell : MonoBehaviour
     }
 
     private void DisplayMineSprite() {
-        _mineSpriteRenderer = Instantiate(MineSpritePrefab, transform);
-        _mineSpriteTimer = 0.2f;
+        if (!_mineSpriteRenderer)
+        {
+            _mineSpriteRenderer = Instantiate(MineSpritePrefab, transform);
+            _mineSpriteTimer = 0.2f;
+        }
     }
 
     private void HideMineSprite() {

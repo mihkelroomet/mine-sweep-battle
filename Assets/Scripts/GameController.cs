@@ -5,7 +5,19 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-    public bool GameActive {get; set;}
+    public bool GameActive
+    {
+        get
+        {
+            return _gameActive;
+        }
+        set
+        {
+            _gameActive = value;
+            LobbyScreen.SetActive(!value);
+        }
+    }
+    private bool _gameActive;
 
     public static GameController Instance;
     [SerializeField] private PhotonView _view;
@@ -68,6 +80,7 @@ public class GameController : MonoBehaviour
             while (! (bool) PhotonNetwork.CurrentRoom.CustomProperties["TimeLeftUpToDate"]) yield return new WaitForSeconds(0.1f);
             TimeLeft = (float) PhotonNetwork.CurrentRoom.CustomProperties["TimeLeft"];
             _view.RPC("SetTimeLeftOutOfDateRPC", RpcTarget.MasterClient);
+            if ((int) PhotonNetwork.CurrentRoom.CustomProperties["RoundLength"] > TimeLeft) GameActive = true;
         }
         Events.SetScore(Score);
         //GameActive = true;
