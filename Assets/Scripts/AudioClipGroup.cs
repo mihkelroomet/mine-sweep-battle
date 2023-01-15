@@ -39,7 +39,7 @@ public class AudioClipGroup : ScriptableObject
         if (AudioSourcePool.Instance == null) return;
         
         // Don't play sounds if their source is too far
-        if (!PlayerController.Instance || Vector3.Distance(PlayerController.Instance.transform.position, parent.transform.position) < MaxAudibleDistance)
+        if (!PlayerController.Instance || Vector3.Distance(PlayerController.Instance.transform.position, position) < MaxAudibleDistance)
         {
             Play(AudioSourcePool.Instance.GetSource(), parent, position);
         }

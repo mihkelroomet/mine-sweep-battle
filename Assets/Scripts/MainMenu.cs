@@ -55,7 +55,6 @@ public class MainMenu : MonoBehaviourPunCallbacks
                 _listings.Add(listing);
             }
         }
-
     }
 
     public void CreatePracticeRoom()

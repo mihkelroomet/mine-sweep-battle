@@ -102,9 +102,20 @@ public class PlayerController : MonoBehaviour, IPunObservable
 
             FootstepsAudio.Play(transform);
         }
+
+        // If the player is not moving or the game is not active
         else
         {
             _rb.velocity = new Vector2(0f, 0f);
+
+            // Make player look towards crosshair
+            // 0 - down, 1 - left, 2 - up, 3 - right
+            float lookDirectionHorizontal = _crosshair.transform.position.x - transform.position.x;
+            float lookDirectionVertical = _crosshair.transform.position.y - transform.position.y;
+            int dominantLookDirection;
+            if (Mathf.Abs(lookDirectionHorizontal) >= Mathf.Abs(lookDirectionVertical)) dominantLookDirection = (lookDirectionHorizontal >= 0) ? 3 : 1;
+            else dominantLookDirection = (lookDirectionVertical >= 0) ? 2 : 0;
+            _animator.SetInteger("DominantLookDirection", dominantLookDirection);
         }
     }
 

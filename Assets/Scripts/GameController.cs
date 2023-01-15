@@ -14,7 +14,7 @@ public class GameController : MonoBehaviour
         set
         {
             _gameActive = value;
-            LobbyScreen.SetActive(!value);
+            if (_gameActive) LobbyScreen.SetActive(false);
         }
     }
     private bool _gameActive;

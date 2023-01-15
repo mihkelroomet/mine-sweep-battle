@@ -121,7 +121,7 @@ public class Cell : MonoBehaviour
             {
                 // Updating indicators around
                 if (cell.IsOpen()) {
-                    Grid.Instance.SetCurrentSprite(cell.Column, cell.Row, (byte) Mathf.Max(cell.CurrentSprite - 1, 0));
+                    Grid.Instance.SetCurrentSprite(cell.Column, cell.Row, 255); // 255 decrements sprite
                 }
             }
 
