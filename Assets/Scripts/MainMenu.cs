@@ -35,6 +35,11 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     // Music
     public AudioClip MainMenuMusic;
+    public Slider MusicVolumeSlider;
+
+    // SFX
+    public Slider SFXVolumeSlider;
+    public List<AudioClipGroup> SFXClipGroups;
 
     private void Awake() {
         PracticeButton.onClick.AddListener(() => CreatePracticeRoom());
@@ -208,6 +213,20 @@ public class MainMenu : MonoBehaviourPunCallbacks
         float.TryParse(roundLength, out v);
         SetRoundLength((int)v);
         RoundLengthSlider.value = v;
+    }
+
+    public void SetMusicVolume(float value)
+    {
+        MusicPlayer.Instance.SetMusicVolume(value);
+    }
+
+    public void SetSFXVolume(float value)
+    {
+        foreach (AudioClipGroup clipGroup in SFXClipGroups)
+        {
+            clipGroup.VolumeMax = value;
+            clipGroup.VolumeMin = value-20;
+        }
     }
 
     public void QuitGame()

@@ -16,6 +16,11 @@ public class MusicPlayer : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
     }
 
+    public void SetMusicVolume(float volume)
+    {
+        _audioSource.volume = volume;
+    }
+
     public void PlayMusic(AudioClip music)
     {
         _audioSource.clip = music;
