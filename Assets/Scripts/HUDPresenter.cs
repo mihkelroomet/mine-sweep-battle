@@ -54,6 +54,10 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
             if (listing != null)
             {
                 listing.SetPlayerInfo(player);
+                if (player.IsMasterClient)
+                {
+                    listing.HostIcon.gameObject.SetActive(true); ;
+                }
             }
             _playerListings.Add(listing);
         }
@@ -123,6 +127,8 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
         if (listing != null)
         {
             listing.SetPlayerInfo(newPlayer);
+            //if (newPlayer.IsMasterClient)
+                //listing.HostIcon.gameObject.SetActive(true);
             _playerListings.Add(listing);
         }
         
@@ -136,6 +142,16 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
             Destroy(_playerListings[index].gameObject);
             _playerListings.RemoveAt(index);
         }
+        foreach (Player player in PhotonNetwork.PlayerList) // Find the host again in case the previous host left
+        {
+            if (player.IsMasterClient)
+            {
+                int hostIndex = _playerListings.FindIndex(x => x.Player == player);
+                _playerListings[hostIndex].HostIcon.gameObject.SetActive(true);
+            }
+                
+        }
+
         if (PhotonNetwork.IsMasterClient) // In case the master client left and you are the new one, enable the start button
             StartButton.gameObject.SetActive(true);
     }
