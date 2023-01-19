@@ -22,10 +22,21 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
     public Button RestartButton;
 
     // Lobby panel
+    public TMP_Text RoomName;
+    public TMP_Text PlayersText;
+    public GameObject Options;
     public Button StartButton;
     public Button LeaveButton;
     public PlayerListing PlayerListingPrefab;
     public Transform Content;
+    public Slider RowsSlider;
+    public TMP_InputField RowCount;
+    public Slider ColumnsSlider;
+    public TMP_InputField ColumnCount;
+    public Slider RoundLengthSlider;
+    public TMP_InputField RoundLengthInput;
+    public Slider BombFrequencySlider;
+    public TMP_InputField BombFrequencyInput;
 
     private List<PlayerListing> _playerListings = new List<PlayerListing>();
 
@@ -39,12 +50,28 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
         LeaveButton.onClick.AddListener(() => GameController.Instance.BackToMainMenu());
         StartButton.onClick.AddListener(() => GameController.Instance.StartGame());
         StartButton.gameObject.SetActive(false);
+
+        RoomName.text = "Room name: "+ PhotonNetwork.CurrentRoom.Name;
+        RowsSlider.value = (int) PhotonNetwork.CurrentRoom.CustomProperties["Rows"];
+        RowCount.text = RowsSlider.value.ToString();
+        ColumnsSlider.value = (int)PhotonNetwork.CurrentRoom.CustomProperties["Columns"];
+        ColumnCount.text = ColumnsSlider.value.ToString();
+        RoundLengthSlider.value = (int)PhotonNetwork.CurrentRoom.CustomProperties["RoundLength"];
+        RoundLengthInput.text = RoundLengthSlider.value.ToString();
+        Debug.Log(PhotonNetwork.CurrentRoom.CustomProperties["MineProbability"]);
+        BombFrequencySlider.value = (float)PhotonNetwork.CurrentRoom.CustomProperties["MineProbability"] * 10;
+        BombFrequencyInput.text = BombFrequencySlider.value.ToString();
+
+        Options.SetActive(false);
     }
 
     void Start()
     {
         if (PhotonNetwork.IsMasterClient)
+        {
             StartButton.gameObject.SetActive(true);
+            Options.SetActive(true);
+        }
         ScoreBoard.SetActive(false);
         EscMenu.SetActive(false);
 
@@ -61,7 +88,7 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
             }
             _playerListings.Add(listing);
         }
-
+        UpdatePlayerCount();
     }
 
     // Update timer text
@@ -127,11 +154,9 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
         if (listing != null)
         {
             listing.SetPlayerInfo(newPlayer);
-            //if (newPlayer.IsMasterClient)
-                //listing.HostIcon.gameObject.SetActive(true);
             _playerListings.Add(listing);
         }
-        
+        UpdatePlayerCount();
     }
 
     public override void OnPlayerLeftRoom(Player leftPlayer)
@@ -152,8 +177,12 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
                 
         }
 
-        if (PhotonNetwork.IsMasterClient) // In case the master client left and you are the new one, enable the start button
+        if (PhotonNetwork.IsMasterClient)
+        { // In case the master client left and you are the new one, enable the start button
             StartButton.gameObject.SetActive(true);
+            Options.SetActive(true);
+        }
+        UpdatePlayerCount();
     }
 
     public void ShowEscMenu()
@@ -166,6 +195,67 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
         Events.OnSetPowerupInFirstSlot -= SetPowerupInFirstSlot;
         Events.OnSetPowerupInSecondSlot -= SetPowerupInSecondSlot;
         Events.OnEndOfRound -= ShowScoreboard;
+    }
+
+    public void ChangeRowCount(float value)
+    {
+        PhotonNetwork.CurrentRoom.CustomProperties["Rows"] = (int) value;
+        RowCount.text = value.ToString();
+    }
+
+    public void ChangeRowCount(string value)
+    {
+        int count = int.Parse(value);
+        PhotonNetwork.CurrentRoom.CustomProperties["Rows"] = count;
+        RowsSlider.value = count;
+    }
+
+    public void ChangeColumnCount(float value)
+    {
+        PhotonNetwork.CurrentRoom.CustomProperties["Columns"] = (int) value;
+        ColumnCount.text = value.ToString();
+    }
+
+    public void ChangeColumnCount(string value)
+    {
+        int count = int.Parse(value);
+        PhotonNetwork.CurrentRoom.CustomProperties["Columns"] = count;
+        ColumnsSlider.value = count;
+    }
+
+    public void ChangeRoundLength(float value)
+    {
+        PhotonNetwork.CurrentRoom.CustomProperties["RoundLength"] = (int) value;
+        GameController.Instance.TimeLeft = value;
+        RoundLengthInput.text = value.ToString();
+    }
+
+    public void ChangeRoundLength(string value)
+    {
+        float count = float.Parse(value);
+        PhotonNetwork.CurrentRoom.CustomProperties["RoundLength"] = (int) count;
+        GameController.Instance.TimeLeft = count;
+        RoundLengthSlider.value = count;
+    }
+
+    public void ChangeMineProbability(float value)
+    {
+        Grid.Instance.MineProbability = value/10;
+        PhotonNetwork.CurrentRoom.CustomProperties["MineProbability"] = value/10;
+        BombFrequencyInput.text = value.ToString();
+    }
+
+    public void ChangeMineProbability(string value)
+    {
+        float count = float.Parse(value);
+        Grid.Instance.MineProbability = count/10;
+        PhotonNetwork.CurrentRoom.CustomProperties["MineProbability"] = count/10;
+        BombFrequencySlider.value = count;
+    }
+
+    private void UpdatePlayerCount()
+    {
+        PlayersText.text = "Players (" + _playerListings.Count.ToString() + "/" + PhotonNetwork.CurrentRoom.MaxPlayers + "):";
     }
 
     public void RestartButtonClicked()

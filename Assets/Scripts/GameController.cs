@@ -95,6 +95,7 @@ public class GameController : MonoBehaviour
     [PunRPC]
     private void StartRPC()
     {
+        StartCoroutine(Grid.Instance.StartGame());
         GameActive = true;
         LobbyScreen.SetActive(false);
     }
