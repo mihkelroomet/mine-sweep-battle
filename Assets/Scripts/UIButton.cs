@@ -5,8 +5,8 @@ using UnityEngine.EventSystems;
 public class UIButton : MonoBehaviour, IPointerEnterHandler
 {
     private Button _button;
-    public AudioClipGroup ChooseAudio;
-    public AudioClipGroup SelectAudio;
+    public SFXClipGroup ChooseAudio;
+    public SFXClipGroup SelectAudio;
     
     private void Awake()
     {
@@ -16,11 +16,11 @@ public class UIButton : MonoBehaviour, IPointerEnterHandler
 
     public void OnPointerEnter(PointerEventData data)
     {
-        ChooseAudio.Play(AudioSourcePool.Instance.transform);
+        ChooseAudio.Play(SFXSourcePool.Instance.transform);
     }
 
-    void Click()
+    private void Click()
     {
-        SelectAudio.Play(AudioSourcePool.Instance.transform);
+        SelectAudio.Play(SFXSourcePool.Instance.transform);
     }
 }

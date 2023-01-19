@@ -66,10 +66,10 @@ public class Cell : MonoBehaviour
     public int FailMinePenalty;
 
     // Sounds
-    public AudioClipGroup CorrectEmptySound;
-    public AudioClipGroup CorrectMineSound;
-    public AudioClipGroup IncorrectEmptySound;
-    public AudioClipGroup IncorrectMineSound;
+    public SFXClipGroup CorrectEmptySound;
+    public SFXClipGroup CorrectMineSound;
+    public SFXClipGroup IncorrectEmptySound;
+    public SFXClipGroup IncorrectMineSound;
 
     // Position in grid
     public int Column {get; set;}

@@ -1,13 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioSourcePool : MonoBehaviour
+public class SFXSourcePool : MonoBehaviour
 {
-    public static AudioSourcePool Instance;
+    public static SFXSourcePool Instance;
 
     public AudioSource AudioSourcePrefab;
 
     private List<AudioSource> _audioSources;
+
+    // Volume
+    private int _SFXVolume;
+    public int DefaultSFXVolume;
 
     private void Awake()
     {
@@ -19,6 +23,24 @@ public class AudioSourcePool : MonoBehaviour
         Instance = this;
         _audioSources = new List<AudioSource>();
         DontDestroyOnLoad(this.gameObject);
+
+        Events.OnGetSFXVolume += GetSFXVolume;
+        Events.OnSetSFXVolume += SetSFXVolume;
+    }
+
+    private void Start()
+    {
+        Events.SetSFXVolume(DefaultSFXVolume);
+    }
+
+    private int GetSFXVolume()
+    {
+        return _SFXVolume;
+    }
+
+    private void SetSFXVolume(int value)
+    {
+        _SFXVolume = value;
     }
 
     public AudioSource GetSource()
@@ -44,5 +66,11 @@ public class AudioSourcePool : MonoBehaviour
     public void RemoveAudioSource(AudioSource audioSource)
     {
         if (_audioSources.Contains(audioSource)) _audioSources.Remove(audioSource);
+    }
+
+    private void OnDestroy()
+    {
+        Events.OnGetSFXVolume -= GetSFXVolume;
+        Events.OnSetSFXVolume -= SetSFXVolume;
     }
 }

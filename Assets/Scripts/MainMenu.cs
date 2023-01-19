@@ -33,13 +33,10 @@ public class MainMenu : MonoBehaviourPunCallbacks
     public Button JoinButton;
     public Button QuitButton;
 
-    // Music
+    // Audio
     public AudioClip MainMenuMusic;
     public Slider MusicVolumeSlider;
-
-    // SFX
     public Slider SFXVolumeSlider;
-    public List<AudioClipGroup> SFXClipGroups;
 
     private void Awake() {
         PracticeButton.onClick.AddListener(() => CreatePracticeRoom());
@@ -47,6 +44,12 @@ public class MainMenu : MonoBehaviourPunCallbacks
         JoinButton.onClick.AddListener(() => JoinRoom());
         QuitButton.onClick.AddListener(() => QuitGame());
         Transitions.Instance.PlayEnterTransition();
+
+        NameInputField.text = Events.GetPlayerName();
+
+        MusicPlayer.Instance.PlayMusic(MainMenuMusic);
+        MusicVolumeSlider.value = Events.GetMusicVolume();
+        SFXVolumeSlider.value = Events.GetSFXVolume();
     }
 
     private void Start()
@@ -63,8 +66,6 @@ public class MainMenu : MonoBehaviourPunCallbacks
                 _listings.Add(listing);
             }
         }
-
-        MusicPlayer.Instance.PlayMusic(MainMenuMusic);
     }
 
     public void CreatePracticeRoom()
@@ -92,18 +93,23 @@ public class MainMenu : MonoBehaviourPunCallbacks
         string[] lobbyProperties = { "Rows", "Columns", "MineProbability", "RoundLength" }; // Properties needed to show on room display
         roomOptions.CustomRoomPropertiesForLobby = lobbyProperties;
         PhotonNetwork.CreateRoom(roomName, roomOptions);
-        PhotonNetwork.LocalPlayer.NickName = playerName;
     }
 
     public void JoinRoom()
     {
         PhotonNetwork.JoinRoom(_selectedRoom.RoomInfo.Name);
-        string playerName = NameInputField.text;
-        PhotonNetwork.LocalPlayer.NickName = playerName.Equals("") ? "Player" : playerName;
     }
 
     public override void OnJoinedRoom()
     {
+        ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.LocalPlayer.CustomProperties;
+        int hatColor = Events.GetHatColor();
+        int shirtColor = Events.GetShirtColor();
+        int pantsColor = Events.GetPantsColor();
+        if (!properties.TryAdd("HatColor", hatColor)) properties["HatColor"] = hatColor;
+        if (!properties.TryAdd("ShirtColor", shirtColor)) properties["ShirtColor"] = shirtColor;
+        if (!properties.TryAdd("PantsColor", pantsColor)) properties["PantsColor"] = pantsColor;
+        PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
         PhotonNetwork.LoadLevel("In-Game");
     }
 
@@ -149,6 +155,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
         }
     }
 
+
     public void SelectRoom(RoomListing room)
     {
         _selectedRoom = room;
@@ -163,9 +170,9 @@ public class MainMenu : MonoBehaviourPunCallbacks
     {
         ColumnsInputField.text = Mathf.Clamp(columns, 10, 100).ToString();
     }
-    public void SetMaxPlayers(float maxPlayer)
+    public void SetMaxPlayers(float maxPlayers)
     {
-        MaxPlayersInputField.text = Mathf.Clamp(maxPlayer, 1, 20).ToString();
+        MaxPlayersInputField.text = Mathf.Clamp(maxPlayers, 1, 20).ToString();
     }
 
     public void SetMineFrequency(float mineFrequency)
@@ -215,19 +222,23 @@ public class MainMenu : MonoBehaviourPunCallbacks
         RoundLengthSlider.value = v;
     }
 
+
+    public void SetPlayerName(string value)
+    {
+        Events.SetPlayerName(value);
+        PhotonNetwork.LocalPlayer.NickName = Events.GetPlayerName();
+    }
+
     public void SetMusicVolume(float value)
     {
-        MusicPlayer.Instance.SetMusicVolume(value);
+        Events.SetMusicVolume(Mathf.Clamp((int) Mathf.Round(value), 0, 10));
     }
 
     public void SetSFXVolume(float value)
     {
-        foreach (AudioClipGroup clipGroup in SFXClipGroups)
-        {
-            clipGroup.VolumeMax = value;
-            clipGroup.VolumeMin = value-20;
-        }
+        Events.SetSFXVolume(Mathf.Clamp((int) Mathf.Round(value), 0, 10));
     }
+
 
     public void QuitGame()
     {

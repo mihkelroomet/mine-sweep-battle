@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "AudioClipGroup")]
-public class AudioClipGroup : ScriptableObject
+[CreateAssetMenu(menuName = "SFXClipGroup")]
+public class SFXClipGroup : ScriptableObject
 {
     [Range(0, 2)]
     public float VolumeMin = 1;
@@ -36,12 +36,12 @@ public class AudioClipGroup : ScriptableObject
 
     public void Play(Transform parent, Vector3 position)
     {
-        if (AudioSourcePool.Instance == null) return;
+        if (SFXSourcePool.Instance == null) return;
         
         // Don't play sounds if their source is too far
         if (!PlayerController.Instance || Vector3.Distance(PlayerController.Instance.transform.position, position) < MaxAudibleDistance)
         {
-            Play(AudioSourcePool.Instance.GetSource(), parent, position);
+            Play(SFXSourcePool.Instance.GetSource(), parent, position);
         }
     }
 
@@ -52,7 +52,7 @@ public class AudioClipGroup : ScriptableObject
 
         timestamp = Time.time + Cooldown;
 
-        source.volume = Random.Range(VolumeMin, VolumeMax);
+        source.volume = Random.Range(VolumeMin, VolumeMax) * Events.GetSFXVolume() * 0.1f;
         source.pitch = Random.Range(PitchMin, PitchMax);
         source.clip = Clips[Random.Range(0, Clips.Count)];
         source.transform.parent = parent; // Necessary for moving objects

@@ -27,13 +27,6 @@ AnimationClip:
     script: {fileID: 0}
   - curve:
     - time: 0
-      value: {fileID: -869713686, guid: 79520d40d8b23db47b04d63649731227, type: 3}
-    attribute: m_Sprite
-    path: Torso
-    classID: 212
-    script: {fileID: 0}
-  - curve:
-    - time: 0
       value: {fileID: 759344028, guid: 90f56b0f377c6294da33af6f793c96e6, type: 3}
     attribute: m_Sprite
     path: Pants
@@ -71,6 +64,13 @@ AnimationClip:
     path: Effects
     classID: 212
     script: {fileID: 0}
+  - curve:
+    - time: 0
+      value: {fileID: -869713686, guid: 79520d40d8b23db47b04d63649731227, type: 3}
+    attribute: m_Sprite
+    path: Shirt
+    classID: 212
+    script: {fileID: 0}
   m_SampleRate: 60
   m_WrapMode: 0
   m_Bounds:
@@ -80,13 +80,6 @@ AnimationClip:
     genericBindings:
     - serializedVersion: 2
       path: 3031211825
-      attribute: 0
-      script: {fileID: 0}
-      typeID: 212
-      customType: 23
-      isPPtrCurve: 1
-    - serializedVersion: 2
-      path: 3869152129
       attribute: 0
       script: {fileID: 0}
       typeID: 212
@@ -127,9 +120,15 @@ AnimationClip:
       typeID: 212
       customType: 23
       isPPtrCurve: 1
+    - serializedVersion: 2
+      path: 1248117524
+      attribute: 0
+      script: {fileID: 0}
+      typeID: 212
+      customType: 23
+      isPPtrCurve: 1
     pptrCurveMapping:
     - {fileID: 21300000, guid: 2622c88cffaaaa44c90f7c45e1c15724, type: 3}
-    - {fileID: -869713686, guid: 79520d40d8b23db47b04d63649731227, type: 3}
     - {fileID: 759344028, guid: 90f56b0f377c6294da33af6f793c96e6, type: 3}
     - {fileID: -1083523995, guid: cb1de790edfffcc4a8e3902d5cb03854, type: 3}
     - {fileID: -1211769572, guid: d82594569de11df4ebbe084098cd919e, type: 3}
@@ -137,6 +136,7 @@ AnimationClip:
     - {fileID: -97797124, guid: 8d5c81630cd998b4a92ccb812a38dc06, type: 3}
     - {fileID: -2104343794, guid: 8d5c81630cd998b4a92ccb812a38dc06, type: 3}
     - {fileID: -976592887, guid: 8d5c81630cd998b4a92ccb812a38dc06, type: 3}
+    - {fileID: -869713686, guid: 79520d40d8b23db47b04d63649731227, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}

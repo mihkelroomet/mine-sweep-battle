@@ -12,8 +12,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
     [SerializeField] private CircleCollider2D _circleCollider;
     [SerializeField] private SpriteRenderer _crosshair;
     [SerializeField] private PhotonView _view;
-    [SerializeField] private GameObject _namePanel;
-    [SerializeField] private TMP_Text _nametag;
+    [SerializeField] private GameObject _nametagPanel;
 
     // Beam
     public float RedBeamDuration;
@@ -39,38 +38,35 @@ public class PlayerController : MonoBehaviour, IPunObservable
 
     // Audio
     public AudioListener AudioListenerPrefab;
-    public AudioClipGroup FootstepsAudio;
-    public AudioClipGroup Fire1Audio;
-    public AudioClipGroup Fire2Audio;
-    public AudioClipGroup SpeedUpAudio;
-    public AudioClipGroup SpeedDownAudio;
+    public SFXClipGroup FootstepsAudio;
+    public SFXClipGroup Fire1Audio;
+    public SFXClipGroup Fire2Audio;
+    public SFXClipGroup SpeedUpAudio;
+    public SFXClipGroup SpeedDownAudio;
 
     // Scoring
     public int SpeedPowerupScore;
 
-    private void Awake() {
+    private void Awake()
+    {
         if (_view.IsMine)
         {
             Instance = this;
             Instantiate(AudioListenerPrefab, transform);
         }
         else _crosshair.enabled = false; // Don't show crosshair of other players
+
         _stunTimer = -1;
         _beamTimer = -1;
         _stunDuration = 1.5f;
         MovementSpeed = DefaultMovementSpeed;
     }
 
-    private void Start() {
+    private void Start()
+    {
         if (_view.IsMine)
         {
             Camera.main.transform.parent = this.transform; // Center camera on player
-
-            _nametag.text = PhotonNetwork.LocalPlayer.NickName;
-        }
-        else
-        {
-            _namePanel.SetActive(false); // Temporary solution until we implement showing everyone's nametags to everyone
         }
     }
 
@@ -290,7 +286,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
             _lineRenderer.GetPositions(positions);
             stream.SendNext(positions);
 
-            stream.SendNext(_namePanel.transform.position);
+            //stream.SendNext(_nametagPanel.transform.position);
         }
         else
         {
@@ -299,7 +295,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
             _lineRenderer.positionCount = (int) stream.ReceiveNext();
             _lineRenderer.SetPositions((Vector3[]) stream.ReceiveNext());
 
-            _namePanel.transform.position = (Vector3) stream.ReceiveNext();
+            //_nametagPanel.transform.position = (Vector3) stream.ReceiveNext();
         }
     }
 
@@ -310,7 +306,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
             Transform child = transform.GetChild(i);
             if (child.CompareTag("AudioSource"))
             {
-                AudioSourcePool.Instance.RemoveAudioSource(child.GetComponent<AudioSource>());
+                SFXSourcePool.Instance.RemoveAudioSource(child.GetComponent<AudioSource>());
             }
         }
     }

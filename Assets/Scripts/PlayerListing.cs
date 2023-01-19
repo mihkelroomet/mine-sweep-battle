@@ -11,6 +11,5 @@ public class PlayerListing : MonoBehaviour
     {
         Player = player;
         _text.text = player.NickName;
-
     }
 }

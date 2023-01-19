@@ -68,7 +68,7 @@ public class GameController : MonoBehaviour
 
     IEnumerator Start()
     {
-        AudioSourcePool.Instance.ClearAudioSources(); // Because audiosources have parents that get destroyed on new scene load
+        SFXSourcePool.Instance.ClearAudioSources(); // Because audiosources have parents that get destroyed on new scene load
         MusicPlayer.Instance.PlayMusic(null);
         if (PhotonNetwork.IsMasterClient)
         {
