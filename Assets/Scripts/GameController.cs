@@ -85,6 +85,8 @@ public class GameController : MonoBehaviour
         }
         Events.SetScore(Score);
         //GameActive = true;
+        if (PhotonNetwork.CurrentRoom.IsVisible == false)
+            StartGame();
     }
 
     public void StartGame()

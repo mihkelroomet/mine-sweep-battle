@@ -70,17 +70,18 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void CreatePracticeRoom()
     {
-        CreateRoom(50, 50, 1, 0.3f, 90, "Trainee", Random.Range(0, 1_000_000).ToString());
+        CreateRoom(50, 50, 1, 0.3f, 90, "Trainee", Random.Range(0, 1_000_000).ToString(), false);
     }
 
     public void CreateRoom()
     {
-        CreateRoom((int)RowsSlider.value, (int)ColumnsSlider.value, (byte)MaxPlayersSlider.value, MineFrequencySlider.value / 10, (int)RoundLengthSlider.value, NameInputField.text, CreateRoomNameInputField.text);
+        CreateRoom((int)RowsSlider.value, (int)ColumnsSlider.value, (byte)MaxPlayersSlider.value, MineFrequencySlider.value / 10, (int)RoundLengthSlider.value, NameInputField.text, CreateRoomNameInputField.text, true);
     }
 
-    public void CreateRoom(int rows, int columns, byte maxPlayers, float mineProbability, int roundLength, string playerName, string roomName)
+    public void CreateRoom(int rows, int columns, byte maxPlayers, float mineProbability, int roundLength, string playerName, string roomName, bool isVisible)
     {
         RoomOptions roomOptions = new RoomOptions();
+        roomOptions.IsVisible = isVisible;
         roomOptions.MaxPlayers = maxPlayers;
         ExitGames.Client.Photon.Hashtable roomProps = new ExitGames.Client.Photon.Hashtable();
         roomProps.Add("Rows", (int)rows);
