@@ -58,7 +58,6 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
         ColumnCount.text = ColumnsSlider.value.ToString();
         RoundLengthSlider.value = (int)PhotonNetwork.CurrentRoom.CustomProperties["RoundLength"];
         RoundLengthInput.text = RoundLengthSlider.value.ToString();
-        Debug.Log(PhotonNetwork.CurrentRoom.CustomProperties["MineProbability"]);
         BombFrequencySlider.value = (float)PhotonNetwork.CurrentRoom.CustomProperties["MineProbability"] * 10;
         BombFrequencyInput.text = BombFrequencySlider.value.ToString();
 
