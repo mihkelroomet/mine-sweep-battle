@@ -58,6 +58,10 @@ MonoBehaviour:
   - DestructRPC
   - StartRPC
   - StunPlayerRPC
+  - ChangeColumnCount
+  - ChangeRoundLength
+  - ChangeRowCount
+  - UpdateSlider
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
