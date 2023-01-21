@@ -84,7 +84,7 @@ public class Bomb : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        // For when the player if already colliding with the bomb when it explodes
+        // For when the player is already colliding with the bomb when it explodes
         if (_exploding && other.CompareTag("Player"))
         {
             PlayerController player = other.GetComponent<PlayerController>();

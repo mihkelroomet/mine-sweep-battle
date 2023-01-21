@@ -430,7 +430,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MaxPlayerNameLength: 16
-  DarkenSleevesBy: 10
+  DarkenSleevesBy: 64
 --- !u!1 &864373679
 GameObject:
   m_ObjectHideFlags: 0

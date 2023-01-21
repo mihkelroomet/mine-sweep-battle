@@ -44,7 +44,8 @@ public class PlayerController : MonoBehaviour, IPunObservable
     public SFXClipGroup SpeedUpAudio;
     public SFXClipGroup SpeedDownAudio;
 
-    // Scoring
+    // Powerups
+    public float MaxBombVelocityMagnitude;
     public int SpeedPowerupScore;
 
     private void Awake()
@@ -232,7 +233,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
         switch (powerup.Type)
         {
             case PowerupType.BombPowerup:
-                Vector2 movementDirection = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+                Vector2 movementDirection = Vector2.ClampMagnitude(Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position, MaxBombVelocityMagnitude);
                 Bomb bomb = PhotonNetwork.Instantiate("Bomb", _circleCollider.transform.position, transform.rotation).GetComponent<Bomb>();
                 bomb.MovementDirection = movementDirection;
                 break;

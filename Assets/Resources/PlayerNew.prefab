@@ -391,6 +391,7 @@ MonoBehaviour:
   Fire2Audio: {fileID: 11400000, guid: fadf7e1d3777033418e4d5c435b68185, type: 2}
   SpeedUpAudio: {fileID: 11400000, guid: e29f4cb2cfa148d4ebd8c93ecea9efd2, type: 2}
   SpeedDownAudio: {fileID: 11400000, guid: 6495253d8ffc9a149a85807a854916ee, type: 2}
+  MaxBombVelocityMagnitude: 5.7
   SpeedPowerupScore: 1000
 --- !u!114 &1449288110315810461
 MonoBehaviour:
