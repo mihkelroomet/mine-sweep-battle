@@ -13,7 +13,7 @@ public class Grid : MonoBehaviour
     [HideInInspector]
     public int Rows;
     [HideInInspector]
-    public float MineProbability;
+    public float MineFrequency;
     public float PowerupSpawnProbability;
     public Bomb BombPrefab;
     private byte[][] _gridState; // 0-8 - Opened, 9 - Unopened Non-Mine, 10 - Border, 11 - Unopened Mine
@@ -46,7 +46,7 @@ public class Grid : MonoBehaviour
         {
             Rows = (int) PhotonNetwork.CurrentRoom.CustomProperties["Rows"];
             Columns = (int) PhotonNetwork.CurrentRoom.CustomProperties["Columns"];
-            MineProbability = (float) PhotonNetwork.CurrentRoom.CustomProperties["MineProbability"];
+            MineFrequency = (float) PhotonNetwork.CurrentRoom.CustomProperties["MineFrequency"];
         }
 
         InitializeGrid();
@@ -58,18 +58,20 @@ public class Grid : MonoBehaviour
 
     public IEnumerator StartGame()
     {
+        Cursor.SetCursor(Transitions.Instance.CursorDefault, Transitions.Instance.CursorDefaultHotspot, CursorMode.ForceSoftware);
+
         if (!PhotonNetwork.IsMasterClient)
         {
             _view.RPC("UpdateRoomPropertiesRPC", RpcTarget.MasterClient);
             // Wait until the properties have been refreshed by Host
-            while (!(bool)PhotonNetwork.CurrentRoom.CustomProperties["UpToDate"]) yield return new WaitForSeconds(0.1f);
+            while (!(bool) PhotonNetwork.CurrentRoom.CustomProperties["UpToDate"]) yield return new WaitForSeconds(0.1f);
             _view.RPC("SetRoomPropertiesOutOfDateRPC", RpcTarget.MasterClient);
         }
         else
         {
-            Rows = (int)PhotonNetwork.CurrentRoom.CustomProperties["Rows"];
-            Columns = (int)PhotonNetwork.CurrentRoom.CustomProperties["Columns"];
-            MineProbability = (float)PhotonNetwork.CurrentRoom.CustomProperties["MineProbability"];
+            Rows = (int) PhotonNetwork.CurrentRoom.CustomProperties["Rows"];
+            Columns = (int) PhotonNetwork.CurrentRoom.CustomProperties["Columns"];
+            MineFrequency = (float) PhotonNetwork.CurrentRoom.CustomProperties["MineFrequency"];
         }
 
         InitializeGrid();
@@ -128,7 +130,7 @@ public class Grid : MonoBehaviour
                     else {
                         // Plant mines randomly, but not in the middle
                         if (Mathf.Abs(col - colMidpoint) >= 2.1 || Mathf.Abs(row - rowMidpoint) >= 2.1) {
-                            if (Random.value < MineProbability) {
+                            if (Random.value < MineFrequency) {
                                 cell.IsMine = true;
                             }
                         }

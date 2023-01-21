@@ -159,6 +159,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19f9526da687f284bb8b340a7f299415, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CursorPointer: {fileID: 2800000, guid: 701146fd44d37c140a86151ab21d47d1, type: 3}
+  CursorPointerHotspot: {x: 4, y: 0}
+  CursorDefault: {fileID: 2800000, guid: c4132845deb408b469efe36f61edba7b, type: 3}
+  CursorDefaultHotspot: {x: 0, y: 0}
   ChooseAudio: {fileID: 11400000, guid: f07719eaf43bb9b47bc4b564acdd4099, type: 2}
   SelectAudio: {fileID: 11400000, guid: 3c5ff20e1e04db947b06888d139bd593, type: 2}
 --- !u!1 &2478394674776748091
@@ -227,7 +231,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Instructions
+  m_text: Button
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 50ebab62d6e155a4c98d9f137c5a0540, type: 2}
   m_sharedMaterial: {fileID: 5573511110951227715, guid: 50ebab62d6e155a4c98d9f137c5a0540, type: 2}
@@ -254,7 +258,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 29
+  m_fontSize: 18
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

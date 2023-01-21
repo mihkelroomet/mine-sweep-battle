@@ -85,6 +85,8 @@ public class GameController : MonoBehaviour
         }
         Events.SetScore(Score);
         //GameActive = true;
+
+        // For practice room don't show lobby
         if (PhotonNetwork.CurrentRoom.IsVisible == false)
             StartGame();
     }
@@ -98,6 +100,7 @@ public class GameController : MonoBehaviour
     private void StartRPC()
     {
         StartCoroutine(Grid.Instance.StartGame());
+        TimeLeft = (int) PhotonNetwork.CurrentRoom.CustomProperties["RoundLength"];
         GameActive = true;
         LobbyScreen.SetActive(false);
     }

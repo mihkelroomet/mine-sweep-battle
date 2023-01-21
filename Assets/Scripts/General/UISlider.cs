@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 public class UISlider : MonoBehaviour
 {
@@ -8,7 +7,7 @@ public class UISlider : MonoBehaviour
     private Slider _slider;
 
     // Audio
-    public SFXClipGroup ChooseAudio;
+    public SFXClipGroup ChangeValueAudio;
 
     private void Awake()
     {
@@ -18,6 +17,6 @@ public class UISlider : MonoBehaviour
 
     private void ChangeValue(float value)
     {
-        ChooseAudio.Play(SFXSourcePool.Instance.transform);
+        ChangeValueAudio.Play(SFXSourcePool.Instance.transform);
     }
 }

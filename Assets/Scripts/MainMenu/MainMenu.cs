@@ -75,23 +75,26 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        CreateRoom((int)RowsSlider.value, (int)ColumnsSlider.value, (byte)MaxPlayersSlider.value, MineFrequencySlider.value / 10, (int)RoundLengthSlider.value, NameInputField.text, CreateRoomNameInputField.text, true);
+        CreateRoom(
+            (int) RowsSlider.value * 10, (int) ColumnsSlider.value * 10, (byte) (MaxPlayersSlider.value * 2), MineFrequencySlider.value / 10,
+            (int) RoundLengthSlider.value * 15, NameInputField.text, CreateRoomNameInputField.text, true
+            );
     }
 
-    public void CreateRoom(int rows, int columns, byte maxPlayers, float mineProbability, int roundLength, string playerName, string roomName, bool isVisible)
+    public void CreateRoom(int rows, int columns, byte maxPlayers, float mineFrequency, int roundLength, string playerName, string roomName, bool isVisible)
     {
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.IsVisible = isVisible;
         roomOptions.MaxPlayers = maxPlayers;
         ExitGames.Client.Photon.Hashtable roomProps = new ExitGames.Client.Photon.Hashtable();
-        roomProps.Add("Rows", (int)rows);
-        roomProps.Add("Columns", (int)columns);
-        roomProps.Add("MineProbability", (float)mineProbability);
-        roomProps.Add("RoundLength", (int)roundLength);
+        roomProps.Add("Rows", (int) rows);
+        roomProps.Add("Columns", (int) columns);
+        roomProps.Add("MineFrequency", (float) mineFrequency);
+        roomProps.Add("RoundLength", (int) roundLength);
         roomProps.Add("UpToDate", false);
         roomProps.Add("TimeLeftUpToDate", false);
         roomOptions.CustomRoomProperties = roomProps;
-        string[] lobbyProperties = { "Rows", "Columns", "MineProbability", "RoundLength" }; // Properties needed to show on room display
+        string[] lobbyProperties = { "Rows", "Columns", "MineFrequency", "RoundLength" }; // Properties needed to show on room display
         roomOptions.CustomRoomPropertiesForLobby = lobbyProperties;
         PhotonNetwork.CreateRoom(roomName, roomOptions);
     }
@@ -164,16 +167,16 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void SetRows(float rows)
     {
-        RowsInputField.text = Mathf.Clamp(rows, 10, 100).ToString();
+        RowsInputField.text = (Mathf.Clamp(rows, 1, 10) * 10).ToString();
     }
 
     public void SetColumns(float columns)
     {
-        ColumnsInputField.text = Mathf.Clamp(columns, 10, 100).ToString();
+        ColumnsInputField.text = (Mathf.Clamp(columns, 1, 10) * 10).ToString();
     }
     public void SetMaxPlayers(float maxPlayers)
     {
-        MaxPlayersInputField.text = Mathf.Clamp(maxPlayers, 1, 20).ToString();
+        MaxPlayersInputField.text = (Mathf.Clamp(maxPlayers, 1, 10) * 2).ToString();
     }
 
     public void SetMineFrequency(float mineFrequency)
@@ -182,45 +185,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     }
     public void SetRoundLength(float roundLength)
     {
-        RoundLengthInputField.text = Mathf.Clamp(roundLength, 15, 300).ToString();
-    }
-
-
-    public void EndEditRows(string rows)
-    {
-        float v = 10f;
-        float.TryParse(rows, out v);
-        SetRows((int)v);
-        RowsSlider.value = v;
-    }
-
-    public void EndEditColumns(string columns)
-    {
-        float v = 10f;
-        float.TryParse(columns, out v);
-        SetColumns((int)v);
-        ColumnsSlider.value = v;
-    }
-    public void EndEditMaxPlayers(string maxPlayer)
-    {
-        float v = 10f;
-        float.TryParse(maxPlayer, out v);
-        SetMaxPlayers((int)v);
-        MaxPlayersSlider.value = v;
-    }
-    public void EndEditMineFrequency(string mineFrequency)
-    {
-        float v = 1f;
-        float.TryParse(mineFrequency, out v);
-        SetMineFrequency((int)v);
-        MineFrequencySlider.value = v;
-    }
-    public void EndEditRoundLength(string roundLength)
-    {
-        float v = 10f;
-        float.TryParse(roundLength, out v);
-        SetRoundLength((int)v);
-        RoundLengthSlider.value = v;
+        RoundLengthInputField.text = (Mathf.Clamp(roundLength, 1, 20) * 15).ToString();
     }
 
 

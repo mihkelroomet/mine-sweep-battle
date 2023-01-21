@@ -7,6 +7,10 @@ public class Transitions : MonoBehaviour
     public static Transitions Instance;
     public Animator Transition;
     public float TransitionTime = 1f;
+    
+    // Cursor
+    public Texture2D CursorDefault;
+    public Vector2 CursorDefaultHotspot = Vector2.zero;
 
     private void Awake()
     {
@@ -17,6 +21,8 @@ public class Transitions : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(this.gameObject);
+
+        Cursor.SetCursor(CursorDefault, CursorDefaultHotspot, CursorMode.ForceSoftware);
     }
 
     public void ExitSceneWithTransition(string newSceneName)
@@ -34,6 +40,7 @@ public class Transitions : MonoBehaviour
     public void PlayEnterTransition()
     {
         Transition.SetTrigger("Open");
+        Cursor.SetCursor(CursorDefault, CursorDefaultHotspot, CursorMode.ForceSoftware);
     }
 
     public void PlayExitTransition()

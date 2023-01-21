@@ -8,6 +8,10 @@ public class CountdownController : MonoBehaviour
 
     public TMP_Text countdownText;
 
+    // Audio
+    [SerializeField] private SFXClipGroup TickAudio;
+    [SerializeField] private SFXClipGroup StartAudio;
+
     private void Awake() {
         _seconds = 3;
     }
@@ -21,7 +25,7 @@ public class CountdownController : MonoBehaviour
         // For down to 1 second remaining display number of seconds left
         while (_seconds > 0) {
             countdownText.text = _seconds.ToString();
-            HUDPresenter.Instance.TickAudio.Play();
+            TickAudio.Play();
             yield return new WaitForSeconds(1f);
             _seconds--;
         }
@@ -29,7 +33,7 @@ public class CountdownController : MonoBehaviour
         // At 0 display "GO!" and start the game
         countdownText.fontSize = 24;
         countdownText.text = "GO!";
-        HUDPresenter.Instance.StartAudio.Play();
+        StartAudio.Play();
         GameController.Instance.GameActive = true;
 
         // 1 second after that remove "GO!"
