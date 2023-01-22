@@ -5,6 +5,9 @@ using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
+using Photon.Pun.UtilityScripts;
+using System;
+using ExitGames.Client.Photon;
 
 public class HUDPresenter : MonoBehaviourPunCallbacks
 {
@@ -23,8 +26,9 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
     [SerializeField] private Image SecondPowerupSlotImage;
     [SerializeField] private AudioSource EndAudio;
     [SerializeField] private Button RestartButton;
+    [SerializeField] private TMP_Text LiveScores;
 
-    // Lobby Panel
+   // Lobby Panel
     [SerializeField] private TMP_Text RoomName;
     [SerializeField] private TMP_Text PlayersText;
     [SerializeField] private GameObject Options;
@@ -153,6 +157,19 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
         ScoreBoard.SetActive(true);
         RestartButton.gameObject.SetActive(PhotonNetwork.IsMasterClient); // Only let Host press restart otherwise it gets messed up
         EndAudio.Play();
+    }
+
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    {
+        string scoreBoard = "";
+        Player[] sortedPlayerList = PhotonNetwork.PlayerList.OrderByDescending(player => player.CustomProperties["Score"]).ToArray();
+
+        foreach (Player player in sortedPlayerList)
+        {
+            scoreBoard += Array.IndexOf(sortedPlayerList, player) + 1 + "." + player.NickName + "\t\t" + player.CustomProperties["Score"] + "\n";
+        }
+
+        LiveScores.text = scoreBoard;
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
