@@ -66,6 +66,7 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
         _inputFields = new TMP_InputField[] { RowsInputField, ColumnsInputField, MineFrequencyInputField, RoundLengthInputField };
         _sliderHandles = new Button[] { RowsSliderHandle, ColumnsSliderHandle, MineFrequencySliderHandle, RoundLengthSliderHandle };
 
+        RoomName.text = "Room: " + PhotonNetwork.CurrentRoom.Name;
         ChangeRowCount(((int) PhotonNetwork.CurrentRoom.CustomProperties["Rows"]) / 10);
         ChangeColumnCount(((int) PhotonNetwork.CurrentRoom.CustomProperties["Columns"]) / 10);
         ChangeMineFrequency(((float) PhotonNetwork.CurrentRoom.CustomProperties["MineFrequency"] * 10));

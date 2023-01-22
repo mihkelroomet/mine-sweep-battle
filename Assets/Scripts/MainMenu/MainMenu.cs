@@ -10,12 +10,13 @@ public class MainMenu : MonoBehaviourPunCallbacks
     // RoomListing
     public RoomListing roomListingPrefab;
     public Transform Content;
-    private List<RoomListing> _listings = new List<RoomListing>();
+    private List<RoomListing> _listings;
     private RoomListing _selectedRoom;
 
     // Input Fields
     public TMP_InputField NameInputField;
     public TMP_InputField CreateRoomNameInputField;
+    public int RoomNameMaxCharacters;
     public TMP_InputField RowsInputField;
     public Slider RowsSlider;
     public TMP_InputField ColumnsInputField;
@@ -46,6 +47,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
         Transitions.Instance.PlayEnterTransition();
 
         NameInputField.text = Events.GetPlayerName();
+        CreateRoomNameInputField.text = GetRandomRoomName();
 
         MusicPlayer.Instance.PlayMusic(MainMenuMusic);
         MusicVolumeSlider.value = Events.GetMusicVolume();
@@ -54,23 +56,30 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        List<RoomInfo> StartingRooms = ConnectToServer.Instance.RoomList;
-        foreach (RoomInfo info in StartingRooms)
-        {
-            RoomListing listing = Instantiate(roomListingPrefab, Content);
-            Button listingButton = listing.GetComponent<Button>();
-            listingButton.onClick.AddListener(() => SelectRoom(listing));
-            if (listing != null)
-            {
-                listing.SetRoomInfo(info);
-                _listings.Add(listing);
-            }
-        }
+        _listings = new List<RoomListing>();
+        foreach (RoomListing roomListing in Content.GetComponentsInChildren<RoomListing>()) Destroy(roomListing.gameObject); // This is to keep example listing visible in editor
+        UpdateRoomList(ConnectToServer.Instance.RoomList);
     }
 
     public void CreatePracticeRoom()
     {
-        CreateRoom(50, 50, 1, 0.3f, 90, "Trainee", Random.Range(0, 1_000_000).ToString(), false);
+        CreateRoom(50, 50, 1, 0.3f, 90, "Trainee", GetRandomRoomName(), false);
+    }
+
+    public string GetRandomRoomName()
+    {
+        string randomRoomName = "Room" + Random.Range(1_000, 9_999);
+        while (RoomExists(randomRoomName)) randomRoomName = "Room" + Random.Range(1_000, 9_999);
+        return randomRoomName;
+    }
+
+    public bool RoomExists(string roomName)
+    {
+        foreach (RoomInfo roomInfo in ConnectToServer.Instance.RoomList)
+        {
+            if (roomInfo.Name == roomName) return true;
+        }
+        return false;
     }
 
     public void CreateRoom()
@@ -83,6 +92,8 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void CreateRoom(int rows, int columns, byte maxPlayers, float mineFrequency, int roundLength, string playerName, string roomName, bool isVisible)
     {
+        if (roomName.Length > RoomNameMaxCharacters) roomName = roomName.Substring(0, RoomNameMaxCharacters); // Make sure room name is a set max characters
+        if (roomName.Length < 1 || RoomExists(roomName)) roomName = GetRandomRoomName();
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.IsVisible = isVisible;
         roomOptions.MaxPlayers = maxPlayers;
@@ -125,9 +136,14 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
+        UpdateRoomList(roomList);
+    }
+
+    private void UpdateRoomList(List<RoomInfo> roomList)
+    {
         foreach (RoomInfo info in roomList)
         {
-            if (info.RemovedFromList)
+            if (info.RemovedFromList) // On room remove
             {
                 int index = _listings.FindIndex(x => x.RoomInfo.Name == info.Name);
                 if (index != -1)
@@ -136,15 +152,14 @@ public class MainMenu : MonoBehaviourPunCallbacks
                     _listings.RemoveAt(index);
                 }
             }
-            //Added to rooms list
             else
             {
                 int index = _listings.FindIndex(x => x.RoomInfo.Name == info.Name);
-                if (index != -1)
+                if (index != -1) // On room update
                 {
                     _listings[index].SetRoomInfo(info);
                 }
-                else
+                else // On room add
                 {
                     RoomListing listing = Instantiate(roomListingPrefab, Content);
                     Button listingButton = listing.GetComponent<Button>();

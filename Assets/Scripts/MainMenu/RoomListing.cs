@@ -9,8 +9,11 @@ public class RoomListing : MonoBehaviour
     public void SetRoomInfo(RoomInfo roomInfo)
     {
         RoomInfo = roomInfo;
-        _text.text = roomInfo.Name + ", " + "Players: " + roomInfo.PlayerCount + "/" + roomInfo.MaxPlayers +", "+ roomInfo.CustomProperties["Rows"] +"x"+ roomInfo.CustomProperties["Columns"] + ", Mine Frequency: "+ (float) roomInfo.CustomProperties["MineProbability"] * 10 + ", Round time: " + roomInfo.CustomProperties["RoundLength"] + "s";
-
+        _text.text = roomInfo.Name +
+            " | " + roomInfo.PlayerCount + "/" + roomInfo.MaxPlayers +
+            " | " + roomInfo.CustomProperties["Rows"] + "x" + roomInfo.CustomProperties["Columns"] +
+            " | Mine Freq: " + Mathf.Round((float) roomInfo.CustomProperties["MineFrequency"] * 10) +
+            " | Round Len: " + roomInfo.CustomProperties["RoundLength"] + "s";
     }
 
     public RoomInfo GetRoomInfo()

@@ -21,7 +21,7 @@ public static class Events
 
     // Player Customization
     public static event Func<string> OnGetPlayerName;
-    public static string GetPlayerName() => OnGetPlayerName?.Invoke() ?? "Player" + (int) UnityEngine.Random.Range(100_000, 999_999);
+    public static string GetPlayerName() => OnGetPlayerName?.Invoke() ?? "Player" + UnityEngine.Random.Range(100_000, 999_999);
     public static event Action<string> OnSetPlayerName;
     public static void SetPlayerName(string value) => OnSetPlayerName?.Invoke(value);
     public static event Func<int> OnGetHatColor;
