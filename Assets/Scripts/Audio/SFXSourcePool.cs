@@ -5,7 +5,7 @@ public class SFXSourcePool : MonoBehaviour
 {
     public static SFXSourcePool Instance;
 
-    public AudioSource AudioSourcePrefab;
+    public AudioSource SFXAudioSourcePrefab;
 
     private List<AudioSource> _audioSources;
 
@@ -52,7 +52,7 @@ public class SFXSourcePool : MonoBehaviour
                 return source;
             }
         }
-        AudioSource newSource = GameObject.Instantiate(AudioSourcePrefab, transform);
+        AudioSource newSource = GameObject.Instantiate(SFXAudioSourcePrefab, transform);
         _audioSources.Add(newSource);
 
         return newSource;

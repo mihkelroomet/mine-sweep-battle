@@ -286,8 +286,6 @@ public class PlayerController : MonoBehaviour, IPunObservable
             Vector3[] positions = new Vector3[_lineRenderer.positionCount];
             _lineRenderer.GetPositions(positions);
             stream.SendNext(positions);
-
-            //stream.SendNext(_nametagPanel.transform.position);
         }
         else
         {
@@ -295,20 +293,6 @@ public class PlayerController : MonoBehaviour, IPunObservable
             _lineRenderer.startColor = new Color((float) stream.ReceiveNext(), (float) stream.ReceiveNext(), (float) stream.ReceiveNext());
             _lineRenderer.positionCount = (int) stream.ReceiveNext();
             _lineRenderer.SetPositions((Vector3[]) stream.ReceiveNext());
-
-            //_nametagPanel.transform.position = (Vector3) stream.ReceiveNext();
-        }
-    }
-
-    private void OnDestroy() {
-        // Removes any AudioSources attached to leaving player from the AudioSourcePool to prevent NullPointerExceptions
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            Transform child = transform.GetChild(i);
-            if (child.CompareTag("AudioSource"))
-            {
-                SFXSourcePool.Instance.RemoveAudioSource(child.GetComponent<AudioSource>());
-            }
         }
     }
 }

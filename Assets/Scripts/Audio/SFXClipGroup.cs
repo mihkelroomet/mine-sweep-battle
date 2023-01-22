@@ -29,9 +29,18 @@ public class SFXClipGroup : ScriptableObject
         Play(PlayerController.Instance.transform);
     }
 
+    // For moving objects
     public void Play(Transform parent)
     {
         Play(parent, parent.position);
+    }
+
+    // For static objects
+    public void Play(Vector3 position)
+    {
+        if (SFXSourcePool.Instance == null) return;
+        
+        Play(SFXSourcePool.Instance.transform, position);
     }
 
     public void Play(Transform parent, Vector3 position)

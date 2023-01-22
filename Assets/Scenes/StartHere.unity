@@ -460,7 +460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 321296ec862d38a4e8c79faf03ed19ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AudioSourcePrefab: {fileID: 4752302503664244409, guid: a3a0e7cb8f30c4546805d65f52bda334, type: 3}
+  SFXAudioSourcePrefab: {fileID: 4752302503664244409, guid: a3a0e7cb8f30c4546805d65f52bda334, type: 3}
   DefaultSFXVolume: 8
 --- !u!4 &864373681
 Transform:
