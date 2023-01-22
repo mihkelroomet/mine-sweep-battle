@@ -16,4 +16,4 @@ MonoBehaviour:
   CollectablePic: {fileID: -2035632521, guid: a8228eedc8e2e1b4ea55b06f980eb719, type: 3}
   Pic32: {fileID: -979649182, guid: a8228eedc8e2e1b4ea55b06f980eb719, type: 3}
   Pic64: {fileID: -103507057, guid: b1a088ea1b3d6c440bb0bd0876e2f9df, type: 3}
-  ComparativeFrequency: 1
+  ComparativeFrequency: 50

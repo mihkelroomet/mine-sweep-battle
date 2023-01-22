@@ -381,8 +381,11 @@ MonoBehaviour:
   _nametagPanel: {fileID: 2049734148212018796}
   RedBeamDuration: 0.1
   GreenBeamDuration: 0.15
+  DefaultAcceleration: 30
+  DefaultDeceleration: 50
   DefaultMovementSpeed: 4
-  BoostedMovementSpeed: 6
+  MaxTotalSpeedBoost: 3.3
+  SpeedBoostMultiplier: 1.5
   SpeedBoostDuration: 10
   _animator: {fileID: 5310963619083586014}
   AudioListenerPrefab: {fileID: 2937236546330399345, guid: cf05cf63037deb2459b83b32d7c55a8d, type: 3}

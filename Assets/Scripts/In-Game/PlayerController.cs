@@ -24,9 +24,17 @@ public class PlayerController : MonoBehaviour, IPunObservable
     private Cell _targetedCell;
 
     // Player
+    public float Acceleration {get; set;}
+    public float Deceleration {get; set;}
     public float MovementSpeed {get; set;}
+    public float DefaultAcceleration;
+    public float DefaultDeceleration;
     public float DefaultMovementSpeed;
-    public float BoostedMovementSpeed;
+    public float MaxTotalSpeedBoost;
+    private float _maxSpeed;
+    private float _maxAcceleration;
+    private float _maxDeceleration;
+    public float SpeedBoostMultiplier;
     public float SpeedBoostDuration;
     private float _speedBoostExpiresAt;
     private float _speedLimiter = 0.7f;
@@ -61,6 +69,11 @@ public class PlayerController : MonoBehaviour, IPunObservable
         _beamTimer = -1;
         _stunDuration = 1.5f;
         MovementSpeed = DefaultMovementSpeed;
+        Acceleration = DefaultAcceleration;
+        Deceleration = DefaultDeceleration;
+        _maxSpeed = DefaultMovementSpeed * MaxTotalSpeedBoost;
+        _maxAcceleration = DefaultAcceleration * MaxTotalSpeedBoost;
+        _maxDeceleration = DefaultDeceleration * MaxTotalSpeedBoost;
     }
 
     private void Start()
@@ -95,7 +108,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
                 _inputHorizontal *= _speedLimiter;
                 _inputVertical *= _speedLimiter;
             }
-            _rb.velocity = new Vector2(_inputHorizontal * MovementSpeed, _inputVertical * MovementSpeed);
+            _rb.velocity = Vector2.MoveTowards(_rb.velocity, new Vector2(_inputHorizontal * MovementSpeed, _inputVertical * MovementSpeed), Time.deltaTime * Acceleration);
 
             FootstepsAudio.Play(transform);
         }
@@ -103,7 +116,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
         // If the player is not moving or the game is not active
         else
         {
-            _rb.velocity = new Vector2(0f, 0f);
+            _rb.velocity = Vector2.MoveTowards(_rb.velocity, Vector2.zero, Time.deltaTime * Deceleration);
 
             // Make player look towards crosshair
             // 0 - down, 1 - left, 2 - up, 3 - right
@@ -153,10 +166,13 @@ public class PlayerController : MonoBehaviour, IPunObservable
                     if (Input.GetKeyDown(KeyCode.LeftShift)) SwitchPowerups();
                 }
                 
-                if (MovementSpeed == BoostedMovementSpeed && _speedBoostExpiresAt > GameController.Instance.TimeLeft)
+                // Speed boost running out
+                if (MovementSpeed > DefaultMovementSpeed && _speedBoostExpiresAt > GameController.Instance.TimeLeft)
                 {
                     SpeedDownAudio.Play(transform);
                     MovementSpeed = DefaultMovementSpeed;
+                    Acceleration = DefaultAcceleration;
+                    Deceleration = DefaultDeceleration;
                 }
             }
         }
@@ -239,7 +255,9 @@ public class PlayerController : MonoBehaviour, IPunObservable
                 break;
             case PowerupType.SpeedPowerup:
                 Events.SetScore(Events.GetScore() + SpeedPowerupScore);
-                MovementSpeed = BoostedMovementSpeed;
+                MovementSpeed = Mathf.Min(MovementSpeed * SpeedBoostMultiplier, _maxSpeed);
+                Acceleration = Mathf.Min(Acceleration * SpeedBoostMultiplier, _maxAcceleration);
+                Deceleration = Mathf.Min(Deceleration * SpeedBoostMultiplier, _maxDeceleration);
                 SpeedUpAudio.Play(transform);
                 _speedBoostExpiresAt = GameController.Instance.TimeLeft - SpeedBoostDuration;
                 break;
