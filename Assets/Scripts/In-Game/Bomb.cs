@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
@@ -25,11 +26,14 @@ public class Bomb : MonoBehaviour
 
     // Scoring
     public int BustCellScore;
+    public int StunPlayerWithBombScore;
+    private List<PlayerController> _playersStunned;
 
     private void Awake()
     {
         _exploding = false;
         _explodeTimeLeft = ExplodeTime;
+        _playersStunned = new List<PlayerController>();
     }
 
     private void Update() {
@@ -75,20 +79,29 @@ public class Bomb : MonoBehaviour
 
         }
 
-        if (_exploding && other.CompareTag("Player"))
-        {
-            PlayerController player = other.GetComponent<PlayerController>();
-            player.Stun();
-        }
+        PossiblyCollideWithPlayer(other);
     }
 
+    // For when the player is already colliding with the bomb when it explodes
     private void OnTriggerStay2D(Collider2D other)
     {
-        // For when the player is already colliding with the bomb when it explodes
+        PossiblyCollideWithPlayer(other);
+    }
+
+    private void PossiblyCollideWithPlayer(Collider2D other)
+    {
         if (_exploding && other.CompareTag("Player"))
         {
             PlayerController player = other.GetComponent<PlayerController>();
-            player.Stun();
+            if (!_playersStunned.Contains(player))
+            {
+                _playersStunned.Add(player);
+                player.Stun();
+
+                PhotonView playerView = player.GetComponent<PhotonView>();
+                // If I threw the bomb and the stunned player isn't me, gimme score
+                if (_view.IsMine && !playerView.IsMine) Events.SetScore(Events.GetScore() + StunPlayerWithBombScore);
+            }
         }
     }
 
