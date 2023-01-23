@@ -159,12 +159,22 @@ public class GameController : MonoBehaviour
 
     private void SetScore(int value)
     {
-        int change = Score - value;
+        int change = value - Score;
         Score = value;
 
-        if (change != 0) {
+        if (change != 0)
+        {
             ScoreChange scoreChange = Instantiate(ScoreChangePrefab, PlayerController.Instance.transform);
-            scoreChange.ChangeText.text = change.ToString();
+            if (change < 0)
+            {
+            scoreChange.ChangeText.color = scoreChange.NegativeColor;
+            scoreChange.ChangeText.text =change.ToString();
+            }
+            else
+            {
+                scoreChange.ChangeText.text = "+" + change.ToString();
+                scoreChange.ChangeText.color = scoreChange.PositiveColor;
+            }
         }
 
         ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.LocalPlayer.CustomProperties;
