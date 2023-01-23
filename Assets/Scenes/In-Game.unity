@@ -1802,6 +1802,7 @@ MonoBehaviour:
   PowerupInFirstSlot: {fileID: 0}
   PowerupInSecondSlot: {fileID: 0}
   LobbyScreen: {fileID: 1729869322}
+  ScoreChangePrefab: {fileID: 3485921282456764924, guid: 75516ff51fef63f40a709c2db3db07f3, type: 3}
 --- !u!4 &637535958
 Transform:
   m_ObjectHideFlags: 0

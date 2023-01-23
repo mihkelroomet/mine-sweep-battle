@@ -27,6 +27,7 @@ public class GameController : MonoBehaviour
 
     public GameObject LobbyScreen;
 
+    public ScoreChange ScoreChangePrefab;
     public float TimeLeft
     {
         get {
@@ -158,7 +159,13 @@ public class GameController : MonoBehaviour
 
     private void SetScore(int value)
     {
+        int change = Score - value;
         Score = value;
+
+        if (change != 0) {
+            ScoreChange scoreChange = Instantiate(ScoreChangePrefab, PlayerController.Instance.transform);
+            scoreChange.ChangeText.text = change.ToString();
+        }
 
         ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.LocalPlayer.CustomProperties;
         properties["Score"] = value;
