@@ -754,7 +754,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _audioSource: {fileID: 1380916350}
-  DefaultMusicVolume: 0
+  DefaultMusicVolume: 8
 --- !u!82 &1380916350
 AudioSource:
   m_ObjectHideFlags: 0
