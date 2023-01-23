@@ -126,6 +126,7 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player leftPlayer)
     {
         UpdateScoreboard();
+        RestartButton.gameObject.SetActive(PhotonNetwork.IsMasterClient); // Need to update this in case host left
     }
 
     private void UpdateScoreboard()

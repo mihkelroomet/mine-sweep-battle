@@ -40,8 +40,6 @@ public class MainMenu : MonoBehaviourPunCallbacks
     public Slider SFXVolumeSlider;
 
     private void Awake() {
-        PhotonNetwork.AutomaticallySyncScene = true;
-
         PracticeButton.onClick.AddListener(() => CreatePracticeRoom());
         CreateButton.onClick.AddListener(() => CreateRoom());
         JoinButton.onClick.AddListener(() => JoinRoom());
@@ -106,6 +104,8 @@ public class MainMenu : MonoBehaviourPunCallbacks
         roomProps.Add("RoundLength", (int) roundLength);
         roomProps.Add("UpToDate", false);
         roomProps.Add("TimeLeftUpToDate", false);
+        string currentScene = isVisible ? "Lobby" : "In-Game"; // Skip lobby if practicing
+        roomProps.Add("CurrentScene", currentScene);
         roomOptions.CustomRoomProperties = roomProps;
         string[] lobbyProperties = { "Rows", "Columns", "MineFrequency", "RoundLength" }; // Properties needed to show on room display
         roomOptions.CustomRoomPropertiesForLobby = lobbyProperties;
@@ -114,18 +114,10 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void JoinRoom()
     {
-        SaveColorsAsCustomProperties();
         PhotonNetwork.JoinRoom(_selectedRoom.RoomInfo.Name);
     }
 
-    public override void OnCreatedRoom()
-    {
-        SaveColorsAsCustomProperties();
-        if (PhotonNetwork.CurrentRoom.IsVisible) PhotonNetwork.LoadLevel("Lobby"); // To lobby if joined public room
-        else PhotonNetwork.LoadLevel("In-Game"); // Skip lobby if practicing
-    }
-
-    private void SaveColorsAsCustomProperties()
+    public override void OnJoinedRoom()
     {
         ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.LocalPlayer.CustomProperties;
         int hatColor = Events.GetHatColor();
@@ -135,6 +127,11 @@ public class MainMenu : MonoBehaviourPunCallbacks
         if (!properties.TryAdd("ShirtColor", shirtColor)) properties["ShirtColor"] = shirtColor;
         if (!properties.TryAdd("PantsColor", pantsColor)) properties["PantsColor"] = pantsColor;
         PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
+        PhotonNetwork.LoadLevel((string) PhotonNetwork.CurrentRoom.CustomProperties["CurrentScene"]);
+    }
+
+    private void SaveColorsAsCustomProperties()
+    {
     }
 
     // Join the lobby again after exiting a game, so the room list works

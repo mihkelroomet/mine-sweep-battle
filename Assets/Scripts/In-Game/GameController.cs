@@ -52,6 +52,17 @@ public class GameController : MonoBehaviour
         }
         Instance = this;
 
+        ExitGames.Client.Photon.Hashtable roomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
+        if (!roomProperties.TryAdd("CurrentScene", "In-Game")) roomProperties["CurrentScene"] = "In-Game";
+        PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
+
+        if (_view.IsMine)
+        {
+            ExitGames.Client.Photon.Hashtable playerProperties = PhotonNetwork.LocalPlayer.CustomProperties;
+            if (!playerProperties.TryAdd("Score", 0)) playerProperties["Score"] = Events.GetScore(); // Try to add property "Score". If it exists, assign the value to it instead.
+            PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperties);
+        }
+
         Events.OnSetScore += SetScore;
         Events.OnGetScore += GetScore;
         Events.OnSetPowerupInFirstSlot += SetPowerupInFirstSlot;
@@ -63,13 +74,6 @@ public class GameController : MonoBehaviour
         GameActive = false; // Will wait for countdown to become active once we add it back in -- I used it for lobby for now -Kaarel
         _gameEndCheckInterval = 0.1f;
         _nextGameEndCheckTime = Time.time + _gameEndCheckInterval;
-
-        if (_view.IsMine)
-        {
-            ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.LocalPlayer.CustomProperties;
-            if (!properties.TryAdd("Score", 0)) properties["Score"] = Events.GetScore(); // Try to add property "Score". If it exists, assign the value to it instead.
-            PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
-        }
     }
 
     IEnumerator Start()
@@ -202,7 +206,8 @@ public class GameController : MonoBehaviour
     [PunRPC]
     void RestartRPC()
     {
-        Transitions.Instance.ExitSceneWithTransition("Lobby");
+        string nextScene = PhotonNetwork.CurrentRoom.IsVisible ? "Lobby" : "In-Game"; // Skip lobby if practicing
+        Transitions.Instance.ExitSceneWithTransition(nextScene);
     }
 
     public void BackToMainMenu()

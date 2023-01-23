@@ -52,6 +52,10 @@ public class Lobby : MonoBehaviourPunCallbacks
         }
         Instance = this;
 
+        ExitGames.Client.Photon.Hashtable roomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
+        if (!roomProperties.TryAdd("CurrentScene", "Lobby")) roomProperties["CurrentScene"] = "Lobby";
+        PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
+
         InitializePlayerList();
         
         _sliders = new Slider[] { RowsSlider, ColumnsSlider, MineFrequencySlider, RoundLengthSlider };
