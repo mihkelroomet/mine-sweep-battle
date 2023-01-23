@@ -36,19 +36,25 @@ public class PlayerCustomizer : MonoBehaviour
         Events.OnGetPantsColor += GetPantsColor;
         Events.OnSetPantsColor += SetPantsColor;
 
-        _hatColors = new Color32[]{Color.red, Color.green, Color.blue, Color.yellow, Color.magenta, Color.cyan,
-        new Color32(255, 255, 128, 255), new Color32(255, 128, 255, 255), new Color32(255, 128, 128, 255), new Color32(255, 128, 0, 255), new Color32(255, 0, 128, 255),
-        new Color32(128, 255, 255, 255), new Color32(128, 255, 128, 255), new Color32(128, 255, 0, 255), new Color32(128, 128, 255, 255), new Color32(128, 128, 128, 255),
-        new Color32(128, 128, 0, 255), new Color32(128, 0, 255, 255), new Color32(128, 0, 128, 255), new Color32(128, 0, 0, 255), new Color32(0, 255, 128, 255),
-        new Color32(0, 128, 255, 255), new Color32(0, 128, 128, 255), new Color32(0, 128, 0, 255), new Color32(0, 0, 128, 255),
-        Color.black, Color.white, Color.clear};
+        _hatColors = new Color32[] {
+            new Color32(239, 17, 17, 255), new Color32(29, 60, 233, 255), new Color32(27, 145, 62, 255),
+            new Color32(255, 99, 212, 255), new Color32(255, 141, 28, 255), new Color32(255, 255, 103, 255),
+            new Color32(74, 86, 94, 255), new Color32(233, 247, 255, 255), new Color32(120, 61, 210, 255),
+            new Color32(128, 88, 45, 255), new Color32(68, 255, 247, 255), new Color32(91, 254, 75, 255),
+            new Color32(108, 43, 61, 255), new Color32(255, 214, 236, 255), new Color32(255, 255, 190, 255),
+            new Color32(131, 151, 167, 255), new Color32(159, 153, 137, 255), new Color32(236, 117, 120, 255),
+            new Color32(38, 166, 98, 255), new Color32(97, 114, 24, 255), Color.clear
+            };
 
-        _shirtColors = new Color32[]{Color.red, Color.green, Color.blue, Color.yellow, Color.magenta, Color.cyan,
-        new Color32(255, 255, 128, 255), new Color32(255, 128, 255, 255), new Color32(255, 128, 128, 255), new Color32(255, 128, 0, 255), new Color32(255, 0, 128, 255),
-        new Color32(128, 255, 255, 255), new Color32(128, 255, 128, 255), new Color32(128, 255, 0, 255), new Color32(128, 128, 255, 255), new Color32(128, 128, 128, 255),
-        new Color32(128, 128, 0, 255), new Color32(128, 0, 255, 255), new Color32(128, 0, 128, 255), new Color32(128, 0, 0, 255), new Color32(0, 255, 128, 255),
-        new Color32(0, 128, 255, 255), new Color32(0, 128, 128, 255), new Color32(0, 128, 0, 255), new Color32(0, 0, 128, 255),
-        Color.black, Color.white, Color.clear};
+        _shirtColors = new Color32[] {
+            new Color32(239, 17, 17, 255), new Color32(29, 60, 233, 255), new Color32(27, 145, 62, 255),
+            new Color32(255, 99, 212, 255), new Color32(255, 141, 28, 255), new Color32(255, 255, 103, 255),
+            new Color32(74, 86, 94, 255), new Color32(233, 247, 255, 255), new Color32(120, 61, 210, 255),
+            new Color32(128, 88, 45, 255), new Color32(68, 255, 247, 255), new Color32(91, 254, 75, 255),
+            new Color32(108, 43, 61, 255), new Color32(255, 214, 236, 255), new Color32(255, 255, 190, 255),
+            new Color32(131, 151, 167, 255), new Color32(159, 153, 137, 255), new Color32(236, 117, 120, 255),
+            new Color32(38, 166, 98, 255), new Color32(97, 114, 24, 255), Color.clear
+            };
 
         _pantsColors = new Color32[]{new Color32(26, 72, 95, 255), new Color32(106, 77, 23, 255), new Color32(91, 82, 63, 255), new Color32(168, 161, 118, 255),
         Color.black, new Color32(183, 183, 183, 255), new Color32(90, 60, 60, 255), new Color32(60, 90, 60, 255), new Color32(60, 60, 90, 255)};
