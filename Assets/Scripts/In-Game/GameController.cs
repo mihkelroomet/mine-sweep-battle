@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using Photon.Pun;
-using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
@@ -14,7 +13,6 @@ public class GameController : MonoBehaviour
         set
         {
             _gameActive = value;
-            if (_gameActive) LobbyScreen.SetActive(false);
         }
     }
     private bool _gameActive;
@@ -24,8 +22,6 @@ public class GameController : MonoBehaviour
     public int Score;
     public PowerupData PowerupInFirstSlot;
     public PowerupData PowerupInSecondSlot;
-
-    public GameObject LobbyScreen;
 
     public ScoreChange ScoreChangePrefab;
     public float TimeLeft
@@ -43,67 +39,55 @@ public class GameController : MonoBehaviour
     // For periodically checking if all cells have been opened
     private float _gameEndCheckInterval;
     private float _nextGameEndCheckTime;
+    
+    // Audio
+    public AudioClip InGameMusic;
 
     private void Awake()
     {
+        if (Instance != null)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
         Instance = this;
+
         Events.OnSetScore += SetScore;
         Events.OnGetScore += GetScore;
         Events.OnSetPowerupInFirstSlot += SetPowerupInFirstSlot;
         Events.OnGetPowerupInFirstSlot += GetPowerupInFirstSlot;
         Events.OnSetPowerupInSecondSlot += SetPowerupInSecondSlot;
         Events.OnGetPowerupInSecondSlot += GetPowerupInSecondSlot;
-        Events.OnEndOfRound += EndOfRound;
+        Events.OnEndRound += EndRound;
+
         GameActive = false; // Will wait for countdown to become active once we add it back in -- I used it for lobby for now -Kaarel
-        Score = 0;
         _gameEndCheckInterval = 0.1f;
         _nextGameEndCheckTime = Time.time + _gameEndCheckInterval;
 
         if (_view.IsMine)
         {
             ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.LocalPlayer.CustomProperties;
-            if (!properties.TryAdd("Score", 0)) properties["Score"] = 0; // Try to add property "Score". If it exists, assign the value to it instead.
+            if (!properties.TryAdd("Score", 0)) properties["Score"] = Events.GetScore(); // Try to add property "Score". If it exists, assign the value to it instead.
             PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
         }
     }
 
     IEnumerator Start()
     {
-        SFXSourcePool.Instance.ClearAudioSources(); // Because audiosources have parents that get destroyed on new scene load
-        MusicPlayer.Instance.PlayMusic(null);
+        MusicPlayer.Instance.PlayMusic(InGameMusic);
+
         if (PhotonNetwork.IsMasterClient)
         {
             TimeLeft = (int) PhotonNetwork.CurrentRoom.CustomProperties["RoundLength"];
-            ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
-            PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
         }
         else {
             _view.RPC("UpdateTimeLeftRPC", RpcTarget.MasterClient);
             while (! (bool) PhotonNetwork.CurrentRoom.CustomProperties["TimeLeftUpToDate"]) yield return new WaitForSeconds(0.1f);
             TimeLeft = (float) PhotonNetwork.CurrentRoom.CustomProperties["TimeLeft"];
             _view.RPC("SetTimeLeftOutOfDateRPC", RpcTarget.MasterClient);
-            if ((int) PhotonNetwork.CurrentRoom.CustomProperties["RoundLength"] > TimeLeft) GameActive = true;
         }
-        Events.SetScore(Score);
-        //GameActive = true;
-
-        // For practice room don't show lobby
-        if (PhotonNetwork.CurrentRoom.IsVisible == false)
-            StartGame();
-    }
-
-    public void StartGame()
-    {
-        _view.RPC("StartRPC", RpcTarget.All);
-    }
-
-    [PunRPC]
-    private void StartRPC()
-    {
-        StartCoroutine(Grid.Instance.StartGame());
-        TimeLeft = (int) PhotonNetwork.CurrentRoom.CustomProperties["RoundLength"];
+        Events.SetScore(Events.GetScore()); // For triggering SetScore in HUDPresenter
         GameActive = true;
-        LobbyScreen.SetActive(false);
     }
 
     private void Update()
@@ -130,14 +114,10 @@ public class GameController : MonoBehaviour
 
             // End the round if time has run out or if all the cells have been opened
             if (TimeLeft <= 0 || allCellsOpened) {
-                Events.EndOfRound();
+                Events.EndRound();
             }
             else {
                 TimeLeft -= Time.deltaTime;
-            }
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                HUDPresenter.Instance.ShowEscMenu();
             }
         }
     }
@@ -159,7 +139,7 @@ public class GameController : MonoBehaviour
 
     private void SetScore(int value)
     {
-        int change = value - Score;
+        int change = value - Events.GetScore();
         Score = value;
 
         if (change != 0)
@@ -167,8 +147,8 @@ public class GameController : MonoBehaviour
             ScoreChange scoreChange = Instantiate(ScoreChangePrefab, PlayerController.Instance.transform);
             if (change < 0)
             {
-            scoreChange.ChangeText.color = scoreChange.NegativeColor;
-            scoreChange.ChangeText.text =change.ToString();
+                scoreChange.ChangeText.text = change.ToString();
+                scoreChange.ChangeText.color = scoreChange.NegativeColor;
             }
             else
             {
@@ -192,7 +172,7 @@ public class GameController : MonoBehaviour
         PowerupInSecondSlot = data;
     }
 
-    private void EndOfRound()
+    private void EndRound()
     {
         GameActive = false;
     }
@@ -222,7 +202,7 @@ public class GameController : MonoBehaviour
     [PunRPC]
     void RestartRPC()
     {
-        Transitions.Instance.ExitSceneWithTransition("In-Game");
+        Transitions.Instance.ExitSceneWithTransition("Lobby");
     }
 
     public void BackToMainMenu()
@@ -249,8 +229,6 @@ public class GameController : MonoBehaviour
         Events.OnGetPowerupInFirstSlot -= GetPowerupInFirstSlot;
         Events.OnSetPowerupInSecondSlot -= SetPowerupInSecondSlot;
         Events.OnGetPowerupInSecondSlot -= GetPowerupInSecondSlot;
-        Events.OnEndOfRound -= EndOfRound;
+        Events.OnEndRound -= EndRound;
     }
-
-
 }

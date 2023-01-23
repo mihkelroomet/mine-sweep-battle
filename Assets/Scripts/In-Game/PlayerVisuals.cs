@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
 
-public class PlayerLook : MonoBehaviour
+public class PlayerVisuals : MonoBehaviour
 {
     // Components
     [SerializeField] private PhotonView _view;
@@ -19,8 +19,8 @@ public class PlayerLook : MonoBehaviour
     private SpriteRenderer[] _spriteRenderers;
 
     // Parameters
-    public float OtherPlayersOpacity;
-    public float OtherPlayersNametagPanelOpacity;
+    public float OtherPlayersOpacity = 0.5f;
+    public float OtherPlayersNametagPanelOpacity = 0.8f;
 
     private void Awake()
     {

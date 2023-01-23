@@ -27,12 +27,17 @@ public class Grid : MonoBehaviour
     private Queue<GridUpdateEvent> _gridUpdateEventQueue;
 
     private void Awake() {
+        if (Instance != null)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
         Instance = this;
+
         _initialized = false;
         _gridUpdateEventQueue = new Queue<GridUpdateEvent>();
     }
 
-    /*
     IEnumerator Start()
     {
         if (!PhotonNetwork.IsMasterClient)
@@ -40,31 +45,6 @@ public class Grid : MonoBehaviour
             _view.RPC("UpdateRoomPropertiesRPC", RpcTarget.MasterClient);
             // Wait until the properties have been refreshed by Host
             while (! (bool) PhotonNetwork.CurrentRoom.CustomProperties["UpToDate"]) yield return new WaitForSeconds(0.1f);
-            _view.RPC("SetRoomPropertiesOutOfDateRPC", RpcTarget.MasterClient);
-        }
-        else
-        {
-            Rows = (int) PhotonNetwork.CurrentRoom.CustomProperties["Rows"];
-            Columns = (int) PhotonNetwork.CurrentRoom.CustomProperties["Columns"];
-            MineFrequency = (float) PhotonNetwork.CurrentRoom.CustomProperties["MineFrequency"];
-        }
-
-        InitializeGrid();
-
-        _initialized = true;
-
-        if (!PhotonNetwork.IsMasterClient) ApplyGridUpdatesReceivedDuringInit();
-    }*/
-
-    public IEnumerator StartGame()
-    {
-        Cursor.SetCursor(Transitions.Instance.CursorDefault, Transitions.Instance.CursorDefaultHotspot, CursorMode.ForceSoftware);
-
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            _view.RPC("UpdateRoomPropertiesRPC", RpcTarget.MasterClient);
-            // Wait until the properties have been refreshed by Host
-            while (!(bool) PhotonNetwork.CurrentRoom.CustomProperties["UpToDate"]) yield return new WaitForSeconds(0.1f);
             _view.RPC("SetRoomPropertiesOutOfDateRPC", RpcTarget.MasterClient);
         }
         else

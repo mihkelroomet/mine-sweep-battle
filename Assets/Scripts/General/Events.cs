@@ -48,6 +48,6 @@ public static class Events
     public static void SetSFXVolume(int value) => OnSetSFXVolume?.Invoke(value);
 
     // End of round
-    public static event Action OnEndOfRound;
-    public static void EndOfRound() => OnEndOfRound?.Invoke();
+    public static event Action OnEndRound;
+    public static void EndRound() => OnEndRound?.Invoke();
 }

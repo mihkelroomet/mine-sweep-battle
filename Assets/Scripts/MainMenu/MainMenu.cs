@@ -40,6 +40,8 @@ public class MainMenu : MonoBehaviourPunCallbacks
     public Slider SFXVolumeSlider;
 
     private void Awake() {
+        PhotonNetwork.AutomaticallySyncScene = true;
+
         PracticeButton.onClick.AddListener(() => CreatePracticeRoom());
         CreateButton.onClick.AddListener(() => CreateRoom());
         JoinButton.onClick.AddListener(() => JoinRoom());
@@ -112,10 +114,18 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void JoinRoom()
     {
+        SaveColorsAsCustomProperties();
         PhotonNetwork.JoinRoom(_selectedRoom.RoomInfo.Name);
     }
 
-    public override void OnJoinedRoom()
+    public override void OnCreatedRoom()
+    {
+        SaveColorsAsCustomProperties();
+        if (PhotonNetwork.CurrentRoom.IsVisible) PhotonNetwork.LoadLevel("Lobby"); // To lobby if joined public room
+        else PhotonNetwork.LoadLevel("In-Game"); // Skip lobby if practicing
+    }
+
+    private void SaveColorsAsCustomProperties()
     {
         ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.LocalPlayer.CustomProperties;
         int hatColor = Events.GetHatColor();
@@ -125,7 +135,6 @@ public class MainMenu : MonoBehaviourPunCallbacks
         if (!properties.TryAdd("ShirtColor", shirtColor)) properties["ShirtColor"] = shirtColor;
         if (!properties.TryAdd("PantsColor", pantsColor)) properties["PantsColor"] = pantsColor;
         PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
-        PhotonNetwork.LoadLevel("In-Game");
     }
 
     // Join the lobby again after exiting a game, so the room list works

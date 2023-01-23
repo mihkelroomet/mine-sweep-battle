@@ -381,8 +381,7 @@ MonoBehaviour:
   _nametagPanel: {fileID: 2049734148212018796}
   RedBeamDuration: 0.1
   GreenBeamDuration: 0.15
-  DefaultAcceleration: 30
-  DefaultDeceleration: 50
+  DefaultAcceleration: 35
   DefaultMovementSpeed: 4
   MaxTotalSpeedBoost: 3.3
   SpeedBoostMultiplier: 1.5
@@ -463,7 +462,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4529419453277161842}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 635fc05ae9634364cb3ddaf65d0bb409, type: 3}
+  m_Script: {fileID: 11500000, guid: bb8a3c65111b01e42901e6b6337cb2fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _view: {fileID: 1449288110315810461}

@@ -158,7 +158,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000030517578, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &45903983
@@ -249,18 +249,18 @@ PrefabInstance:
     - target: {fileID: 3688829329561974146, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1150220470}
     - target: {fileID: 3688829329561974146, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3688829329561974146, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ChangeRoundLength
+      value: SetRoundLength
       objectReference: {fileID: 0}
     - target: {fileID: 3688829329561974146, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: HUDPresenter, Assembly-CSharp
+      value: Lobby, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3688829329561974147, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_Pivot.x
@@ -657,7 +657,7 @@ GameObject:
   - component: {fileID: 494191848}
   - component: {fileID: 494191847}
   m_Layer: 5
-  m_Name: PlayersTitle
+  m_Name: NumberOfPlayersText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -703,7 +703,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Players:'
+  m_text: 'Players: 20/20'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 50ebab62d6e155a4c98d9f137c5a0540, type: 2}
   m_sharedMaterial: {fileID: 5573511110951227715, guid: 50ebab62d6e155a4c98d9f137c5a0540, type: 2}
@@ -806,14 +806,14 @@ PrefabInstance:
     - target: {fileID: 3688829329561974146, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1150220470}
     - target: {fileID: 3688829329561974146, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ChangeColumnCount
+      value: SetColumns
       objectReference: {fileID: 0}
     - target: {fileID: 3688829329561974146, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: HUDPresenter, Assembly-CSharp
+      value: Lobby, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3688829329561974147, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_Pivot.x
@@ -1363,7 +1363,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3282692292517246829, guid: c4cc05fb16c594442b34121ca419c7eb, type: 3}
       propertyPath: m_Name
-      value: RoomName
+      value: RoomNameText
       objectReference: {fileID: 0}
     - target: {fileID: 3282692292517246829, guid: c4cc05fb16c594442b34121ca419c7eb, type: 3}
       propertyPath: m_IsActive
@@ -1811,9 +1811,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _view: {fileID: 1150220471}
-  RoomName: {fileID: 953222685}
-  PlayersText: {fileID: 0}
-  Options: {fileID: 0}
+  RoomNameText: {fileID: 953222685}
+  NumberOfPlayersText: {fileID: 494191847}
+  InputColumn: {fileID: 1027842176}
   StartButton: {fileID: 1060704772}
   LeaveButton: {fileID: 1615985142}
   PlayerListingPrefab: {fileID: 3432894210767459211, guid: 055501385d9894948abd3fed842ff5b8, type: 3}
@@ -1830,6 +1830,7 @@ MonoBehaviour:
   RoundLengthSlider: {fileID: 71946648}
   RoundLengthInputField: {fileID: 71946647}
   RoundLengthSliderHandle: {fileID: 71946649}
+  LobbyMusic: {fileID: 8300000, guid: 384a9c2af099668458d603a459a3f503, type: 3}
 --- !u!114 &1150220471
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2194,18 +2195,18 @@ PrefabInstance:
     - target: {fileID: 3688829329561974146, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1150220470}
     - target: {fileID: 3688829329561974146, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3688829329561974146, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ChangeMineFrequency
+      value: SetMineFrequency
       objectReference: {fileID: 0}
     - target: {fileID: 3688829329561974146, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: HUDPresenter, Assembly-CSharp
+      value: Lobby, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3688829329561974147, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_Pivot.x
@@ -2561,14 +2562,14 @@ PrefabInstance:
     - target: {fileID: 3688829329561974146, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1150220470}
     - target: {fileID: 3688829329561974146, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ChangeRowCount
+      value: SetRows
       objectReference: {fileID: 0}
     - target: {fileID: 3688829329561974146, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: HUDPresenter, Assembly-CSharp
+      value: Lobby, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3688829329561974147, guid: 47d0107980dd01a46b596b91825028db, type: 3}
       propertyPath: m_Pivot.x
