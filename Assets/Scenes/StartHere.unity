@@ -319,7 +319,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a354f1d4090436a4fa42861fc83137c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxPlayerNameLength: 16
+  MaxPlayerNameLength: 13
   DarkenSleevesBy: 64
 --- !u!1 &864373679
 GameObject:

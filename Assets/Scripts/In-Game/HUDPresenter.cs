@@ -14,14 +14,14 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
     // In-Game UI
     [SerializeField] private TMP_Text ScoreText;
     [SerializeField] private TMP_Text TimerText;
-    [SerializeField] private GameObject ScoreBoard;
-    [SerializeField] private GameObject EscMenu;
-    [SerializeField] private TMP_Text FinalScores;
+    [SerializeField] private GameObject GameOverPanel;
+    [SerializeField] private GameObject EscMenuPanel;
     [SerializeField] private Image FirstPowerupSlotImage;
     [SerializeField] private Image SecondPowerupSlotImage;
     [SerializeField] private AudioSource EndAudio;
     [SerializeField] private Button RestartButton;
-    [SerializeField] private TMP_Text LiveScores;
+    [SerializeField] private Transform LiveScoreboard;
+    public LiveScoreRow LiveScoreRowPrefab;
 
     private void Awake() {
         if (Instance != null)
@@ -34,15 +34,17 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
         Events.OnSetScore += SetScore;
         Events.OnSetPowerupInFirstSlot += SetPowerupInFirstSlot;
         Events.OnSetPowerupInSecondSlot += SetPowerupInSecondSlot;
-        Events.OnEndRound += ShowScoreboard;
+        Events.OnEndRound += EndRound;
 
         Transitions.Instance.PlayEnterTransition();
     }
 
     void Start()
     {
-        ScoreBoard.SetActive(false);
-        EscMenu.SetActive(false);
+        foreach (LiveScoreRow liveScoreRow in LiveScoreboard.GetComponentsInChildren<LiveScoreRow>()) Destroy(liveScoreRow.gameObject);
+        
+        GameOverPanel.SetActive(false);
+        EscMenuPanel.SetActive(false);
     }
 
     // Update timer text
@@ -94,57 +96,47 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
         }
     }
 
-    public void ShowScoreboard()
+    public void EndRound()
     {
-        string finalScores = "";
-        byte placing = 1;
-        Player[] sortedPlayerList = PhotonNetwork.PlayerList.OrderByDescending(player => player.CustomProperties["Score"]).ToArray();
-
-        foreach (Player player in sortedPlayerList)
-        {
-            finalScores += placing++ + "." + player.NickName + "\t\t\t" + player.CustomProperties["Score"] + "\n";
-        }
-
-        FinalScores.text = finalScores.TrimEnd();
-
-        EscMenu.SetActive(false);
-        ScoreBoard.SetActive(true);
+        EscMenuPanel.SetActive(false);
+        GameOverPanel.SetActive(true);
         RestartButton.gameObject.SetActive(PhotonNetwork.IsMasterClient); // Only let Host press restart otherwise it gets messed up
         EndAudio.Play();
     }
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
     {
-        UpdateScoreboard();
+        UpdateLiveScoreboard();
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        UpdateScoreboard();
+        UpdateLiveScoreboard();
     }
 
     public override void OnPlayerLeftRoom(Player leftPlayer)
     {
-        UpdateScoreboard();
+        UpdateLiveScoreboard();
         RestartButton.gameObject.SetActive(PhotonNetwork.IsMasterClient); // Need to update this in case host left
     }
 
-    private void UpdateScoreboard()
+    private void UpdateLiveScoreboard()
     {
-        string scoreBoard = "";
+        foreach (LiveScoreRow liveScoreRow in LiveScoreboard.GetComponentsInChildren<LiveScoreRow>()) Destroy(liveScoreRow.gameObject);
         Player[] sortedPlayerList = PhotonNetwork.PlayerList.OrderByDescending(player => player.CustomProperties["Score"]).ToArray();
 
-        foreach (Player player in sortedPlayerList)
+        for (int i = 0; i < Mathf.Min(sortedPlayerList.Length, 5); i++)
         {
-            scoreBoard += Array.IndexOf(sortedPlayerList, player) + 1 + "." + player.NickName + "\t\t" + player.CustomProperties["Score"] + "\n";
+            Player player = sortedPlayerList[i];
+            LiveScoreRow liveScoreRow = Instantiate(LiveScoreRowPrefab, LiveScoreboard);
+            liveScoreRow.SetPlayerNameText(Array.IndexOf(sortedPlayerList, player) + 1 + ". " + player.NickName);
+            liveScoreRow.SetPlayerScoreText(player.CustomProperties["Score"].ToString());
         }
-
-        LiveScores.text = scoreBoard;
     }
 
     public void ToggleEscMenu()
     {
-        EscMenu.SetActive(!EscMenu.activeSelf);
+        EscMenuPanel.SetActive(!EscMenuPanel.activeSelf);
     }
 
     public void RestartButtonClicked()
@@ -164,6 +156,6 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
         Events.OnSetScore -= SetScore;
         Events.OnSetPowerupInFirstSlot -= SetPowerupInFirstSlot;
         Events.OnSetPowerupInSecondSlot -= SetPowerupInSecondSlot;
-        Events.OnEndRound -= ShowScoreboard;
+        Events.OnEndRound -= EndRound;
     }
 }
