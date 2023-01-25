@@ -7,6 +7,7 @@ public class DummyPlayer : MonoBehaviour
     [SerializeField] private Image _shirt;
     [SerializeField] private Image _sleeves;
     [SerializeField] private Image _pants;
+    [SerializeField] private Image _boots;
 
     private void Awake()
     {
@@ -15,10 +16,12 @@ public class DummyPlayer : MonoBehaviour
         _shirt.color = PlayerCustomizer.Instance.TranslateShirtColor(shirtColor);
         _sleeves.color = PlayerCustomizer.Instance.TranslateShirtColorIntoSleeveColor(shirtColor);
         _pants.color = PlayerCustomizer.Instance.TranslatePantsColor(Events.GetPantsColor());
+        _boots.color = PlayerCustomizer.Instance.TranslateBootsColor(Events.GetBootsColor());
 
         Events.OnSetHatColor += SetHatColor;
         Events.OnSetShirtColor += SetShirtColor;
         Events.OnSetPantsColor += SetPantsColor;
+        Events.OnSetBootsColor += SetBootsColor;
     }
 
     private void SetHatColor(int value)
@@ -37,10 +40,16 @@ public class DummyPlayer : MonoBehaviour
         _pants.color = PlayerCustomizer.Instance.TranslatePantsColor(value);
     }
 
+    private void SetBootsColor(int value)
+    {
+        _boots.color = PlayerCustomizer.Instance.TranslateBootsColor(value);
+    }
+
     private void OnDestroy()
     {
         Events.OnSetHatColor -= SetHatColor;
         Events.OnSetShirtColor -= SetShirtColor;
         Events.OnSetPantsColor -= SetPantsColor;
+        Events.OnSetBootsColor -= SetBootsColor;
     }
 }

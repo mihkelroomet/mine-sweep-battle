@@ -84,6 +84,13 @@ AnimationClip:
     path: Shirt
     classID: 212
     script: {fileID: 0}
+  - curve:
+    - time: 0
+      value: {fileID: 1247477790, guid: 2a0d55bde3902e747bbea2fa5a35ce86, type: 3}
+    attribute: m_Sprite
+    path: Boots
+    classID: 212
+    script: {fileID: 0}
   m_SampleRate: 60
   m_WrapMode: 0
   m_Bounds:
@@ -133,6 +140,13 @@ AnimationClip:
       typeID: 212
       customType: 23
       isPPtrCurve: 1
+    - serializedVersion: 2
+      path: 1182796552
+      attribute: 0
+      script: {fileID: 0}
+      typeID: 212
+      customType: 23
+      isPPtrCurve: 1
     pptrCurveMapping:
     - {fileID: -1706270696, guid: ac66d514f23fd674c9bbcf34de7c9941, type: 3}
     - {fileID: 1257229166, guid: ac66d514f23fd674c9bbcf34de7c9941, type: 3}
@@ -152,6 +166,7 @@ AnimationClip:
     - {fileID: -1669736246, guid: d9008fb56b551c241bec74d58ecad485, type: 3}
     - {fileID: -1148883393, guid: d9008fb56b551c241bec74d58ecad485, type: 3}
     - {fileID: -1669736246, guid: d9008fb56b551c241bec74d58ecad485, type: 3}
+    - {fileID: 1247477790, guid: 2a0d55bde3902e747bbea2fa5a35ce86, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}

@@ -36,7 +36,13 @@ public static class Events
     public static int GetPantsColor() => OnGetPantsColor?.Invoke() ?? 0;
     public static event Action<int> OnSetPantsColor;
     public static void SetPantsColor(int value) => OnSetPantsColor?.Invoke(value);
-    
+
+    public static event Func<int> OnGetBootsColor;
+    public static int GetBootsColor() => OnGetBootsColor?.Invoke() ?? 0;
+    public static event Action<int> OnSetBootsColor;
+    public static void SetBootsColor(int value) => OnSetBootsColor?.Invoke(value);
+
+
     // Audio
     public static event Func<int> OnGetMusicVolume;
     public static int GetMusicVolume() => OnGetMusicVolume?.Invoke() ?? 0;

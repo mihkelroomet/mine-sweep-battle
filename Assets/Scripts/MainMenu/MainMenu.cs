@@ -123,9 +123,11 @@ public class MainMenu : MonoBehaviourPunCallbacks
         int hatColor = Events.GetHatColor();
         int shirtColor = Events.GetShirtColor();
         int pantsColor = Events.GetPantsColor();
+        int bootsColor = Events.GetBootsColor();
         if (!properties.TryAdd("HatColor", hatColor)) properties["HatColor"] = hatColor;
         if (!properties.TryAdd("ShirtColor", shirtColor)) properties["ShirtColor"] = shirtColor;
         if (!properties.TryAdd("PantsColor", pantsColor)) properties["PantsColor"] = pantsColor;
+        if (!properties.TryAdd("BootsColor", bootsColor)) properties["BootsColor"] = bootsColor;
         PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
         PhotonNetwork.LoadLevel((string) PhotonNetwork.CurrentRoom.CustomProperties["CurrentScene"]);
     }

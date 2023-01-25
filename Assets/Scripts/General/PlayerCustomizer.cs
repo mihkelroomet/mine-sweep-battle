@@ -8,12 +8,14 @@ public class PlayerCustomizer : MonoBehaviour
     private int _hatColor;
     private int _shirtColor;
     private int _pantsColor;
+    private int _bootsColor;
 
     public int MaxPlayerNameLength;
 
     private Color32[] _hatColors;
     private Color32[] _shirtColors;
     private Color32[] _pantsColors;
+    private Color32[] _bootsColors;
 
     public byte DarkenSleevesBy;
 
@@ -35,6 +37,8 @@ public class PlayerCustomizer : MonoBehaviour
         Events.OnSetShirtColor += SetShirtColor;
         Events.OnGetPantsColor += GetPantsColor;
         Events.OnSetPantsColor += SetPantsColor;
+        Events.OnGetBootsColor += GetBootsColor;
+        Events.OnSetBootsColor += SetBootsColor;
 
         _hatColors = new Color32[] {
             new Color32(239, 17, 17, 255), new Color32(29, 60, 233, 255), new Color32(27, 145, 62, 255),
@@ -58,6 +62,11 @@ public class PlayerCustomizer : MonoBehaviour
 
         _pantsColors = new Color32[]{new Color32(26, 72, 95, 255), new Color32(106, 77, 23, 255), new Color32(91, 82, 63, 255), new Color32(168, 161, 118, 255),
         Color.black, new Color32(183, 183, 183, 255), new Color32(90, 60, 60, 255), new Color32(60, 90, 60, 255), new Color32(60, 60, 90, 255)};
+
+        _bootsColors = new Color32[]
+        {
+           Color.black, new Color32(94, 61, 19, 255), new Color32(110, 110, 110, 255), Color.clear
+        };
     }
 
     private string GetPlayerName()
@@ -101,6 +110,16 @@ public class PlayerCustomizer : MonoBehaviour
         _pantsColor = value;
     }
 
+    private int GetBootsColor()
+    {
+        return _bootsColor;
+    }
+
+    private void SetBootsColor(int value)
+    {
+        _bootsColor = value;
+    }
+
     public int GetNextHat()
     {
         if (_hatColor >= _hatColors.Length - 1) return 0;
@@ -137,6 +156,18 @@ public class PlayerCustomizer : MonoBehaviour
         else return _pantsColor - 1;
     }
 
+    public int GetNextBoots()
+    {
+        if (_bootsColor >= _bootsColors.Length - 1) return 0;
+        else return _bootsColor + 1;
+    }
+
+    public int GetPrevBoots()
+    {
+        if (_bootsColor <= 0) return _bootsColors.Length - 1;
+        else return _bootsColor - 1;
+    }
+
     public Color32 TranslateHatColor(int value)
     {
         return _hatColors[value];
@@ -163,6 +194,11 @@ public class PlayerCustomizer : MonoBehaviour
         return _pantsColors[value];
     }
 
+    public Color32 TranslateBootsColor(int value)
+    {
+        return _bootsColors[value];
+    }
+
     private void OnDestroy()
     {
         Events.OnGetPlayerName -= GetPlayerName;
@@ -173,5 +209,7 @@ public class PlayerCustomizer : MonoBehaviour
         Events.OnSetShirtColor -= SetShirtColor;
         Events.OnGetPantsColor -= GetPantsColor;
         Events.OnSetPantsColor -= SetPantsColor;
+        Events.OnGetBootsColor -= GetBootsColor;
+        Events.OnSetBootsColor -= SetBootsColor;
     }
 }

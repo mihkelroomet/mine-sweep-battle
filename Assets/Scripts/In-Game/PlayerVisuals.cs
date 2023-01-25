@@ -13,6 +13,7 @@ public class PlayerVisuals : MonoBehaviour
     [SerializeField] private SpriteRenderer _rendShirt;
     [SerializeField] private SpriteRenderer _rendSleeves;
     [SerializeField] private SpriteRenderer _rendPants;
+    [SerializeField] private SpriteRenderer _rendBoots;
     [SerializeField] private SpriteRenderer _rendEffects;
     [SerializeField] private Image _nametagPanel;
     [SerializeField] private TMP_Text _nametagText;
@@ -30,8 +31,9 @@ public class PlayerVisuals : MonoBehaviour
         _rendShirt.color = PlayerCustomizer.Instance.TranslateShirtColor(shirtColor);
         _rendSleeves.color = PlayerCustomizer.Instance.TranslateShirtColorIntoSleeveColor(shirtColor);
         _rendPants.color = PlayerCustomizer.Instance.TranslatePantsColor((int) _view.Owner.CustomProperties["PantsColor"]);
+        _rendBoots.color = PlayerCustomizer.Instance.TranslateBootsColor((int)_view.Owner.CustomProperties["BootsColor"]);
 
-        _spriteRenderers = new SpriteRenderer[] { _rendNaked, _rendHands, _rendHat, _rendShirt, _rendSleeves, _rendPants, _rendEffects };
+        _spriteRenderers = new SpriteRenderer[] { _rendNaked, _rendHands, _rendHat, _rendShirt, _rendSleeves, _rendPants, _rendEffects, _rendBoots };
 
         // Making other players besides the controlled one transparent
         if (!_view.IsMine)
