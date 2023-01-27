@@ -128,6 +128,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
         if (!properties.TryAdd("ShirtColor", shirtColor)) properties["ShirtColor"] = shirtColor;
         if (!properties.TryAdd("PantsColor", pantsColor)) properties["PantsColor"] = pantsColor;
         if (!properties.TryAdd("BootsColor", bootsColor)) properties["BootsColor"] = bootsColor;
+        if (!properties.TryAdd("Score", 0)) properties["Score"] = 0;
         PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
         PhotonNetwork.LoadLevel((string) PhotonNetwork.CurrentRoom.CustomProperties["CurrentScene"]);
     }

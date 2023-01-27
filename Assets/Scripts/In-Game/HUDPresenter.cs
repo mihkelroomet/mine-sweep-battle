@@ -125,13 +125,17 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
         foreach (LiveScoreRow liveScoreRow in LiveScoreboard.GetComponentsInChildren<LiveScoreRow>()) Destroy(liveScoreRow.gameObject);
         Player[] sortedPlayerList = PhotonNetwork.PlayerList.OrderByDescending(player => player.CustomProperties["Score"]).ToArray();
 
-        for (int i = 0; i < Mathf.Min(sortedPlayerList.Length, 5); i++)
+        int i;
+        for (i = 0; i < Mathf.Min(sortedPlayerList.Length, 5); i++)
         {
             Player player = sortedPlayerList[i];
             LiveScoreRow liveScoreRow = Instantiate(LiveScoreRowPrefab, LiveScoreboard);
             liveScoreRow.SetPlayerNameText(Array.IndexOf(sortedPlayerList, player) + 1 + ". " + player.NickName);
             liveScoreRow.SetPlayerScoreText(player.CustomProperties["Score"].ToString());
         }
+
+        float scoreBoardHeight = 10 + i * 22 + (i - 1) * 2;
+        LiveScoreboard.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, scoreBoardHeight);
     }
 
     public void ToggleEscMenu()

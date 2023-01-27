@@ -56,13 +56,6 @@ public class GameController : MonoBehaviour
         if (!roomProperties.TryAdd("CurrentScene", "In-Game")) roomProperties["CurrentScene"] = "In-Game";
         PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
 
-        if (_view.IsMine)
-        {
-            ExitGames.Client.Photon.Hashtable playerProperties = PhotonNetwork.LocalPlayer.CustomProperties;
-            if (!playerProperties.TryAdd("Score", 0)) playerProperties["Score"] = Events.GetScore(); // Try to add property "Score". If it exists, assign the value to it instead.
-            PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperties);
-        }
-
         Events.OnSetScore += SetScore;
         Events.OnGetScore += GetScore;
         Events.OnSetPowerupInFirstSlot += SetPowerupInFirstSlot;
