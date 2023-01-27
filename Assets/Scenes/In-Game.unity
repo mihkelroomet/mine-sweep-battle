@@ -2431,6 +2431,7 @@ GameObject:
   - component: {fileID: 912525599}
   - component: {fileID: 912525598}
   - component: {fileID: 912525597}
+  - component: {fileID: 912525600}
   m_Layer: 5
   m_Name: PowerupPanel
   m_TagString: Untagged
@@ -2524,6 +2525,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 912525595}
   m_CullTransparentMesh: 1
+--- !u!225 &912525600
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 912525595}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1001 &1185210217
 PrefabInstance:
   m_ObjectHideFlags: 0

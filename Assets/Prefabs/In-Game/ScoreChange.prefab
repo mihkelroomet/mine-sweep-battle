@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 657829763282543196}
   - component: {fileID: 743334135094206731}
   - component: {fileID: 2176235044784700390}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: ScoreChangeText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146,6 +146,7 @@ GameObject:
   - component: {fileID: 8702211270579772361}
   - component: {fileID: 3485921282456764924}
   - component: {fileID: 4368953676717318267}
+  - component: {fileID: 113833715573109624}
   m_Layer: 0
   m_Name: ScoreChange
   m_TagString: Untagged
@@ -208,6 +209,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!225 &113833715573109624
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2528923117397408086}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &3488055095862037238
 GameObject:
   m_ObjectHideFlags: 0
@@ -220,7 +233,7 @@ GameObject:
   - component: {fileID: 4857656601181352144}
   - component: {fileID: 6144592187479639548}
   - component: {fileID: 963382546451351129}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
