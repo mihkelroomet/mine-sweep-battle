@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-public class LiveScoreRow : MonoBehaviour
+public class ScoreRow : MonoBehaviour
 {
     [SerializeField] private TMP_Text _playerNameText;
     [SerializeField] private TMP_Text _playerScoreText;

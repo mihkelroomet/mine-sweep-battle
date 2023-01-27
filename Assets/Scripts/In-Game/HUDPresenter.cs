@@ -12,16 +12,21 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
     public static HUDPresenter Instance;
 
     // In-Game UI
-    [SerializeField] private TMP_Text ScoreText;
+    [SerializeField] private GameObject LiveScoreboard;
     [SerializeField] private TMP_Text TimerText;
-    [SerializeField] private GameObject GameOverPanel;
-    [SerializeField] private GameObject EscMenuPanel;
+    [SerializeField] private GameObject TimerPanel;
+    [SerializeField] private TMP_Text ScoreText;
+    [SerializeField] private GameObject ScorePanel;
+    [SerializeField] private GameObject PowerupPanel;
     [SerializeField] private Image FirstPowerupSlotImage;
     [SerializeField] private Image SecondPowerupSlotImage;
-    [SerializeField] private AudioSource EndAudio;
+    [SerializeField] private GameObject EscMenuPanel;
+    [SerializeField] private GameObject GameOverPanel;
+    [SerializeField] private GameObject FinalScoreboard;
     [SerializeField] private Button RestartButton;
-    [SerializeField] private Transform LiveScoreboard;
-    public LiveScoreRow LiveScoreRowPrefab;
+    [SerializeField] private AudioSource EndAudio;
+    public ScoreRow LiveScoreRowPrefab;
+    public ScoreRow FinalScoreRowPrefab;
 
     private void Awake() {
         if (Instance != null)
@@ -41,10 +46,15 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        foreach (LiveScoreRow liveScoreRow in LiveScoreboard.GetComponentsInChildren<LiveScoreRow>()) Destroy(liveScoreRow.gameObject);
+        foreach (ScoreRow liveScoreRow in LiveScoreboard.GetComponentsInChildren<ScoreRow>()) Destroy(liveScoreRow.gameObject);
+        foreach (ScoreRow finalScoreRow in FinalScoreboard.GetComponentsInChildren<ScoreRow>()) Destroy(finalScoreRow.gameObject);
         
-        GameOverPanel.SetActive(false);
+        LiveScoreboard.SetActive(true);
+        TimerPanel.SetActive(true);
+        ScorePanel.SetActive(true);
+        PowerupPanel.SetActive(true);
         EscMenuPanel.SetActive(false);
+        GameOverPanel.SetActive(false);
     }
 
     // Update timer text
@@ -98,10 +108,24 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
 
     public void EndRound()
     {
+        LiveScoreboard.SetActive(false);
+        TimerPanel.SetActive(false);
+        ScorePanel.SetActive(false);
+        PowerupPanel.SetActive(false);
         EscMenuPanel.SetActive(false);
         GameOverPanel.SetActive(true);
         RestartButton.gameObject.SetActive(PhotonNetwork.IsMasterClient); // Only let Host press restart otherwise it gets messed up
         EndAudio.Play();
+
+        Player[] sortedPlayerList = PhotonNetwork.PlayerList.OrderByDescending(player => player.CustomProperties["Score"]).ToArray();
+
+        for (int i = 0; i < Mathf.Min(sortedPlayerList.Length, 7); i++)
+        {
+            Player player = sortedPlayerList[i];
+            ScoreRow finalScoreRow = Instantiate(FinalScoreRowPrefab, FinalScoreboard.transform);
+            finalScoreRow.SetPlayerNameText(Array.IndexOf(sortedPlayerList, player) + 1 + ". " + player.NickName);
+            finalScoreRow.SetPlayerScoreText(player.CustomProperties["Score"].ToString());
+        }
     }
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
@@ -122,14 +146,14 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
 
     private void UpdateLiveScoreboard()
     {
-        foreach (LiveScoreRow liveScoreRow in LiveScoreboard.GetComponentsInChildren<LiveScoreRow>()) Destroy(liveScoreRow.gameObject);
+        foreach (ScoreRow liveScoreRow in LiveScoreboard.GetComponentsInChildren<ScoreRow>()) Destroy(liveScoreRow.gameObject);
         Player[] sortedPlayerList = PhotonNetwork.PlayerList.OrderByDescending(player => player.CustomProperties["Score"]).ToArray();
 
         int i;
         for (i = 0; i < Mathf.Min(sortedPlayerList.Length, 5); i++)
         {
             Player player = sortedPlayerList[i];
-            LiveScoreRow liveScoreRow = Instantiate(LiveScoreRowPrefab, LiveScoreboard);
+            ScoreRow liveScoreRow = Instantiate(LiveScoreRowPrefab, LiveScoreboard.transform);
             liveScoreRow.SetPlayerNameText(Array.IndexOf(sortedPlayerList, player) + 1 + ". " + player.NickName);
             liveScoreRow.SetPlayerScoreText(player.CustomProperties["Score"].ToString());
         }
