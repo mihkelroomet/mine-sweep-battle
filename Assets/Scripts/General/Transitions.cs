@@ -22,7 +22,7 @@ public class Transitions : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(this.gameObject);
 
-        Cursor.SetCursor(CursorDefault, CursorDefaultHotspot, CursorMode.ForceSoftware);
+        Cursor.SetCursor(CursorDefault, CursorDefaultHotspot, CursorMode.Auto);
     }
 
     public void ExitSceneWithTransition(string newSceneName)
@@ -40,7 +40,7 @@ public class Transitions : MonoBehaviour
     public void PlayEnterTransition()
     {
         Transition.SetTrigger("Open");
-        Cursor.SetCursor(CursorDefault, CursorDefaultHotspot, CursorMode.ForceSoftware);
+        Cursor.SetCursor(CursorDefault, CursorDefaultHotspot, CursorMode.Auto);
     }
 
     public void PlayExitTransition()

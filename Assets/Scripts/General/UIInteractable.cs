@@ -15,11 +15,11 @@ public class UIInteractable : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public void OnPointerEnter(PointerEventData data)
     {
         ChooseAudio.Play(SFXSourcePool.Instance.transform);
-        Cursor.SetCursor(CursorPointer, CursorPointerHotspot, CursorMode.ForceSoftware);
+        Cursor.SetCursor(CursorPointer, CursorPointerHotspot, CursorMode.Auto);
     }
 
     public void OnPointerExit(PointerEventData data)
     {
-        Cursor.SetCursor(CursorDefault, CursorDefaultHotspot, CursorMode.ForceSoftware);
+        Cursor.SetCursor(CursorDefault, CursorDefaultHotspot, CursorMode.Auto);
     }
 }
