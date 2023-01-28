@@ -83,7 +83,7 @@ public class GameController : MonoBehaviour
             TimeLeft = (float) PhotonNetwork.CurrentRoom.CustomProperties["TimeLeft"];
             _view.RPC("SetTimeLeftOutOfDateRPC", RpcTarget.MasterClient);
         }
-        Events.SetScore(Events.GetScore()); // For triggering SetScore in HUDPresenter
+        Events.SetScore(Events.GetScore(), transform); // For triggering SetScore in HUDPresenter
         GameActive = true;
     }
 
@@ -134,14 +134,14 @@ public class GameController : MonoBehaviour
         return PowerupInSecondSlot;
     }
 
-    private void SetScore(int value)
+    private void SetScore(int value, Transform trigger)
     {
         int change = value - Events.GetScore();
         Score = value;
 
         if (change != 0)
         {
-            ScoreChange scoreChange = Instantiate(ScoreChangePrefab, PlayerController.Instance.transform);
+            ScoreChange scoreChange = Instantiate(ScoreChangePrefab, trigger);
             if (change < 0)
             {
                 scoreChange.ChangeText.text = change.ToString();

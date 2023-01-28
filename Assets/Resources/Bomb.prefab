@@ -151,7 +151,9 @@ MonoBehaviour:
   ExplodeTimer: 0.7
   ExplodeTime: 0.25
   BustCellScore: 125
-  StunPlayerWithBombScore: 500
+  StunPlayerWithBombBaseScore: 500
+  StunPlayerWithBombMinScore: 100
+  StunPlayerWithBombSiphonAmount: 0.1
 --- !u!114 &-7366693789286334417
 MonoBehaviour:
   m_ObjectHideFlags: 0

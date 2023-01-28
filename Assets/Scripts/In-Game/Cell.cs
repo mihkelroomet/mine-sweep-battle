@@ -200,11 +200,11 @@ public class Cell : MonoBehaviour
             if (IsMine && beamColor == Color.red || !IsMine && beamColor == Color.green) {
                 // Play the explosion particle system and when mine explodes
                 if (IsMine) {
-                    Events.SetScore(Events.GetScore() + FailMinePenalty);
+                    Events.SetScore(Events.GetScore() + FailMinePenalty, transform);
                     Grid.Instance.HandleCellShotEvent(Column, Row, 1);
                 }
                 else {
-                    Events.SetScore(Events.GetScore() + FailEmptyPenalty);
+                    Events.SetScore(Events.GetScore() + FailEmptyPenalty, transform);
                     Grid.Instance.HandleCellShotEvent(Column, Row, 2);
                 }
 
@@ -214,12 +214,12 @@ public class Cell : MonoBehaviour
             // Show the mine and turn the cell green
             else if (IsMine && beamColor == Color.green)
             {
-                Events.SetScore(Events.GetScore() + OpenMineScore);
+                Events.SetScore(Events.GetScore() + OpenMineScore, transform);
                 Grid.Instance.HandleCellShotEvent(Column, Row, 3);
             }
             else if (!IsMine && beamColor == Color.red) // Could just be 'else' but this is more elaborate
             {
-                Events.SetScore(Events.GetScore() + OpenEmptyScore);
+                Events.SetScore(Events.GetScore() + OpenEmptyScore, transform);
                 Grid.Instance.HandleCellShotEvent(Column, Row, 4);
             }
         }

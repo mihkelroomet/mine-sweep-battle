@@ -26,7 +26,9 @@ public class Bomb : MonoBehaviour
 
     // Scoring
     public int BustCellScore;
-    public int StunPlayerWithBombScore;
+    public int StunPlayerWithBombBaseScore;
+    public int StunPlayerWithBombMinScore;
+    public float StunPlayerWithBombSiphonAmount; // How much of the other player's score you gain by stunning them
     private List<PlayerController> _playersStunned;
 
     private void Awake()
@@ -65,7 +67,7 @@ public class Bomb : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Cell"))
+        if (_view.IsMine && other.CompareTag("Cell"))
         {
             Cell cell = other.GetComponent<Cell>();
 
@@ -74,7 +76,7 @@ public class Bomb : MonoBehaviour
                 Destruct();
                 if (!cell.IsBorderCell())
                 {
-                    Events.SetScore(Events.GetScore() + BustCellScore);
+                    Events.SetScore(Events.GetScore() + BustCellScore, cell.transform);
                     cell.RemoveMine();
                     cell.Open();
                 }
@@ -95,15 +97,20 @@ public class Bomb : MonoBehaviour
     {
         if (_exploding && other.CompareTag("Player"))
         {
-            PlayerController player = other.GetComponent<PlayerController>();
-            if (!_playersStunned.Contains(player))
+            PlayerController otherPlayer = other.GetComponent<PlayerController>();
+            if (!_playersStunned.Contains(otherPlayer))
             {
-                _playersStunned.Add(player);
-                player.Stun();
+                _playersStunned.Add(otherPlayer);
+                otherPlayer.Stun();
 
-                PhotonView playerView = player.GetComponent<PhotonView>();
+                PhotonView otherPlayerView = otherPlayer.GetComponent<PhotonView>();
                 // If I threw the bomb and the stunned player isn't me, gimme score
-                if (_view.IsMine && !playerView.IsMine) Events.SetScore(Events.GetScore() + StunPlayerWithBombScore);
+                if (_view.IsMine && !otherPlayerView.IsMine)
+                {
+                    int otherPlayerScore = (int) otherPlayerView.Owner.CustomProperties["Score"];
+                    int scoreGained = Mathf.Max(StunPlayerWithBombBaseScore + (int) Mathf.Round(otherPlayerScore * StunPlayerWithBombSiphonAmount), StunPlayerWithBombMinScore);
+                    Events.SetScore(Events.GetScore() + scoreGained, otherPlayer.transform);
+                }
             }
         }
     }

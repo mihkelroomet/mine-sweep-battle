@@ -6,8 +6,8 @@ public static class Events
     // Score
     public static event Func<int> OnGetScore;
     public static int GetScore() => OnGetScore?.Invoke() ?? 0;
-    public static event Action<int> OnSetScore;
-    public static void SetScore(int value) => OnSetScore?.Invoke(value);
+    public static event Action<int, Transform> OnSetScore;
+    public static void SetScore(int value, Transform trigger) => OnSetScore?.Invoke(value, trigger);
 
     // Powerups
     public static event Func<PowerupData> OnGetPowerupInFirstSlot;

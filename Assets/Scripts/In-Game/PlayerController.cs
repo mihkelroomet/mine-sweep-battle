@@ -167,12 +167,9 @@ public class PlayerController : MonoBehaviour, IPunObservable
                 }
                 
                 // Speed boost running out
-                if (MovementSpeed > DefaultMovementSpeed && _speedBoostExpiresAt > GameController.Instance.TimeLeft)
+                if (_speedBoostExpiresAt > GameController.Instance.TimeLeft)
                 {
-                    SpeedDownAudio.Play(transform);
-                    _speedPowerupParticles.Stop();
-                    MovementSpeed = DefaultMovementSpeed;
-                    Acceleration = DefaultAcceleration;
+                    SpeedDown();
                 }
             }
         }
@@ -237,6 +234,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
     // Stuns player
     public void Stun()
     {
+        SpeedDown();
         _inputHorizontal = 0;
         _inputVertical = 0;
         _stunTimer = _stunDuration;
@@ -254,16 +252,33 @@ public class PlayerController : MonoBehaviour, IPunObservable
                 bomb.MovementDirection = movementDirection;
                 break;
             case PowerupType.SpeedPowerup:
-                _speedPowerupParticles.Play();
-                Events.SetScore(Events.GetScore() + SpeedPowerupScore);
-                MovementSpeed = Mathf.Min(MovementSpeed * SpeedBoostMultiplier, _maxSpeed);
-                Acceleration = Mathf.Min(Acceleration * SpeedBoostMultiplier, _maxAcceleration);
-                SpeedUpAudio.Play(transform);
-                _speedBoostExpiresAt = GameController.Instance.TimeLeft - SpeedBoostDuration;
+                SpeedUp();
                 break;
         }
         Events.SetPowerupInFirstSlot(Events.GetPowerupInSecondSlot());
         Events.SetPowerupInSecondSlot(null);
+    }
+
+    private void SpeedUp()
+    {
+        _speedPowerupParticles.Play();
+        Events.SetScore(Events.GetScore() + SpeedPowerupScore, transform);
+        MovementSpeed = Mathf.Min(MovementSpeed * SpeedBoostMultiplier, _maxSpeed);
+        Acceleration = Mathf.Min(Acceleration * SpeedBoostMultiplier, _maxAcceleration);
+        SpeedUpAudio.Play(transform);
+        _speedBoostExpiresAt = GameController.Instance.TimeLeft - SpeedBoostDuration;
+    }
+
+    private void SpeedDown()
+    {
+        if (MovementSpeed > DefaultMovementSpeed)
+        {
+            SpeedDownAudio.Play(transform);
+            _speedPowerupParticles.Stop();
+            MovementSpeed = DefaultMovementSpeed;
+            Acceleration = DefaultAcceleration;
+            _speedBoostExpiresAt = 0;
+        }
     }
 
     private void SwitchPowerups()
@@ -308,6 +323,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
             Vector3[] positions = new Vector3[_lineRenderer.positionCount];
             _lineRenderer.GetPositions(positions);
             stream.SendNext(positions);
+            stream.SendNext(_speedPowerupParticles.isPlaying);
         }
         else
         {
@@ -315,6 +331,9 @@ public class PlayerController : MonoBehaviour, IPunObservable
             _lineRenderer.startColor = new Color((float) stream.ReceiveNext(), (float) stream.ReceiveNext(), (float) stream.ReceiveNext());
             _lineRenderer.positionCount = (int) stream.ReceiveNext();
             _lineRenderer.SetPositions((Vector3[]) stream.ReceiveNext());
+            bool speedPowerupParticlesActive = (bool) stream.ReceiveNext();
+            if (speedPowerupParticlesActive && !_speedPowerupParticles.isPlaying) _speedPowerupParticles.Play();
+            else if (!speedPowerupParticlesActive && _speedPowerupParticles.isPlaying) _speedPowerupParticles.Stop();
         }
     }
 }

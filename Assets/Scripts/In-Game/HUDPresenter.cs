@@ -81,7 +81,7 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
         }
     }
 
-    private void SetScore(int value)
+    private void SetScore(int value, Transform trigger)
     {
         ScoreText.text = "Score: " + value;
     }
