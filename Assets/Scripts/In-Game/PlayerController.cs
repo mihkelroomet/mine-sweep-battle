@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
     [SerializeField] private SpriteRenderer _crosshair;
     [SerializeField] private PhotonView _view;
     [SerializeField] private GameObject _nametagPanel;
+    [SerializeField] private ParticleSystem _speedPowerupParticles;
 
     // Beam
     public float RedBeamDuration;
@@ -72,6 +73,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
         Acceleration = DefaultAcceleration;
         _maxSpeed = DefaultMovementSpeed * MaxTotalSpeedBoost;
         _maxAcceleration = DefaultAcceleration * MaxTotalSpeedBoost;
+        _speedPowerupParticles.Stop();
     }
 
     private void Start()
@@ -168,6 +170,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
                 if (MovementSpeed > DefaultMovementSpeed && _speedBoostExpiresAt > GameController.Instance.TimeLeft)
                 {
                     SpeedDownAudio.Play(transform);
+                    _speedPowerupParticles.Stop();
                     MovementSpeed = DefaultMovementSpeed;
                     Acceleration = DefaultAcceleration;
                 }
@@ -251,6 +254,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
                 bomb.MovementDirection = movementDirection;
                 break;
             case PowerupType.SpeedPowerup:
+                _speedPowerupParticles.Play();
                 Events.SetScore(Events.GetScore() + SpeedPowerupScore);
                 MovementSpeed = Mathf.Min(MovementSpeed * SpeedBoostMultiplier, _maxSpeed);
                 Acceleration = Mathf.Min(Acceleration * SpeedBoostMultiplier, _maxAcceleration);
