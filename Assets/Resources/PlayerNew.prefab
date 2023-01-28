@@ -475,6 +475,7 @@ MonoBehaviour:
   FootstepsAudio: {fileID: 11400000, guid: 2cc055013de51e54b89621ce6edf2805, type: 2}
   Fire1Audio: {fileID: 11400000, guid: dcce7ddfa58d6d94c98d757eaab3f551, type: 2}
   Fire2Audio: {fileID: 11400000, guid: fadf7e1d3777033418e4d5c435b68185, type: 2}
+  SwitchPowerupAudio: {fileID: 11400000, guid: 9e52daa1a07b3ef4a90f96fb226d98ad, type: 2}
   SpeedUpAudio: {fileID: 11400000, guid: e29f4cb2cfa148d4ebd8c93ecea9efd2, type: 2}
   SpeedDownAudio: {fileID: 11400000, guid: 6495253d8ffc9a149a85807a854916ee, type: 2}
   MaxBombVelocityMagnitude: 5.7

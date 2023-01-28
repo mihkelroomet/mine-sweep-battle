@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
     public SFXClipGroup FootstepsAudio;
     public SFXClipGroup Fire1Audio;
     public SFXClipGroup Fire2Audio;
+    public SFXClipGroup SwitchPowerupAudio;
     public SFXClipGroup SpeedUpAudio;
     public SFXClipGroup SpeedDownAudio;
 
@@ -263,9 +264,13 @@ public class PlayerController : MonoBehaviour, IPunObservable
 
     private void SwitchPowerups()
     {
-        PowerupData dataInFirstSlot = Events.GetPowerupInFirstSlot();
-        Events.SetPowerupInFirstSlot(Events.GetPowerupInSecondSlot());
-        Events.SetPowerupInSecondSlot(dataInFirstSlot);
+        if (Events.GetPowerupInFirstSlot() || Events.GetPowerupInSecondSlot())
+        {
+            SwitchPowerupAudio.Play(transform);
+            PowerupData dataInFirstSlot = Events.GetPowerupInFirstSlot();
+            Events.SetPowerupInFirstSlot(Events.GetPowerupInSecondSlot());
+            Events.SetPowerupInSecondSlot(dataInFirstSlot);
+        }
     }
 
     public void PlayFireAudio(byte fireType)

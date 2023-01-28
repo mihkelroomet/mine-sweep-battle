@@ -154,7 +154,7 @@ MonoBehaviour:
   CursorDefault: {fileID: 2800000, guid: c4132845deb408b469efe36f61edba7b, type: 3}
   CursorDefaultHotspot: {x: 0, y: 0}
   ChooseAudio: {fileID: 11400000, guid: f07719eaf43bb9b47bc4b564acdd4099, type: 2}
-  SelectAudio: {fileID: 11400000, guid: f07719eaf43bb9b47bc4b564acdd4099, type: 2}
+  SelectAudio: {fileID: 11400000, guid: 9e52daa1a07b3ef4a90f96fb226d98ad, type: 2}
 --- !u!1 &1988516788003548108
 GameObject:
   m_ObjectHideFlags: 0

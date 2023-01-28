@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d0647643df85aa244a20c9068915e467, type: 3}
-  m_Name: CorrectEmpty
+  m_Name: Switch
   m_EditorClassIdentifier: 
-  VolumeMin: 0.9
-  VolumeMax: 1.1
-  PitchMin: 0.9
-  PitchMax: 1.1
+  VolumeMin: 0.95
+  VolumeMax: 1.05
+  PitchMin: 0.99
+  PitchMax: 1.01
   Cooldown: 0.1
   MaxAudibleDistance: 7
   Clips:
-  - {fileID: 8300000, guid: 2fb21d3c827f90b4eb02354195030793, type: 3}
+  - {fileID: 8300000, guid: 2114bbd02762bda45b563e3f87e4f8b2, type: 3}
