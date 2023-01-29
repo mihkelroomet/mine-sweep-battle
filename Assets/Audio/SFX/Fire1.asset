@@ -16,7 +16,7 @@ MonoBehaviour:
   VolumeMax: 0.88
   PitchMin: 0.95
   PitchMax: 1.05
-  Cooldown: 0.1
+  Cooldown: 0.05
   MaxAudibleDistance: 7
   Clips:
   - {fileID: 8300000, guid: fbaddb39562bcd04c93c3ebdc01ce931, type: 3}

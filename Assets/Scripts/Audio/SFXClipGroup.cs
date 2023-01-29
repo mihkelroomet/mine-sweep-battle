@@ -67,6 +67,7 @@ public class SFXClipGroup : ScriptableObject
         source.transform.parent = parent; // Necessary for moving objects
         source.transform.position = position;
 
+        source.enabled = true;
         source.Play();
     }
 }

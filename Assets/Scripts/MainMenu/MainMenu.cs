@@ -1,12 +1,14 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
-using System.Collections.Generic;
 
 public class MainMenu : MonoBehaviourPunCallbacks
 {
+    public static MainMenu Instance;
+
     // RoomListing
     public RoomListing roomListingPrefab;
     public Transform Content;
@@ -39,7 +41,15 @@ public class MainMenu : MonoBehaviourPunCallbacks
     public Slider MusicVolumeSlider;
     public Slider SFXVolumeSlider;
 
-    private void Awake() {
+    private void Awake()
+    {
+        if (Instance)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        Instance = this;
+
         PracticeButton.onClick.AddListener(() => CreatePracticeRoom());
         CreateButton.onClick.AddListener(() => CreateRoom());
         JoinButton.onClick.AddListener(() => JoinRoom());
@@ -103,6 +113,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
         roomProps.Add("MineFrequency", (float) mineFrequency);
         roomProps.Add("RoundLength", (int) roundLength);
         roomProps.Add("UpToDate", false);
+        roomProps.Add("CountdownTimeLeftValid", false);
         roomProps.Add("TimeLeftUpToDate", false);
         string currentScene = isVisible ? "Lobby" : "In-Game"; // Skip lobby if practicing
         roomProps.Add("CurrentScene", currentScene);

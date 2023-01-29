@@ -10,6 +10,11 @@ public class ConnectToServer : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
+        if (Instance)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
         Instance = this;
     }
 

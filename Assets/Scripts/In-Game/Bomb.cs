@@ -41,7 +41,7 @@ public class Bomb : MonoBehaviour
     private void Update() {
         if (_explodeTimeLeft < 0)
         {
-            Destroy(this.gameObject);
+            if (_view.IsMine) PhotonNetwork.Destroy(this.gameObject);
             return;
         }
 
@@ -123,10 +123,13 @@ public class Bomb : MonoBehaviour
     [PunRPC]
     void DestructRPC()
     {
-        _exploding = true;
-        Instantiate(Explosion, transform.position, transform.rotation);
-        BombAudio.Play(transform.position);
-        _spriteRenderer.sprite = null;
-        _rb.velocity = Vector2.zero;
+        if (!_exploding)
+        {
+            _exploding = true;
+            Instantiate(Explosion, transform.position, transform.rotation);
+            BombAudio.Play(transform.position);
+            _spriteRenderer.sprite = null;
+            _rb.velocity = Vector2.zero;
+        }
     }
 }

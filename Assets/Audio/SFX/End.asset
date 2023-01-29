@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d0647643df85aa244a20c9068915e467, type: 3}
-  m_Name: Fire2
+  m_Name: End
   m_EditorClassIdentifier: 
-  VolumeMin: 0.156
-  VolumeMax: 0.196
-  PitchMin: 0.95
-  PitchMax: 1.05
-  Cooldown: 0.05
+  VolumeMin: 0.95
+  VolumeMax: 1.05
+  PitchMin: 0.99
+  PitchMax: 1.01
+  Cooldown: 0.1
   MaxAudibleDistance: 7
   Clips:
-  - {fileID: 8300000, guid: 9c4b3ef6346b38346bda395b990a8d80, type: 3}
+  - {fileID: 8300000, guid: 9feed21cd39ed784aa01c3f0bf7470fe, type: 3}

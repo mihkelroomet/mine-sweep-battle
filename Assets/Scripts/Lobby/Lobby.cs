@@ -45,7 +45,7 @@ public class Lobby : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
-        if (Instance != null)
+        if (Instance)
         {
             Destroy(this.gameObject);
             return;
@@ -127,6 +127,8 @@ public class Lobby : MonoBehaviourPunCallbacks
 
         EnableInputs(PhotonNetwork.IsMasterClient); // In case the master client left and you are the new one, enable the start button and options
         UpdatePlayerCount();
+
+        if (PhotonNetwork.IsMasterClient) PhotonNetwork.DestroyPlayerObjects(leftPlayer);
     }
 
     private void UpdatePlayerCount()

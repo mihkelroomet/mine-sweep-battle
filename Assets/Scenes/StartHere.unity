@@ -622,11 +622,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3282692292517246835, guid: c4cc05fb16c594442b34121ca419c7eb, type: 3}
       propertyPath: m_text
-      value: Loading...
+      value: Connecting...
       objectReference: {fileID: 0}
     - target: {fileID: 3282692292517246835, guid: c4cc05fb16c594442b34121ca419c7eb, type: 3}
       propertyPath: m_fontSize
-      value: 36
+      value: 33.5
       objectReference: {fileID: 0}
     - target: {fileID: 3282692292517246835, guid: c4cc05fb16c594442b34121ca419c7eb, type: 3}
       propertyPath: m_fontStyle

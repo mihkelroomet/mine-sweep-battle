@@ -12,6 +12,7 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
     public static HUDPresenter Instance;
 
     // In-Game UI
+    [SerializeField] private GameObject CountdownPanel;
     [SerializeField] private GameObject LiveScoreboard;
     [SerializeField] private TMP_Text TimerText;
     [SerializeField] private GameObject TimerPanel;
@@ -24,12 +25,13 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject GameOverPanel;
     [SerializeField] private GameObject FinalScoreboard;
     [SerializeField] private Button RestartButton;
-    [SerializeField] private AudioSource EndAudio;
+    [SerializeField] private SFXClipGroup EndAudio;
     public ScoreRow LiveScoreRowPrefab;
     public ScoreRow FinalScoreRowPrefab;
 
-    private void Awake() {
-        if (Instance != null)
+    private void Awake()
+    {
+        if (Instance)
         {
             Destroy(this.gameObject);
             return;
@@ -49,6 +51,7 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
         foreach (ScoreRow liveScoreRow in LiveScoreboard.GetComponentsInChildren<ScoreRow>()) Destroy(liveScoreRow.gameObject);
         foreach (ScoreRow finalScoreRow in FinalScoreboard.GetComponentsInChildren<ScoreRow>()) Destroy(finalScoreRow.gameObject);
         
+        CountdownPanel.SetActive(true);
         LiveScoreboard.SetActive(true);
         TimerPanel.SetActive(true);
         ScorePanel.SetActive(true);
@@ -65,9 +68,7 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
         TimerText.text = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
 
         // Make last 5 seconds of a round red
-        if (time < 6) {
-            TimerText.color = Color.red;
-        }
+        TimerText.color = (time < 6) ? Color.red : Color.white;
     }
 
     private void Update()
@@ -108,6 +109,7 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
 
     public void EndRound()
     {
+        CountdownPanel.SetActive(false);
         LiveScoreboard.SetActive(false);
         TimerPanel.SetActive(false);
         ScorePanel.SetActive(false);

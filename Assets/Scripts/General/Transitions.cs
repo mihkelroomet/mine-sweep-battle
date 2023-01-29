@@ -14,7 +14,7 @@ public class Transitions : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null)
+        if (Instance)
         {
             Destroy(this.gameObject);
             return;

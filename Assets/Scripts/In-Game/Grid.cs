@@ -26,8 +26,9 @@ public class Grid : MonoBehaviour
     private bool _initialized;
     private Queue<GridUpdateEvent> _gridUpdateEventQueue;
 
-    private void Awake() {
-        if (Instance != null)
+    private void Awake()
+    {
+        if (Instance)
         {
             Destroy(this.gameObject);
             return;

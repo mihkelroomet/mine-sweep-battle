@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0647643df85aa244a20c9068915e467, type: 3}
   m_Name: Tick
   m_EditorClassIdentifier: 
-  VolumeMin: 0.95
-  VolumeMax: 1.05
-  PitchMin: 0.98
-  PitchMax: 1.02
+  VolumeMin: 1.85
+  VolumeMax: 2
+  PitchMin: 0.99
+  PitchMax: 1.01
   Cooldown: 0.1
   MaxAudibleDistance: 7
   Clips:

@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using TMPro;
 using Photon.Pun;
-using Photon.Pun.UtilityScripts;
 
 public class PlayerController : MonoBehaviour, IPunObservable
 {

@@ -7,8 +7,9 @@ public class PowerupSpawner : MonoBehaviour
     public PowerupData[] Powerups;
     public CollectablePowerup CollectablePowerupPrefab;
 
-    private void Awake() {
-        if (Instance != null)
+    private void Awake()
+    {
+        if (Instance)
         {
             Destroy(this.gameObject);
             return;

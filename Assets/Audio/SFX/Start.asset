@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VolumeMin: 0.95
   VolumeMax: 1.05
-  PitchMin: 0.98
-  PitchMax: 1.02
+  PitchMin: 0.99
+  PitchMax: 1.01
   Cooldown: 0.1
   MaxAudibleDistance: 7
   Clips:

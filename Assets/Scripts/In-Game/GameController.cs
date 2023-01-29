@@ -1,8 +1,9 @@
 using System.Collections;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 
-public class GameController : MonoBehaviour
+public class GameController : MonoBehaviourPunCallbacks
 {
     public bool GameActive
     {
@@ -45,16 +46,19 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null)
+        if (Instance)
         {
             Destroy(this.gameObject);
             return;
         }
         Instance = this;
 
-        ExitGames.Client.Photon.Hashtable roomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
-        if (!roomProperties.TryAdd("CurrentScene", "In-Game")) roomProperties["CurrentScene"] = "In-Game";
-        PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            ExitGames.Client.Photon.Hashtable roomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
+            if (!roomProperties.TryAdd("CurrentScene", "In-Game")) roomProperties["CurrentScene"] = "In-Game";
+            PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
+        }
 
         Events.OnSetScore += SetScore;
         Events.OnGetScore += GetScore;
@@ -84,7 +88,6 @@ public class GameController : MonoBehaviour
             _view.RPC("SetTimeLeftOutOfDateRPC", RpcTarget.MasterClient);
         }
         Events.SetScore(Events.GetScore(), transform); // For triggering SetScore in HUDPresenter
-        GameActive = true;
     }
 
     private void Update()
@@ -110,10 +113,12 @@ public class GameController : MonoBehaviour
             }
 
             // End the round if time has run out or if all the cells have been opened
-            if (TimeLeft <= 0 || allCellsOpened) {
-                Events.EndRound();
+            if (TimeLeft <= 0 || allCellsOpened)
+            {
+                if (PhotonNetwork.IsMasterClient) _view.RPC("EndRoundRPC", RpcTarget.All);
             }
-            else {
+            else
+            {
                 TimeLeft -= Time.deltaTime;
             }
         }
@@ -169,11 +174,6 @@ public class GameController : MonoBehaviour
         PowerupInSecondSlot = data;
     }
 
-    private void EndRound()
-    {
-        GameActive = false;
-    }
-
     [PunRPC]
     void UpdateTimeLeftRPC()
     {
@@ -191,6 +191,22 @@ public class GameController : MonoBehaviour
         PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
     }
 
+    public override void OnPlayerLeftRoom(Player leftPlayer)
+    {
+        if (PhotonNetwork.IsMasterClient) PhotonNetwork.DestroyPlayerObjects(leftPlayer);
+    }
+
+    private void EndRound()
+    {
+        GameActive = false;
+    }
+
+    [PunRPC]
+    void EndRoundRPC()
+    {
+        Events.EndRound();
+    }
+
     public void Restart()
     {
         _view.RPC("RestartRPC", RpcTarget.All);
@@ -200,6 +216,12 @@ public class GameController : MonoBehaviour
     void RestartRPC()
     {
         string nextScene = PhotonNetwork.CurrentRoom.IsVisible ? "Lobby" : "In-Game"; // Skip lobby if practicing
+        // If not for the below line there would be no AudioListener for the duration of the transition
+        PlayerController.Instance.GetComponentInChildren<AudioListener>().transform.parent = HUDPresenter.Instance.transform;
+        // And if not for this one there would be no camera rendering
+        Camera.main.transform.parent = HUDPresenter.Instance.transform;
+        // Destroy player's views that weren't part of the base In-Game scene
+        PhotonNetwork.DestroyPlayerObjects(PhotonNetwork.LocalPlayer);
         Transitions.Instance.ExitSceneWithTransition(nextScene);
     }
 
