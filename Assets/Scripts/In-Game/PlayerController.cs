@@ -30,12 +30,14 @@ public class PlayerController : MonoBehaviour, IPunObservable
     public float DefaultAcceleration;
     public float DefaultMovementSpeed;
     public float MaxTotalSpeedBoost;
+    public float MaxTotalAccelerationBoost;
     private float _maxSpeed;
     private float _maxAcceleration;
     public float SpeedBoostMultiplier;
+    public float AccelerationBoostMultiplier;
     public float SpeedBoostDuration;
     private float _speedBoostExpiresAt;
-    private float _speedLimiter = 0.7f;
+    private float _speedLimiter = 1 / Mathf.Sqrt(2);
     private float _inputHorizontal;
     private float _inputVertical;
 
@@ -70,7 +72,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
         MovementSpeed = DefaultMovementSpeed;
         Acceleration = DefaultAcceleration;
         _maxSpeed = DefaultMovementSpeed * MaxTotalSpeedBoost;
-        _maxAcceleration = DefaultAcceleration * MaxTotalSpeedBoost;
+        _maxAcceleration = DefaultAcceleration * MaxTotalAccelerationBoost;
         _speedPowerupParticles.Stop();
     }
 
@@ -262,7 +264,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
         _speedPowerupParticles.Play();
         Events.SetScore(Events.GetScore() + SpeedPowerupScore, transform);
         MovementSpeed = Mathf.Min(MovementSpeed * SpeedBoostMultiplier, _maxSpeed);
-        Acceleration = Mathf.Min(Acceleration * SpeedBoostMultiplier, _maxAcceleration);
+        Acceleration = Mathf.Min(Acceleration * AccelerationBoostMultiplier, _maxAcceleration);
         SpeedUpAudio.Play(transform);
         _speedBoostExpiresAt = GameController.Instance.TimeLeft - SpeedBoostDuration;
     }

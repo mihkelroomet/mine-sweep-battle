@@ -469,7 +469,9 @@ MonoBehaviour:
   DefaultAcceleration: 35
   DefaultMovementSpeed: 4
   MaxTotalSpeedBoost: 3.3
+  MaxTotalAccelerationBoost: 1.2
   SpeedBoostMultiplier: 1.5
+  AccelerationBoostMultiplier: 1.1
   SpeedBoostDuration: 10
   _animator: {fileID: 5310963619083586014}
   AudioListenerPrefab: {fileID: 2937236546330399345, guid: cf05cf63037deb2459b83b32d7c55a8d, type: 3}

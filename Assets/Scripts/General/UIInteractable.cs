@@ -22,4 +22,9 @@ public class UIInteractable : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         Cursor.SetCursor(CursorDefault, CursorDefaultHotspot, CursorMode.Auto);
     }
+
+    private void OnDisable()
+    {
+        Cursor.SetCursor(CursorDefault, CursorDefaultHotspot, CursorMode.Auto);
+    }
 }
