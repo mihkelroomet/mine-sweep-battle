@@ -49,12 +49,13 @@ public class MainMenu : MonoBehaviourPunCallbacks
             return;
         }
         Instance = this;
+        
+        Transitions.Instance.PlayEnterTransition();
 
         PracticeButton.onClick.AddListener(() => CreatePracticeRoom());
         CreateButton.onClick.AddListener(() => CreateRoom());
         JoinButton.onClick.AddListener(() => JoinRoom());
         QuitButton.onClick.AddListener(() => QuitGame());
-        Transitions.Instance.PlayEnterTransition();
 
         NameInputField.text = Events.GetPlayerName();
         CreateRoomNameInputField.text = GetRandomRoomName();
@@ -130,6 +131,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
+        Transitions.Instance.PlayExitEmptyTransition();
         ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.LocalPlayer.CustomProperties;
         int hatColor = Events.GetHatColor();
         int shirtColor = Events.GetShirtColor();

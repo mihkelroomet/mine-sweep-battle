@@ -6,7 +6,7 @@ public class Transitions : MonoBehaviour
 {
     public static Transitions Instance;
     public Animator Transition;
-    public float TransitionTime = 1f;
+    public float TransitionTime = 0.7f;
     
     // Cursor
     public Texture2D CursorDefault;
@@ -39,12 +39,20 @@ public class Transitions : MonoBehaviour
 
     public void PlayEnterTransition()
     {
-        Transition.SetTrigger("Open");
+        Transition.SetTrigger("Enter");
         Cursor.SetCursor(CursorDefault, CursorDefaultHotspot, CursorMode.Auto);
     }
 
     public void PlayExitTransition()
     {
-        Transition.SetTrigger("Close");
+        Transition.SetTrigger("Exit");
+    }
+
+    /// <summary>
+    /// Blocks raycasts immediately. They will be unblocked by the enter transition of the next scene finishing.
+    /// </summary>
+    public void PlayExitEmptyTransition()
+    {
+        Transition.SetTrigger("ExitEmpty");
     }
 }

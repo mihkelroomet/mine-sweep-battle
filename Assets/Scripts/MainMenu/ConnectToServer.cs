@@ -33,7 +33,6 @@ public class ConnectToServer : MonoBehaviourPunCallbacks
         RoomList = roomList;
     }
 
-
     public override void OnJoinedLobby()
 	{
         SceneManager.LoadScene("MainMenu");

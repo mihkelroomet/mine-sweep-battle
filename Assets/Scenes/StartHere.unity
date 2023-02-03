@@ -879,7 +879,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Transition: {fileID: 5796713872699500278}
-  TransitionTime: 1
+  TransitionTime: 0.7
   CursorDefault: {fileID: 2800000, guid: c4132845deb408b469efe36f61edba7b, type: 3}
   CursorDefaultHotspot: {x: 0, y: 0}
 --- !u!1 &5796713872699500272

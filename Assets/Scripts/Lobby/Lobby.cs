@@ -52,6 +52,8 @@ public class Lobby : MonoBehaviourPunCallbacks
         }
         Instance = this;
 
+        Transitions.Instance.PlayEnterTransition();
+
         ExitGames.Client.Photon.Hashtable roomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
         if (!roomProperties.TryAdd("CurrentScene", "Lobby")) roomProperties["CurrentScene"] = "Lobby";
         PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
@@ -71,8 +73,6 @@ public class Lobby : MonoBehaviourPunCallbacks
         StartButton.onClick.AddListener(() => StartGame());
 
         MusicPlayer.Instance.PlayMusic(LobbyMusic);
-
-        Transitions.Instance.PlayEnterTransition();
     }
 
     private void InitializePlayerList()
@@ -242,6 +242,7 @@ public class Lobby : MonoBehaviourPunCallbacks
     [PunRPC]
     void StartGameRPC()
     {
+        Transitions.Instance.PlayExitEmptyTransition();
         PhotonNetwork.LoadLevel("In-Game");
     }
 }

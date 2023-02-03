@@ -38,12 +38,12 @@ public class HUDPresenter : MonoBehaviourPunCallbacks
         }
         Instance = this;
 
+        Transitions.Instance.PlayEnterTransition();
+
         Events.OnSetScore += SetScore;
         Events.OnSetPowerupInFirstSlot += SetPowerupInFirstSlot;
         Events.OnSetPowerupInSecondSlot += SetPowerupInSecondSlot;
         Events.OnEndRound += EndRound;
-
-        Transitions.Instance.PlayEnterTransition();
     }
 
     void Start()
