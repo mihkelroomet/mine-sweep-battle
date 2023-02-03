@@ -37,39 +37,32 @@ public class Grid : MonoBehaviour
 
         _initialized = false;
         _gridUpdateEventQueue = new Queue<GridUpdateEvent>();
+
+        if (PhotonNetwork.IsMasterClient) InitializeGrid();
     }
 
-    IEnumerator Start()
+    private void Start()
     {
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            _view.RPC("UpdateRoomPropertiesRPC", RpcTarget.MasterClient);
-            // Wait until the properties have been refreshed by Host
-            while (! (bool) PhotonNetwork.CurrentRoom.CustomProperties["UpToDate"]) yield return new WaitForSeconds(0.1f);
-            _view.RPC("SetRoomPropertiesOutOfDateRPC", RpcTarget.MasterClient);
-        }
-        else
-        {
-            Rows = (int) PhotonNetwork.CurrentRoom.CustomProperties["Rows"];
-            Columns = (int) PhotonNetwork.CurrentRoom.CustomProperties["Columns"];
-            MineFrequency = (float) PhotonNetwork.CurrentRoom.CustomProperties["MineFrequency"];
-        }
+        // This is in Start instead of Awake because it includes a reference to PowerupSpawner.Instance that gets assigned in an Awake
+        if (!PhotonNetwork.IsMasterClient) StartCoroutine(NonMasterInitCoroutine());
+    }
+
+    IEnumerator NonMasterInitCoroutine()
+    {
+        _view.RPC("UpdateRoomPropertiesRPC", RpcTarget.MasterClient);
+        // Wait until the properties have been refreshed by Host
+        while (! (bool) PhotonNetwork.CurrentRoom.CustomProperties["UpToDate"]) yield return new WaitForSeconds(0.05f);
+        _view.RPC("SetRoomPropertiesOutOfDateRPC", RpcTarget.MasterClient);
 
         InitializeGrid();
-
-        _initialized = true;
-
-        if (!PhotonNetwork.IsMasterClient) ApplyGridUpdatesReceivedDuringInit();
     }
 
     private void InitializeGrid()
     {
         ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            Columns = (int) properties["Columns"];
-            Rows = (int) properties["Rows"];
-        }
+        Columns = (int) properties["Columns"];
+        Rows = (int) properties["Rows"];
+        MineFrequency = (float) properties["MineFrequency"];
 
         CellGrid = new Cell[Columns][];
         _gridState = new byte[Columns][];
@@ -109,15 +102,11 @@ public class Grid : MonoBehaviour
                         cell.CurrentSprite = 10;
                     }
                     else {
-                        // Plant mines randomly, but not in the middle
-                        if (Mathf.Abs(col - colMidpoint) >= 2.1 || Mathf.Abs(row - rowMidpoint) >= 2.1) {
-                            if (Random.value < MineFrequency) {
-                                cell.IsMine = true;
-                            }
-                        }
+                        // Plant mines randomly
+                        if (Random.value < MineFrequency) cell.IsMine = true;
                     }
                 }
-                else // If not Host
+                else // If not master fetch grid state from room properties
                 {
                     byte gridStateIndicator = (byte) ((byte[]) properties["GridState_Column" + col])[row];
                     cell.CurrentSprite = gridStateIndicator;
@@ -125,34 +114,13 @@ public class Grid : MonoBehaviour
             }
         }
 
-        // If master, open cells in the middle of the grid
-        if (PhotonNetwork.IsMasterClient)
-        {
-            for (int col = 0; col < Columns-1; col++)
-            {
-                for (int row = 0; row < Rows-1; row++)
-                {
-                    Cell cell = CellGrid[col][row];
-
-                    if (Mathf.Abs(col - colMidpoint) < 2.1 && Mathf.Abs(row - rowMidpoint) < 2.1) {
-                        cell.Open();
-                    }
-                }
-            }
-        }
-
-        // If not master, instantiate powerups fetched from master
         if (!PhotonNetwork.IsMasterClient)
         {
-            for (int i = 0; i < (int) properties["NumberOfPowerups"]; i++)
-            {
-                int col = (int) properties["Powerup" + i + "Column"];
-                int row = (int) properties["Powerup" + i + "Row"];
-                byte type = (byte) properties["Powerup" + i + "Type"];
-                float expiresAt = (float) properties["Powerup" + i + "ExpiresAt"];
-                PowerupSpawner.Instance.SpawnPowerup(col, row, type, expiresAt);
-            }
+            InitializeFetchedPowerups();
+            ApplyGridUpdatesReceivedDuringInit();
         }
+
+        _initialized = true;
     }
 
     /// <summary>
@@ -221,6 +189,33 @@ public class Grid : MonoBehaviour
         if (!properties.TryAdd("UpToDate", false)) properties["UpToDate"] = false;
 
         PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+    }
+
+    /// <summary>
+    /// Non-master client initializing powerups fetched from master at start
+    /// </summary>
+    private void InitializeFetchedPowerups()
+    {
+        ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
+        for (int i = 0; i < (int) properties["NumberOfPowerups"]; i++)
+        {
+            int col = (int) properties["Powerup" + i + "Column"];
+            int row = (int) properties["Powerup" + i + "Row"];
+            byte type = (byte) properties["Powerup" + i + "Type"];
+            float expiresAt = (float) properties["Powerup" + i + "ExpiresAt"];
+            PowerupSpawner.Instance.SpawnPowerup(col, row, type, expiresAt);
+        }
+    }
+
+    public void OpenCellsForSpawningPlayer(int BottomLeftCol, int BottomLeftRow)
+    {
+        for (int col = BottomLeftCol; col < BottomLeftCol + 4; col++)
+        {
+            for (int row = BottomLeftRow; row < BottomLeftRow + 4; row++)
+            {
+                CellGrid[col][row].RemoveMineAndOpen();
+            }
+        }
     }
 
     public void SetCurrentSprite(int col, int row, byte value)

@@ -216,9 +216,7 @@ public class GameController : MonoBehaviourPunCallbacks
     void RestartRPC()
     {
         string nextScene = PhotonNetwork.CurrentRoom.IsVisible ? "Lobby" : "In-Game"; // Skip lobby if practicing
-        // If not for the below line there would be no AudioListener for the duration of the transition
-        PlayerController.Instance.GetComponentInChildren<AudioListener>().transform.parent = HUDPresenter.Instance.transform;
-        // And if not for this one there would be no camera rendering
+        // If not for the below line there would be no Camera nor AudioListener for the duration of the transition
         Camera.main.transform.parent = HUDPresenter.Instance.transform;
         // Destroy player's views that weren't part of the base In-Game scene
         PhotonNetwork.DestroyPlayerObjects(PhotonNetwork.LocalPlayer);

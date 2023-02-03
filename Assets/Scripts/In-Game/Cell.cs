@@ -109,10 +109,9 @@ public class Cell : MonoBehaviour
     }
 
     /// <summary>
-    /// Removes mine and updates surrounding indicators<br></br>
-    /// Meant to be called right before Open only
+    /// Removes mine and updates surrounding indicators, then opens cell
     /// </summary>
-    public void RemoveMine() {
+    public void RemoveMineAndOpen() {
         if (IsMine && !IsBorderCell()) {
             Grid.Instance.SetCurrentSprite(Column, Row, 9);
             List<Cell> surroundingCells = GetSurroundingCells();
@@ -136,6 +135,7 @@ public class Cell : MonoBehaviour
                 }
             }
         }
+        Open();
     }
 
     public void Open() {
@@ -224,8 +224,7 @@ public class Cell : MonoBehaviour
             }
         }
         
-        RemoveMine();
-        Open();
+        RemoveMineAndOpen();
     }
 
     /// <summary>

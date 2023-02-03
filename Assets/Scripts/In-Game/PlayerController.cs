@@ -45,7 +45,6 @@ public class PlayerController : MonoBehaviour, IPunObservable
     [SerializeField] private Animator _animator;
 
     // Audio
-    public AudioListener AudioListenerPrefab;
     public SFXClipGroup FootstepsAudio;
     public SFXClipGroup Fire1Audio;
     public SFXClipGroup Fire2Audio;
@@ -62,7 +61,6 @@ public class PlayerController : MonoBehaviour, IPunObservable
         if (_view.IsMine)
         {
             Instance = this;
-            Instantiate(AudioListenerPrefab, transform);
         }
         else _crosshair.enabled = false; // Don't show crosshair of other players
 
@@ -80,7 +78,10 @@ public class PlayerController : MonoBehaviour, IPunObservable
     {
         if (_view.IsMine)
         {
-            Camera.main.transform.parent = this.transform; // Center camera on player
+            // Make camera a child of the controller player in order for it to follow said player
+            Camera.main.transform.parent = this.transform;
+            // Center camera on controlled player
+            Camera.main.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, Camera.main.transform.position.z);
         }
     }
 

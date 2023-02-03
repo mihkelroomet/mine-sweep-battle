@@ -77,8 +77,7 @@ public class Bomb : MonoBehaviour
                 if (!cell.IsBorderCell())
                 {
                     Events.SetScore(Events.GetScore() + BustCellScore, cell.transform);
-                    cell.RemoveMine();
-                    cell.Open();
+                    cell.RemoveMineAndOpen();
                 }
             }
 
