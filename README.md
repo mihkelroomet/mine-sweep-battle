@@ -2,6 +2,16 @@ This is the repo for Mine Sweep Battle (MSB), a game project created for Univers
 
 [Download MSB from itch.io](https://mihkelroomet.itch.io/mine-sweep-battle)
 
+MSB was nominated as best game in three separate categories at the Game Development World Championship 2022.
+
+<p align="middle">
+  <img src="https://github.com/mihkelroomet/mine-sweep-battle/blob/master/Showcase/GDWC%202022%20Awards/Hobby%20Category/GDWC%202022%20Hobby%20Nominee%20Badge%20-%20white.png" style="width: 15rem;">
+  <img hspace="20"/>
+  <img src="https://github.com/mihkelroomet/mine-sweep-battle/blob/master/Showcase/GDWC%202022%20Awards/Student%20Category/GDWC%202022%20Student%20Game%20Award%20Nominee%20Badge%20-%20white.png" style="width: 15rem;">
+  <img hspace="20"/>
+  <img src="https://github.com/mihkelroomet/mine-sweep-battle/blob/master/Showcase/GDWC%202022%20Awards/Best%20Estonian%20Game/GDWC%202022%20Best%20Estonian%20Game%20Nominee%20Badge%20-%20white.png" style="width: 15rem;">
+</p>
+
 ## Our Vision
 
 With MSB our aim was to create an experience simple in nature that could be expanded upon, in order to create space for emergent gameplay and to make the game as accessible as possible to a wide range of players. We focused on refining the basic gameplay loop, getting the core action to feel good.
